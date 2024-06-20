@@ -1,0 +1,16 @@
+{
+  "extends": ["react-app"],
+  "plugins": [],
+  "rules": {
+    "max-lines": [
+      "warn",
+      { "max": 600, "skipComments": true, "skipBlankLines": true }
+    ],
+    "linebreak-style": "off",
+    "import/extensions": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/first": 0,
+
+    "@typescript-eslint/no-unused-expressions": "warn"
+  }
+}
