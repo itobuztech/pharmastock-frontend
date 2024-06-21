@@ -1,47 +1,35 @@
 /* eslint-disable max-len */
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import { gql, useMutation } from "@apollo/client";
-
-interface SignupUserInput {
-  username: string;
-  name: string;
-  email: string;
-  roleId: string;
-  password: string;
-}
-
-interface SignupResponse {
-  signup: {
-    access_token: string;
-  };
-}
-
-const SIGNUP_MUTATION = gql`
-  mutation Signup($signupUserInput: CreateUserInput!) {
-    signup(signupUserInput: $signupUserInput) {
-      access_token
-    }
-  }
-`;
+import { useMutation } from "@apollo/client";
+import { TextInput, PasswordInput, Select } from "@mantine/core";
+import { USER_ROLE } from "enums/enums";
+import { SignupResponse, SignupUserInput } from "interfaces/interfaces";
+import { SIGNUP_MUTATION } from "./RegisterMutation";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState<SignupUserInput>({
-    email: "",
-    name: "",
-    password: "",
-    roleId: "d8eb8fe1-60da-4eee-bb4a-b5176f58df09",
+  const [signupUserInput, setSignupUserInput] = useState({
     username: "",
+    name: "",
+    email: "",
+    password: "",
+    roleId: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+  const handleChange =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSignupUserInput({
+        ...signupUserInput,
+        [field]: event.target.value,
+      });
+    };
+
+  const handleRoleChange = (value: string | null) => {
+    setSignupUserInput({
+      ...signupUserInput,
+      roleId: value || "",
     });
   };
 
@@ -50,27 +38,20 @@ export default function RegisterPage() {
     { signupUserInput: SignupUserInput }
   >(SIGNUP_MUTATION);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     try {
       const { data } = await signup({
-        variables: {
-          signupUserInput: formData,
-        },
+        variables: { signupUserInput },
       });
-
-      console.log("Signup successful:", data);
-
-      if (data?.signup.access_token) {
-        localStorage.setItem("token", data.signup.access_token);
-      }
-    } catch (err) {
-      console.error("Signup error:", err);
+      console.log("Signup successful", data);
+    } catch (error) {
+      console.error("Signup error", error);
     }
   };
 
   return (
-    <div className="mx-auto flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
+    <div className="m-auto flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
       <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl">
         Create a new account
       </div>
@@ -87,42 +68,46 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <div className="flex gap-4 mb-2">
             <div className="relative">
-              <input
-                type="text"
-                id="username"
-                className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                name="username"
+              <TextInput
+                label="Username"
                 placeholder="Username"
-                value={formData.username}
-                onChange={handleChange}
+                value={signupUserInput.username}
+                onChange={handleChange("username")}
                 required
               />
             </div>
 
             <div className="relative">
-              <input
-                type="text"
-                id="name"
-                className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                name="name"
+              <TextInput
+                label="Name"
                 placeholder="Name"
-                value={formData.name}
-                onChange={handleChange}
+                value={signupUserInput.name}
+                onChange={handleChange("name")}
                 required
               />
             </div>
           </div>
 
           <div className="flex flex-col mb-2">
+            <Select
+              label="Role"
+              placeholder="Select a role"
+              data={[
+                { value: USER_ROLE.ADMIN, label: "Admin" },
+                { value: USER_ROLE.STAFF, label: "Staff" },
+              ]}
+              value={signupUserInput.roleId}
+              onChange={handleRoleChange}
+              searchable
+              required
+            />
+
             <div className="relative">
-              <input
-                type="email"
-                id="email"
-                className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                name="email"
+              <TextInput
+                label="Email"
                 placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
+                value={signupUserInput.email}
+                onChange={handleChange("email")}
                 required
               />
             </div>
@@ -130,22 +115,14 @@ export default function RegisterPage() {
 
           <div className="flex flex-col mb-2">
             <div className="relative flex">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                name="password"
+              <PasswordInput
+                label="Password"
+                className="w-full"
                 placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
+                value={signupUserInput.password}
+                onChange={handleChange("password")}
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                see
-              </button>
             </div>
           </div>
 
