@@ -51,7 +51,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="mx-auto flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
+    <div className="m-auto flex flex-col max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
       <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl">
         Create a new account
       </div>
@@ -93,7 +93,6 @@ export default function RegisterPage() {
               label="Role"
               placeholder="Select a role"
               data={[
-                { value: USER_ROLE.SUPER_ADMIN, label: "Super Admin" },
                 { value: USER_ROLE.ADMIN, label: "Admin" },
                 { value: USER_ROLE.STAFF, label: "Staff" },
               ]}
