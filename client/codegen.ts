@@ -1,19 +1,18 @@
-
-import type { CodegenConfig } from '@graphql-codegen/cli';
+import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
   schema: "https://pharmadev.x-studio.io/graphql",
-  documents: "src/**/*.tsx",
+  documents: ["src/**/*.tsx", "src/**/*.ts"],
   generates: {
-    "src/types/gql": {
+    "src/gql/": {
       preset: "client",
-      plugins: []
+      plugins: [],
     },
     "./graphql.schema.json": {
-      plugins: ["introspection"]
-    }
-  }
+      plugins: ["introspection"],
+    },
+  },
 };
 
 export default config;
