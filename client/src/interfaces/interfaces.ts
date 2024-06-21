@@ -11,3 +11,22 @@ export interface SignupResponse {
     access_token: string;
   };
 }
+
+export interface LoginUserInput {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  login: {
+    access_token: string;
+    user: {
+      createdAt: string;
+      email: string;
+      id: string;
+      name: string;
+      updatedAt: string;
+      username: string;
+    };
+  };
+}

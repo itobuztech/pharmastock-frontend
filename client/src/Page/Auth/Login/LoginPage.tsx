@@ -1,58 +1,17 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { useState } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import TextFieldComponent from "../../../Components/TextField/TextFieldComponent";
-import EmailIcon from "../../../Icons/Email-Icon";
-import LockIcon from "../../../Icons/Lock-Icon";
-import { useForm } from "react-hook-form";
-import { LoginPayload } from "../../../Lib/Api/Fake/Users/users.interface";
-import { useAppDispatch, useAppSelector } from "../../../Lib/Store/hooks";
-import { userSliceActions } from "../../../Lib/Store/User/User.Slice";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
-import { gql, useMutation } from "@apollo/client";
-
-interface LoginUserInput {
-  email: string;
-  password: string;
-}
-
-interface LoginResponse {
-  login: {
-    access_token: string;
-    user: {
-      createdAt: string;
-      email: string;
-      id: string;
-      name: string;
-      updatedAt: string;
-      username: string;
-    };
-  };
-}
-
-const LOGIN_MUTATION = gql`
-  mutation Login($loginUserInput: LoginUserInput!) {
-    login(loginUserInput: $loginUserInput) {
-      access_token
-      user {
-        createdAt
-        email
-        id
-        name
-        updatedAt
-        username
-      }
-    }
-  }
-`;
+import { useMutation } from "@apollo/client";
+import { LoginResponse, LoginUserInput } from "interfaces/interfaces";
+import { PasswordInput, TextInput } from "@mantine/core";
+import { LOGIN_MUTATION } from "./LoginMutation";
 
 export default function LoginPage() {
-  // const loginState = useAppSelector((state) => state.user.login);
-  // const dispatch = useAppDispatch();
   const { height } = useViewportSize();
 
-  const [formData, setFormData] = useState<LoginUserInput>({
+  const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",
   });
@@ -62,29 +21,23 @@ export default function LoginPage() {
     { loginUserInput: LoginUserInput }
   >(LOGIN_MUTATION);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const handleChange =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setLoginUserInput({
+        ...loginUserInput,
+        [field]: event.target.value,
+      });
+    };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     try {
       const { data } = await login({
-        variables: {
-          loginUserInput: formData,
-        },
+        variables: { loginUserInput },
       });
-      console.log("Login successful:", data);
-      if (data?.login.access_token) {
-        localStorage.setItem("token", data.login.access_token);
-      }
-      // Redirect or update UI accordingly
-    } catch (err) {
-      console.error("Login error:", err);
+      console.log("Login successful", data);
+    } catch (error) {
+      console.error("Login error", error);
     }
   };
 
@@ -99,23 +52,22 @@ export default function LoginPage() {
         </div>
         <div className="mt-8">
           <form onSubmit={handleSubmit}>
-            <TextFieldComponent
-              icon={<EmailIcon />}
-              placeholder="Your email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
+            <TextInput
+              label="Email"
+              placeholder="Email"
+              value={loginUserInput.email}
+              onChange={handleChange("email")}
+              required
+            />
+            <PasswordInput
+              label="Password"
+              placeholder="Password"
+              value={loginUserInput.password}
+              onChange={handleChange("password")}
+              required
             />
 
-            <TextFieldComponent
-              icon={<LockIcon />}
-              placeholder="Your password"
-              type="password"
-              register={register("password")}
-            />
-
-            <p>{loginError && "Form error"}</p>
+            <p>{loginError && "Wrong credentials"}</p>
 
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">
