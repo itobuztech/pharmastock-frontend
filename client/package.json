@@ -10,7 +10,7 @@
     "lint": "eslint src/**/*.ts{,x} --max-warnings=0",
     "lint-staged": "lint-staged",
     "fetch-schema": "npx apollo client:download-schema",
-    "codegen": "npx apollo client:codegen --target typescript --outputFlat=src/pharma-generatedTypes.ts",
+    "codegen": "graphql-codegen --config codegen.ts",
     "commit": "git-cz",
     "release": "standard-version"
   },
@@ -71,6 +71,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/client-preset": "4.3.0",
     "@tailwindcss/typography": "^0.5.9",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.195",
@@ -96,6 +98,7 @@
     "typescript": "^4.7.3",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-pwa": "^0.19.8",
-    "web-vitals": "^3.3.2"
+    "web-vitals": "^3.3.2",
+    "@graphql-codegen/introspection": "4.0.3"
   }
 }
