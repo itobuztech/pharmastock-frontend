@@ -1,11 +1,11 @@
-import { DefaultRoute } from './DefaultRoute.Interface';
+import { DefaultRoute } from "./DefaultRoute.Interface";
 
 export interface DashBoardRoutes {
   path: string;
-  me: DefaultRoute
+  me: DefaultRoute;
 }
 
-const dashboardPath = '/dashboard';
+const dashboardPath = "/dashboard";
 
 export const dashboardRoutes: DashBoardRoutes = {
   path: dashboardPath,

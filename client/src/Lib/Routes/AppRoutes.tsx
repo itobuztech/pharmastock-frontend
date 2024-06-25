@@ -8,6 +8,7 @@ const IndexPage = React.lazy(() => import("Page/Index"));
 const RegisterPage = React.lazy(
   () => import("Page/Auth/Register/RegisterPage")
 );
+const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
 
 import { AuthRoutes } from "Page/Auth/AuthRoutes";
 
@@ -20,7 +21,8 @@ export default function AppRoutes() {
       <Suspense fallback={<></>}>
         <Routes>
           <Route path={routes.home.path} element={<IndexPage />} />
-          <Route path={routes.home.path} element={<RegisterPage />} />
+          <Route path={routes.register.path} element={<RegisterPage />} />
+          <Route path={routes.login.path} element={<LoginPage />} />
 
           <Route path={routes.dashboard.path} element={<DashboardPage />}>
             <Route path={routes.dashboard.me.path} element={<AuthGuard />}>
