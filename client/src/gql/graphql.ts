@@ -64,6 +64,22 @@ export type CreatePharmacyInput = {
   organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreatePharmacyStockInput = {
+  itemId: Scalars['String']['input'];
+  pharmacyId: Scalars['String']['input'];
+  qty: Scalars['Float']['input'];
+  warehouseId: Scalars['String']['input'];
+};
+
+export type CreateStockMovementInput = {
+  batchName?: InputMaybe<Scalars['String']['input']>;
+  expiry?: InputMaybe<Scalars['DateTime']['input']>;
+  itemId: Scalars['String']['input'];
+  pharmacyStockId?: InputMaybe<Scalars['String']['input']>;
+  qty: Scalars['Float']['input'];
+  warehouseStockId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
@@ -81,12 +97,15 @@ export type CreateWarehouseInput = {
 };
 
 export type CreateWarehouseStockInput = {
-  itemId?: InputMaybe<Scalars['String']['input']>;
-  stockLevel: Scalars['String']['input'];
-  stock_status: Scalars['String']['input'];
-  stocklevel_max: Scalars['Float']['input'];
-  stocklevel_min: Scalars['Float']['input'];
-  warehouseId?: InputMaybe<Scalars['String']['input']>;
+  batchName: Scalars['String']['input'];
+  expiry: Scalars['DateTime']['input'];
+  itemId: Scalars['String']['input'];
+  qty: Scalars['Float']['input'];
+  stockLevel?: InputMaybe<Scalars['String']['input']>;
+  stockStatus?: InputMaybe<Scalars['String']['input']>;
+  stocklevelMax?: InputMaybe<Scalars['Float']['input']>;
+  stocklevelMin?: InputMaybe<Scalars['Float']['input']>;
+  warehouseId: Scalars['String']['input'];
 };
 
 export type DeleteItemCategoryInput = {
@@ -106,6 +125,14 @@ export type DeleteOrganizationInput = {
 };
 
 export type DeletePharmacyInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeletePharmacyStockInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteStockMovementInput = {
   id: Scalars['String']['input'];
 };
 
@@ -168,6 +195,8 @@ export type Mutation = {
   createItemCategory: ItemCategory;
   createOrganization: Organization;
   createPharmacy: Pharmacy;
+  createPharmacyStock: PharmacyStock;
+  createStockMovement: StockMovement;
   createWarehouse: Warehouse;
   createWarehouseStock: WarehouseStock;
   deleteItem: Item;
@@ -175,6 +204,8 @@ export type Mutation = {
   deleteItemCategoryRelation: ItemCategoryRelation;
   deleteOrganization: Organization;
   deletePharmacy: Pharmacy;
+  deletePharmacyStock: PharmacyStock;
+  deleteStockMovement: StockMovement;
   deleteWarehouse: Warehouse;
   deleteWarehouseStock: WarehouseStock;
   login: LoginResponse;
@@ -185,7 +216,6 @@ export type Mutation = {
   updateOrganization: Organization;
   updatePharmacy: Pharmacy;
   updateWarehouse: Warehouse;
-  updateWarehouseStock: WarehouseStock;
   updateprofile: Scalars['Boolean']['output'];
 };
 
@@ -212,6 +242,16 @@ export type MutationCreateOrganizationArgs = {
 
 export type MutationCreatePharmacyArgs = {
   createPharmacyInput: CreatePharmacyInput;
+};
+
+
+export type MutationCreatePharmacyStockArgs = {
+  createPharmacyStockInput: CreatePharmacyStockInput;
+};
+
+
+export type MutationCreateStockMovementArgs = {
+  createStockMovementInput: CreateStockMovementInput;
 };
 
 
@@ -247,6 +287,16 @@ export type MutationDeleteOrganizationArgs = {
 
 export type MutationDeletePharmacyArgs = {
   deletePharmacyInput: DeletePharmacyInput;
+};
+
+
+export type MutationDeletePharmacyStockArgs = {
+  deletePharmacyStockInput: DeletePharmacyStockInput;
+};
+
+
+export type MutationDeleteStockMovementArgs = {
+  deleteStockMovementInput: DeleteStockMovementInput;
 };
 
 
@@ -300,11 +350,6 @@ export type MutationUpdateWarehouseArgs = {
 };
 
 
-export type MutationUpdateWarehouseStockArgs = {
-  updateWarehouseStockInput: UpdateWarehouseStockInput;
-};
-
-
 export type MutationUpdateprofileArgs = {
   updateProfileInput: UpdateProfileInput;
 };
@@ -322,6 +367,11 @@ export type Organization = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type PaginationArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  take?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type Pharmacy = {
   __typename?: 'Pharmacy';
   contact_info?: Maybe<Scalars['String']['output']>;
@@ -333,8 +383,21 @@ export type Pharmacy = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type PharmacyStock = {
+  __typename?: 'PharmacyStock';
+  createdAt: Scalars['DateTime']['output'];
+  finalQty: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  itemId: Scalars['String']['output'];
+  pharmacyId: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  warehouseId: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  PharmacyStock: PharmacyStock;
+  PharmacyStocks?: Maybe<Array<PharmacyStock>>;
   account: AccountTypeResponse;
   getpermissions: Scalars['JSON']['output'];
   item: Item;
@@ -346,6 +409,8 @@ export type Query = {
   organizations?: Maybe<Array<Organization>>;
   pharmacy: Pharmacy;
   pharmacys?: Maybe<Array<Pharmacy>>;
+  stockMovement: StockMovement;
+  stockMovements?: Maybe<Array<StockMovement>>;
   user: User;
   users?: Maybe<Array<User>>;
   warehouse: Warehouse;
@@ -355,13 +420,33 @@ export type Query = {
 };
 
 
+export type QueryPharmacyStockArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryPharmacyStocksArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
 export type QueryItemArgs = {
   id: Scalars['String']['input'];
 };
 
 
+export type QueryItemCategoriesArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
 export type QueryItemCategoryArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryItemsArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
 };
 
 
@@ -375,13 +460,38 @@ export type QueryOrganizationByNameArgs = {
 };
 
 
+export type QueryOrganizationsArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
 export type QueryPharmacyArgs = {
   id: Scalars['String']['input'];
 };
 
 
+export type QueryPharmacysArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
+export type QueryStockMovementArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryStockMovementsArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
 export type QueryUserArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryUsersArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
 };
 
 
@@ -392,6 +502,16 @@ export type QueryWarehouseArgs = {
 
 export type QueryWarehouseStockArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryWarehouseStocksArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
+};
+
+
+export type QueryWarehousesArgs = {
+  paginationArgs?: InputMaybe<PaginationArgs>;
 };
 
 export type ResetPasswordInput = {
@@ -410,6 +530,19 @@ export enum StockLevel {
   Negative = 'NEGATIVE',
   Positive = 'POSITIVE'
 }
+
+export type StockMovement = {
+  __typename?: 'StockMovement';
+  batchName?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  expiry?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  itemId: Scalars['String']['output'];
+  pharmacyStockId?: Maybe<Scalars['String']['output']>;
+  qty: Scalars['Float']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  warehouseStockId?: Maybe<Scalars['String']['output']>;
+};
 
 export type UpdateItemCategoryInput = {
   id: Scalars['String']['input'];
@@ -459,16 +592,6 @@ export type UpdateWarehouseInput = {
   organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateWarehouseStockInput = {
-  id: Scalars['String']['input'];
-  itemId?: InputMaybe<Scalars['String']['input']>;
-  stockLevel?: InputMaybe<Scalars['String']['input']>;
-  stock_status?: InputMaybe<Scalars['String']['input']>;
-  stocklevel_max?: InputMaybe<Scalars['Float']['input']>;
-  stocklevel_min?: InputMaybe<Scalars['Float']['input']>;
-  warehouseId?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime']['output'];
@@ -493,15 +616,23 @@ export type Warehouse = {
 export type WarehouseStock = {
   __typename?: 'WarehouseStock';
   createdAt: Scalars['DateTime']['output'];
+  finalQty: Scalars['Float']['output'];
   id: Scalars['String']['output'];
   itemId?: Maybe<Scalars['String']['output']>;
-  stockLevel: StockLevel;
-  stock_status: Scalars['String']['output'];
-  stocklevel_max?: Maybe<Scalars['Float']['output']>;
-  stocklevel_min?: Maybe<Scalars['Float']['output']>;
+  stockLevel?: Maybe<StockLevel>;
+  stockStatus?: Maybe<Scalars['String']['output']>;
+  stocklevelMax?: Maybe<Scalars['Float']['output']>;
+  stocklevelMin?: Maybe<Scalars['Float']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   warehouseId?: Maybe<Scalars['String']['output']>;
 };
+
+export type LoginMutationVariables = Exact<{
+  loginUserInput: LoginUserInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', access_token: string, user: { __typename?: 'User', createdAt: any, email: string, id: string, name?: string | null, updatedAt?: any | null, username: string } } };
 
 export type SignupMutationVariables = Exact<{
   signupUserInput: CreateUserInput;
@@ -511,4 +642,5 @@ export type SignupMutationVariables = Exact<{
 export type SignupMutation = { __typename?: 'Mutation', signup: { __typename?: 'SignupResponse', access_token: string } };
 
 
+export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"loginUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"loginUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"loginUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const SignupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Signup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"signupUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"signupUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"signupUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}}]}}]}}]} as unknown as DocumentNode<SignupMutation, SignupMutationVariables>;

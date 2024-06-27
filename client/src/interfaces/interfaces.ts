@@ -1,8 +1,9 @@
+
 export interface SignupUserInput {
   username: string;
   name: string;
   email: string;
-  roleId: string;
+  role: string;
   password: string;
 }
 

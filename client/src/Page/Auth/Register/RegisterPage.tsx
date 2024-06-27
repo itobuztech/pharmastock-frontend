@@ -15,7 +15,7 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    roleId: "",
+    role: "",
   });
 
   const handleChange =
@@ -26,10 +26,10 @@ export default function RegisterPage() {
       });
     };
 
-  const handleRoleChange = (value: string | null) => {
+  const handleRoleChange = (value: USER_ROLE | null) => {
     setSignupUserInput({
       ...signupUserInput,
-      roleId: value || "",
+      role: value || "",
     });
   };
 
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                 { value: USER_ROLE.ADMIN, label: "Admin" },
                 { value: USER_ROLE.STAFF, label: "Staff" },
               ]}
-              value={signupUserInput.roleId}
+              value={signupUserInput.role}
               onChange={handleRoleChange}
               searchable
               required

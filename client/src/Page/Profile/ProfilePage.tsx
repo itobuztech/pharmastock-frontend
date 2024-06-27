@@ -5,7 +5,6 @@ import './Profile.scoped.scss';
 export default function ProfilePage() {
   const user = useAppSelector((state) => state.user.currentUser);
 
-
   return (
     <section className='min-h-screen bg-gray-100 bg-opacity-50 pt-8'>
       <form className='container max-w-2xl mx-auto shadow-md md:w-3/4'>

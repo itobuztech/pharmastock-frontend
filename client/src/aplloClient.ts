@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: "https://pharmadev.x-studio.io/graphql", // Replace with your GraphQL endpoint
+  uri: import.meta.env.VITE_PHARMA_STOCK_API_URL, // Replace with your GraphQL endpoint
 });
 
 const authLink = setContext((_, { headers }) => {
