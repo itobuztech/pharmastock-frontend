@@ -31,3 +31,21 @@ export interface LoginResponse {
     };
   };
 }
+
+
+export interface PaginationArgsInput {
+  skip: number;
+  take: number;
+}
+
+export interface OrganizationsListResponse {
+  active: boolean;
+  address: string;
+  city: string;
+  country: string;
+  createdAt: string;
+  description: string;
+  id: string;
+  name: string;
+  updatedAt: string;
+}
