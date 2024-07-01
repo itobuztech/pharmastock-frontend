@@ -10,7 +10,6 @@ export default function ProfilePage() {
 
   const [getCurrentUser, { loading, data, error }] = useLazyQuery(GET_USER, {
     onCompleted: (d) => {
-      console.log("d", d);
       if (d.account) {
         const profile: Adminprofile = {
           account: {
@@ -28,6 +27,23 @@ export default function ProfilePage() {
     },
   });
 
+  const handleChange =
+    (field: keyof Adminprofile["account"]["user"]) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (admin && admin.account && admin.account.user) {
+        setAdmin({
+          ...admin,
+          account: {
+            ...admin.account,
+            user: {
+              ...admin.account.user,
+              [field]: event.target.value,
+            },
+          },
+        });
+      }
+    };
+
   useEffect(() => {
     getCurrentUser();
   }, []);
@@ -41,13 +57,10 @@ export default function ProfilePage() {
         <div className="p-4 bg-gray-100 border-t-2 border-indigo-400 rounded-lg bg-opacity-5">
           <div className="max-w-sm mx-auto md:w-full md:mx-0">
             <div className="inline-flex items-center space-x-4">
-              <button type="button" className="block relative border-0">
-                <img
-                  alt="profil"
-                  src=""
-                  className="mx-auto object-cover rounded-full h-16 w-16 "
-                />
-              </button>
+              <button
+                type="button"
+                className="block relative border-0"
+              ></button>
               <h1 className="text-gray-600">
                 {data?.account?.user?.name ? data.account.user.name : "Name"}
               </h1>
@@ -64,9 +77,8 @@ export default function ProfilePage() {
                   id="user-info-email"
                   className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Email"
-                  value={
-                    data?.account?.user?.email ? data.account.user.email : ""
-                  }
+                  value={data?.account?.user?.email}
+                  onChange={handleChange("email")}
                 />
               </div>
             </div>
@@ -82,11 +94,8 @@ export default function ProfilePage() {
                     id="user-info-name"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
-                    // value={
-                    //   data?.account?.user?.username
-                    //     ? data.account.user.username
-                    //     : ""
-                    // }
+                    value={data?.account?.user?.username}
+                    onChange={handleChange("username")}
                   />
                 </div>
               </div>
@@ -97,9 +106,8 @@ export default function ProfilePage() {
                     id="user-info-phone"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
-                    // value={
-                    //   data?.account?.user?.name ? data.account.user.name : ""
-                    // }
+                    value={data?.account?.user?.name}
+                    onChange={handleChange("name")}
                   />
                 </div>
               </div>
