@@ -1,40 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../Lib/Store/hooks";
 import "./Profile.scoped.scss";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_USER } from "./profileQuery";
+import { Adminprofile } from "../../interfaces/interfaces";
 
 export default function ProfilePage() {
-  const user: any = {};
+  const [admin, setAdmin] = useState<Adminprofile | null>(null);
 
-  const userData: any = localStorage.getItem("userData");
-  const userDataObj = JSON.parse(userData);
-
-  interface User {
-    createdAt: string;
-    email: string;
-    emailConfirmationToken: string;
-    id: string;
-    isEmailConfirmed: boolean;
-    name: string;
-    updatedAt: string;
-    username: string;
-  }
-
-  const [getCurrentUser, { loading, data }] = useLazyQuery<{ user: User }>(
-    GET_USER,
-    {
-      variables: { email: userDataObj.user.email },
-    }
-  );
+  const [getCurrentUser, { loading, data, error }] = useLazyQuery(GET_USER, {
+    onCompleted: (d) => {
+      console.log("d", d);
+      if (d.account) {
+        const profile: Adminprofile = {
+          account: {
+            role: d.account.role,
+            user: {
+              email: d.account.user.email,
+              id: d.account.user.id,
+              name: d.account.user.name,
+              username: d.account.user.username,
+            },
+          },
+        };
+        setAdmin(profile);
+      }
+    },
+  });
 
   useEffect(() => {
     getCurrentUser();
   }, []);
 
-  console.log("data=", data);
-
-  // const { data } = useQuery < { users } > { GET_USER };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <section className="min-h-screen bg-gray-100 bg-opacity-50 pt-8">
@@ -45,12 +44,12 @@ export default function ProfilePage() {
               <button type="button" className="block relative border-0">
                 <img
                   alt="profil"
-                  src={user?.image}
+                  src=""
                   className="mx-auto object-cover rounded-full h-16 w-16 "
                 />
               </button>
               <h1 className="text-gray-600">
-                {user?.firstName} {user?.lastName}
+                {data?.account?.user?.name ? data.account.user.name : "Name"}
               </h1>
             </div>
           </div>
@@ -65,6 +64,9 @@ export default function ProfilePage() {
                   id="user-info-email"
                   className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Email"
+                  value={
+                    data?.account?.user?.email ? data.account.user.email : ""
+                  }
                 />
               </div>
             </div>
@@ -80,6 +82,11 @@ export default function ProfilePage() {
                     id="user-info-name"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
+                    // value={
+                    //   data?.account?.user?.username
+                    //     ? data.account.user.username
+                    //     : ""
+                    // }
                   />
                 </div>
               </div>
@@ -89,7 +96,10 @@ export default function ProfilePage() {
                     type="text"
                     id="user-info-phone"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Phone number"
+                    placeholder="Name"
+                    // value={
+                    //   data?.account?.user?.name ? data.account.user.name : ""
+                    // }
                   />
                 </div>
               </div>

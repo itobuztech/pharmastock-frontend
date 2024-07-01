@@ -1,4 +1,3 @@
-
 export interface SignupUserInput {
   username: string;
   name: string;
@@ -27,6 +26,18 @@ export interface LoginResponse {
       id: string;
       name: string;
       updatedAt: string;
+      username: string;
+    };
+  };
+}
+
+export interface Adminprofile {
+  account: {
+    role: string;
+    user: {
+      email: string;
+      id: string;
+      name: string;
       username: string;
     };
   };
