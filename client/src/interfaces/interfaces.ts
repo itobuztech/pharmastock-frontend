@@ -51,3 +51,12 @@ export interface ResetPasswordInput {
 export interface ResetPasswordResponse {
   resetPassword: boolean;
 }
+
+export interface ProfileUpdateInput {
+  name?: string;
+  username?: string;
+}
+
+export interface ProfileUpdateResponse {
+  updateprofile: boolean;
+}
