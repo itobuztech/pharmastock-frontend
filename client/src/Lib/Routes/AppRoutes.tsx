@@ -17,6 +17,7 @@ const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
 const OrganizationsPage = React.lazy(
   () => import("Page/Organizations/OrganizationsPage")
 );
+const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 
 export default function AppRoutes() {
   return (
@@ -45,8 +46,13 @@ export default function AppRoutes() {
               />
             </Route>
 
-            <Route path="*" element={<NotFound />} />
+            <Route
+              path={routes.dashboard.pharmacies.path}
+              element={<PharmacyPage />}
+            />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
 
           <Route path="*" element={<NotFound />} />
           {AuthRoutes}
