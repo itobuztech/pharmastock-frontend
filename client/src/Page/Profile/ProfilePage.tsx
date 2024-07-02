@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../Lib/Store/hooks";
 import "./Profile.scoped.scss";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "./profileQuery";
-import { Adminprofile } from "../../interfaces/interfaces";
+import { RESET_PASSWORD } from "./resetPasswordMutation";
+import {
+  Adminprofile,
+  ResetPasswordInput,
+  ResetPasswordResponse,
+} from "../../interfaces/interfaces";
+import ButtonComponent from "Components/Button/ButtonComponent";
 
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<Adminprofile>({
@@ -17,6 +23,28 @@ export default function ProfilePage() {
       },
     },
   });
+
+  const [isEmailReadOnly, setIsEmailReadOnly] = useState(true);
+  const [isUserNameReadOnly, setIsUserNameReadOnly] = useState(true);
+  const [isNameReadOnly, setIsNameReadOnly] = useState(true);
+  const [isEmailDisabled, setIsEmailDisabled] = useState(true);
+  const [isUserNameDisabled, setIsUserNameDisabled] = useState(true);
+  const [isNameDisabled, setIsNameDisabled] = useState(true);
+
+  const toggleEdit = (input: string) => {
+    if (input === "email") {
+      setIsEmailReadOnly(!isEmailReadOnly);
+      setIsEmailDisabled(!isEmailDisabled);
+    }
+    if (input === "username") {
+      setIsUserNameReadOnly(!isUserNameReadOnly);
+      setIsUserNameDisabled(!isUserNameDisabled);
+    }
+    if (input === "name") {
+      setIsNameReadOnly(!isNameReadOnly);
+      setIsNameDisabled(!isNameDisabled);
+    }
+  };
 
   const [getCurrentUser, { loading, error }] = useLazyQuery(GET_USER, {
     onCompleted: (d) => {
@@ -58,6 +86,41 @@ export default function ProfilePage() {
     getCurrentUser();
   }, []);
 
+  const [password, setPassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+
+  const [resetPassword, { loading: resetPassLoader, error: resetPassError }] =
+    useMutation<
+      ResetPasswordResponse,
+      { resetPasswordInput: ResetPasswordInput }
+    >(RESET_PASSWORD);
+
+  const handlePasswordChange =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword({
+        ...password,
+        [field]: event.target.value,
+      });
+    };
+
+  const handleResetPassword = async () => {
+    try {
+      const { data } = await resetPassword({
+        variables: {
+          resetPasswordInput: {
+            oldPassword: password.oldPassword,
+            newPassword: password.newPassword,
+          },
+        },
+      });
+      console.log("Reset Password successful", data);
+    } catch (error) {
+      console.error("Reset Password error", error);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -85,40 +148,73 @@ export default function ProfilePage() {
                 <input
                   type="text"
                   id="user-info-email"
-                  className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Email"
                   value={admin?.account?.user?.email}
                   onChange={handleChange("email")}
+                  readOnly={isEmailReadOnly}
+                  disabled={isEmailDisabled}
                 />
               </div>
             </div>
+            <ButtonComponent
+              type="button"
+              className="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
+              onClick={() => {
+                toggleEdit("email");
+              }}
+            >
+              Edit
+            </ButtonComponent>
           </div>
           <hr />
           <div className="items-center w-full p-4 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
             <h2 className="max-w-sm mx-auto md:w-1/3">Personal info</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
               <div>
-                <div className=" relative ">
+                <div className="relative flex items-center">
                   <input
                     type="text"
                     id="user-info-name"
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
                     value={admin?.account?.user?.username}
                     onChange={handleChange("username")}
+                    readOnly={isUserNameReadOnly}
+                    disabled={isUserNameDisabled}
                   />
+                  <ButtonComponent
+                    type="button"
+                    className="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
+                    onClick={() => {
+                      toggleEdit("username");
+                    }}
+                  >
+                    Edit
+                  </ButtonComponent>
                 </div>
               </div>
               <div>
-                <div className=" relative ">
+                <div className="relative flex items-center">
                   <input
                     type="text"
                     id="user-info-phone"
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
                     value={admin?.account?.user?.name}
                     onChange={handleChange("name")}
+                    readOnly={isNameReadOnly}
+                    disabled={isNameDisabled}
                   />
+                  <ButtonComponent
+                    type="button"
+                    className="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
+                    onClick={() => {
+                      toggleEdit("name");
+                    }}
+                  >
+                    Edit
+                  </ButtonComponent>
                 </div>
               </div>
             </div>
@@ -130,40 +226,49 @@ export default function ProfilePage() {
               <div className="w-full space-y-4">
                 <div className="relative">
                   <input
-                    type="text"
+                    type="password"
                     id="current-password"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Current Password"
+                    value={password.oldPassword}
+                    onChange={handlePasswordChange("oldPassword")}
                   />
                 </div>
                 <div className="relative">
                   <input
-                    type="text"
+                    type="password"
                     id="new-password"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="New Password"
+                    value={password.newPassword}
+                    onChange={handlePasswordChange("newPassword")}
                   />
                 </div>
+                <p>{resetPassError && "Wrong credentials"}</p>
               </div>
             </div>
             <div className="text-center md:w-3/12 md:pl-6">
-              <button
+              <ButtonComponent
                 type="button"
                 className="py-2 px-4 bg-pink-600 hover:bg-pink-700 focus:ring-pink-500 focus:ring-offset-pink-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
+                onClick={() => {
+                  handleResetPassword();
+                }}
+                loading={resetPassLoader}
               >
                 Change
-              </button>
+              </ButtonComponent>
             </div>
           </div>
 
           <hr />
           <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
-            <button
+            <ButtonComponent
               type="submit"
-              className="py-2 px-4  bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
             >
               Save
-            </button>
+            </ButtonComponent>
           </div>
         </div>
       </form>

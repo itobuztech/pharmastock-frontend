@@ -42,3 +42,12 @@ export interface Adminprofile {
     };
   };
 }
+
+export interface ResetPasswordInput {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  resetPassword: boolean;
+}
