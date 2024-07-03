@@ -61,6 +61,10 @@ export default function ProfilePage() {
     },
   });
 
+  useEffect(() => {
+    getCurrentUser();
+  }, [getCurrentUser]);
+
   const handleChange =
     (field: keyof Adminprofile["account"]["user"]) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,10 +81,6 @@ export default function ProfilePage() {
         });
       }
     };
-
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
 
   const [password, setPassword] = useState({
     oldPassword: "",
