@@ -6,12 +6,12 @@ import { Link } from 'react-router-dom';
 import { dashboardRoutes } from 'Lib/Routes/DashboardRoutes';
 export default function SidebarComponent() {
   return (
-    <div 
-      className='flex flex-col sm:flex-row sm:justify-around' 
+    <div
+      className='flex flex-col sm:flex-row sm:justify-around'
       data-test-id="dashboard-sidebar">
       <div className='w-72 h-screen'>
         <Link className='flex items-center justify-start mx-6 mt-10 no-underline' to={dashboardRoutes.me.fullPath}>
-          <FaReact size={'40px'}  />
+          <FaReact size={'40px'} />
           <span className='text-gray-600  ml-4 text-2xl font-bold'>
             React UI Kit
           </span>
@@ -25,10 +25,16 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
+            text='Organizations'
+            activeMenuPaths={routes.dashboard.organizations.path}
+            link={routes.dashboard.organizations.path}
+          />
+
+          <MenuLink
             text='Logout'
             link={routes.logout.path}
           />
-          
+
         </nav>
       </div>
     </div>

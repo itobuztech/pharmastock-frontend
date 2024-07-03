@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
@@ -15,6 +15,8 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const [login, { loading: loginLoader, error: loginError }] = useMutation<
     LoginResponse,
@@ -35,6 +37,8 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { loginUserInput },
       });
+      localStorage.setItem('userData', JSON.stringify(data?.login));
+      navigate('/dashboard');
       console.log("Login successful", data);
     } catch (error) {
       console.error("Login error", error);
@@ -79,6 +83,7 @@ export default function LoginPage() {
                 </Link>
               </div>
             </div>
+
             <div className="flex w-full">
               <ButtonComponent type="submit" loading={loginLoader}>
                 Login

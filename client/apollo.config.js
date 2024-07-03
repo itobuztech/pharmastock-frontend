@@ -3,7 +3,7 @@ module.exports = {
     incudes: ['./src/graphql/*.ts'],
     excludes: [],
     service: {
-      url: import.meta.env.PHARMA_STOCK_API_URL
+      url: import.meta.env.VITE_PHARMA_STOCK_API_URL
     },
   },
 };
