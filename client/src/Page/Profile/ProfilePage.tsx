@@ -171,9 +171,7 @@ export default function ProfilePage() {
                 type="button"
                 className="block relative border-0"
               ></button>
-              <h1 className="text-gray-600">
-                {admin?.account?.user?.name ? admin.account.user.name : "Name"}
-              </h1>
+              <h1 className="text-gray-600">{admin?.account?.role}</h1>
             </div>
           </div>
         </div>
