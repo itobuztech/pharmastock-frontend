@@ -61,6 +61,10 @@ export default function ProfilePage() {
     },
   });
 
+  useEffect(() => {
+    getCurrentUser();
+  }, [getCurrentUser]);
+
   const handleChange =
     (field: keyof Adminprofile["account"]["user"]) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,10 +81,6 @@ export default function ProfilePage() {
         });
       }
     };
-
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
 
   const [password, setPassword] = useState({
     oldPassword: "",
@@ -171,9 +171,7 @@ export default function ProfilePage() {
                 type="button"
                 className="block relative border-0"
               ></button>
-              <h1 className="text-gray-600">
-                {admin?.account?.user?.name ? admin.account.user.name : "Name"}
-              </h1>
+              <h1 className="text-gray-600">{admin?.account?.role}</h1>
             </div>
           </div>
         </div>

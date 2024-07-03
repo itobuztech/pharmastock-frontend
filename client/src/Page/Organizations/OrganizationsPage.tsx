@@ -1,34 +1,31 @@
 import React from 'react';
 import { useAppSelector } from '../../Lib/Store/hooks';
 import './Organizations.scoped.scss';
+import { OrganizationsListResponse, PaginationArgsInput } from 'interfaces/interfaces';
+import { useQuery } from '@apollo/client';
+import { ORGANIZATIONS_LIST_QUERY } from 'Page/Organizations/OrganizationsQuery';
 
 interface Organization {
-  id: number;
-  name: string;
-  logo: string;
+  active: boolean;
+  address: string;
+  city: string;
+  country: string;
+  createdAt: string;
   description: string;
-  website: string;
+  id: string;
+  name: string;
+  updatedAt: string;
 }
-
-const organizations: Organization[] = [
-  {
-    id: 1,
-    name: 'OpenAI',
-    logo: 'https://via.placeholder.com/50',
-    description: 'AI research lab',
-    website: 'https://openai.com'
-  },
-  {
-    id: 2,
-    name: 'TechCorp',
-    logo: 'https://via.placeholder.com/50',
-    description: 'Technology solutions provider',
-    website: 'https://techcorp.com'
-  },
-];
 
 export default function OrganizationsPage() {
   const user = useAppSelector((state) => state.user.currentUser);
+
+  const { data, loading, error } = useQuery<
+    OrganizationsListResponse,
+    { paginationArgsInput: PaginationArgsInput }
+  >(ORGANIZATIONS_LIST_QUERY);
+
+  const organizations = data; console.log(data)
 
   return (
     <section className='min-h-screen bg-gray-100 bg-opacity-50 pt-8'>

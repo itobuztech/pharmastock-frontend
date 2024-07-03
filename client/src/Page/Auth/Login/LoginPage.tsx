@@ -37,8 +37,8 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { loginUserInput },
       });
-      localStorage.setItem('userData', JSON.stringify(data?.login));
-      navigate('/dashboard');
+      localStorage.setItem("userData", JSON.stringify(data?.login));
+      navigate("/dashboard");
       console.log("Login successful", data);
     } catch (error) {
       console.error("Login error", error);
