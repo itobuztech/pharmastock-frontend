@@ -5,13 +5,15 @@ const httpLink = createHttpLink({
   uri: import.meta.env.VITE_PHARMA_STOCK_API_URL, // Replace with your GraphQL endpoint
 });
 
-const authLink = setContext(async (_, { headers }) => {
-  let userData: any = await localStorage.getItem("userData");
-  if (userData) userData = JSON.parse(userData);
+const authLink = setContext((_, { headers }) => {
+  const userData: any = localStorage.getItem("userData");
+  const userDataObj = JSON.parse(userData);
+  const token = userDataObj?.access_token;
+
   return {
     headers: {
       ...headers,
-      authorization: userData.access_token ? `Bearer ${userData.access_token}` : "",
+      authorization: token ? `Bearer ${token}` : "",
     },
   };
 });

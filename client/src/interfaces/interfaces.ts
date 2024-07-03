@@ -1,4 +1,3 @@
-
 export interface SignupUserInput {
   username: string;
   name: string;
@@ -32,7 +31,6 @@ export interface LoginResponse {
   };
 }
 
-
 export interface PaginationArgsInput {
   skip: number;
   take: number;
@@ -48,4 +46,34 @@ export interface OrganizationsListResponse {
   id: string;
   name: string;
   updatedAt: string;
+}
+
+export interface Adminprofile {
+  account: {
+    role: string;
+    user: {
+      email: string;
+      id: string;
+      name: string;
+      username: string;
+    };
+  };
+}
+
+export interface ResetPasswordInput {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  resetPassword: boolean;
+}
+
+export interface ProfileUpdateInput {
+  name?: string;
+  username?: string;
+}
+
+export interface ProfileUpdateResponse {
+  updateprofile: boolean;
 }

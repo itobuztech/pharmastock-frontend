@@ -14,7 +14,9 @@ import { AuthRoutes } from "Page/Auth/AuthRoutes";
 
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
-const OrganizationsPage = React.lazy(() => import("Page/Organizations/OrganizationsPage"));
+const OrganizationsPage = React.lazy(
+  () => import("Page/Organizations/OrganizationsPage")
+);
 
 export default function AppRoutes() {
   return (
@@ -33,14 +35,10 @@ export default function AppRoutes() {
               />
             </Route>
 
-            <Route path={routes.dashboard.me.path} element={<AuthGuard />}>
-              <Route
-                path={routes.dashboard.me.path}
-                element={<ProfilePage />}
-              />
-            </Route>
-
-            <Route path={routes.dashboard.organizations.path} element={<AuthGuard />}>
+            <Route
+              path={routes.dashboard.organizations.path}
+              element={<AuthGuard />}
+            >
               <Route
                 path={routes.dashboard.organizations.path}
                 element={<OrganizationsPage />}
