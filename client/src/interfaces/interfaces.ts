@@ -77,3 +77,38 @@ export interface ProfileUpdateInput {
 export interface ProfileUpdateResponse {
   updateprofile: boolean;
 }
+
+export interface CreatePharmacyInput {
+  contact_info: string;
+  location: string;
+  name: string;
+  organizationId: string;
+}
+
+export interface CreatePharmacyResponse {
+  createPharmacy: {
+    contact_info: string;
+    createdAt: string;
+    id: string;
+    location: string;
+    name: string;
+    organizationId: string;
+    updatedAt: string;
+  };
+}
+
+export interface OrganizationList {
+  organizations: [
+    {
+      active?: string;
+      address?: string;
+      city?: string;
+      country?: string;
+      createdAt?: string;
+      description?: string;
+      id?: string;
+      name?: string;
+      updatedAt?: string;
+    }
+  ];
+}

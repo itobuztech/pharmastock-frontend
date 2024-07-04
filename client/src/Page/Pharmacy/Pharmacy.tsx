@@ -1,150 +1,153 @@
-import React from "react";
-import { useAppSelector } from "../../Lib/Store/hooks";
+import React, { useEffect, useState } from "react";
 import "./Pharmacy.scoped.scss";
 import { Pharmacy } from "gql/graphql";
-import { Link } from "react-router-dom";
-import { PasswordInput, Select, TextInput } from "@mantine/core";
-import ButtonComponent from "Components/Button/ButtonComponent";
-import routes from "Lib/Routes/Routes";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import {
+  CreatePharmacyInput,
+  CreatePharmacyResponse,
+  OrganizationList,
+} from "../../interfaces/interfaces";
+import { CREATE_PHARMACY } from "./createPharmacyMutation";
+
+import { toast } from "react-toastify";
+import { ORGANIZATIONS_LIST_QUERY } from "Page/Organizations/OrganizationsQuery";
 
 export default function PharmacyPage() {
-  const user = useAppSelector((state) => state.user.currentUser);
+  // Organization listing. STARTS
+  const [organization, setOrganization] =
+    useState<OrganizationList["organizations"]>();
+
+  const [organizationList] = useLazyQuery<OrganizationList>(
+    ORGANIZATIONS_LIST_QUERY,
+    {
+      onCompleted: (d) => {
+        if (d) {
+          const orgs = d.organizations;
+
+          setOrganization(orgs);
+        }
+      },
+    }
+  );
+
+  useEffect(() => {
+    organizationList();
+  }, [organizationList]);
+  // Organization listing. ENDS
+
+  // Pharmacy creation. STARTS
+  const [pharmacy, setPharmacy] = useState<CreatePharmacyInput>({
+    name: "",
+    contact_info: "",
+    location: "",
+    organizationId: "",
+  });
+
+  const [pharmacyCreate] = useMutation<
+    CreatePharmacyResponse,
+    { createPharmacyInput: CreatePharmacyInput }
+  >(CREATE_PHARMACY);
+
+  const handleChange =
+    (field: string) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      setPharmacy({
+        ...pharmacy,
+        [field]: event.target.value,
+      });
+    };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    pharmacyCreate({
+      variables: {
+        createPharmacyInput: {
+          name: pharmacy.name,
+          contact_info: pharmacy.contact_info,
+          location: pharmacy.location,
+          organizationId: "eff641da-aae1-4840-a6c8-42c28c294145",
+        },
+      },
+      onCompleted: (d) => {
+        if (d.createPharmacy) {
+          toast.success("Pharmacy create successfully");
+        }
+      },
+      onError: (e) => {
+        toast.error(e.message);
+      },
+    });
+  };
+  // Pharmacy creation. ENDS
 
   return (
-    <section className="min-h-screen bg-gray-100 bg-opacity-50 pt-8">
-      <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
-        <div className="p-4 bg-gray-100 border-t-2 border-indigo-400 rounded-lg bg-opacity-5">
-          <h1 className="text-gray-600 text-center text-2xl">Pharmacy</h1>
+    <section className="min-h-screen bg-gray-100 bg-opacity-50 flex items-center justify-center py-8">
+      <div className="container max-w-lg mx-auto shadow-lg rounded-lg bg-white">
+        <div className="p-6 bg-gray-100 border-t-2 border-indigo-400 rounded-t-lg bg-opacity-5">
+          <h1 className="text-gray-600 text-center text-2xl font-bold">
+            Pharmacy
+          </h1>
         </div>
-        <div className="space-y-6 bg-white p-4">
-          <form className="container max-w-2xl mx-auto shadow-md md:w-3/4">
-            <div className="p-4 bg-gray-100 border-t-2 border-indigo-400 rounded-lg bg-opacity-5">
-              <div className="max-w-sm mx-auto md:w-full md:mx-0">
-                <div className="inline-flex items-center space-x-4">
-                  <button
-                    type="button"
-                    className="block relative border-0"
-                  ></button>
-                  <h1 className="text-gray-600">
-                    {/* {admin?.account?.user?.name
-                      ? admin.account.user.name
-                      : "Name"} */}
-                  </h1>
-                </div>
+        <div className="space-y-6 p-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div className="flex flex-col text-gray-500">
+                <label className="text-lg font-medium">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="rounded-lg border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
+                  placeholder="Name"
+                  onChange={handleChange("name")}
+                />
+              </div>
+              <div className="flex flex-col text-gray-500">
+                <label className="text-lg font-medium">Organization</label>
+                <select
+                  name="organizationId"
+                  className="rounded-lg border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
+                  onChange={handleChange("organizationId")}
+                >
+                  <option value="" disabled>
+                    Select Organization
+                  </option>
+
+                  {organization &&
+                    organization.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex flex-col text-gray-500">
+                <label className="text-lg font-medium">Contact Info</label>
+                <input
+                  type="text"
+                  name="contact_info"
+                  className="rounded-lg border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
+                  placeholder="Contact Info"
+                  onChange={handleChange("contact_info")}
+                />
+              </div>
+              <div className="flex flex-col text-gray-500">
+                <label className="text-lg font-medium">Location</label>
+                <input
+                  type="text"
+                  name="location"
+                  className="rounded-lg border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
+                  placeholder="Location"
+                  onChange={handleChange("location")}
+                />
               </div>
             </div>
-            <div className="space-y-6 bg-white">
-              <div className="items-center w-full p-4 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
-                <h2 className="max-w-sm mx-auto md:w-1/3">Account</h2>
-                <div className="max-w-sm mx-auto md:w-2/3">
-                  <div className=" relative ">
-                    <input
-                      type="text"
-                      id="user-info-email"
-                      className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                      placeholder="Email"
-                      // value={admin?.account?.user?.email}
-                      // onChange={handleChange("email")}
-                      readOnly
-                      disabled
-                    />
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="items-center w-full p-4 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
-                <h2 className="max-w-sm mx-auto md:w-1/3">Personal info</h2>
-                <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
-                  <div>
-                    <div className="relative flex items-center">
-                      <input
-                        type="text"
-                        id="user-info-name"
-                        className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="Name"
-                        // value={admin?.account?.user?.username}
-                        // onChange={handleChange("username")}
-                        // readOnly={isUserNameReadOnly}
-                        // disabled={isUserNameDisabled}
-                      />
-                      <ButtonComponent
-                        type="button"
-                        className="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
-                        // onClick={() => {
-                        //   toggleEdit("username");
-                        // }}
-                      >
-                        {/* {isUserNameEdit} */}Edit
-                      </ButtonComponent>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="relative flex items-center">
-                      <input
-                        type="text"
-                        id="user-info-phone"
-                        className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="Name"
-                        // value={admin?.account?.user?.name}
-                        // onChange={handleChange("name")}
-                        // readOnly={isNameReadOnly}
-                        // disabled={isNameDisabled}
-                      />
-                      <ButtonComponent
-                        type="button"
-                        className="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50"
-                        // onClick={() => {
-                        //   toggleEdit("name");
-                        // }}
-                      >
-                        {/* {isNameEdit} */}
-                        Edit
-                      </ButtonComponent>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="items-center w-full p-8 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
-                <h2 className="max-w-sm mx-auto md:w-4/12">Change password</h2>
-                <div className="w-full max-w-sm pl-2 mx-auto space-y-5 md:w-5/12 md:pl-9 md:inline-flex">
-                  <div className="w-full space-y-4">
-                    <div className="relative">
-                      <input
-                        type="password"
-                        id="current-password"
-                        className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="Current Password"
-                        // value={password.oldPassword}
-                        // onChange={handlePasswordChange("oldPassword")}
-                      />
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="password"
-                        id="new-password"
-                        className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                        placeholder="New Password"
-                        // value={password.newPassword}
-                        // onChange={handlePasswordChange("newPassword")}
-                      />
-                    </div>
-                    {/* <p>{resetPassError && "Wrong credentials"}</p> */}
-                  </div>
-                </div>
-                <div className="text-center md:w-3/12 md:pl-6">
-                  <ButtonComponent
-                    type="button"
-                    className="py-2 px-4 bg-pink-600 hover:bg-pink-700 focus:ring-pink-500 focus:ring-offset-pink-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-                    // onClick={() => {
-                    //   handleResetPassword();
-                    // }}
-                    // loading={resetPassLoader}
-                  >
-                    Change
-                  </ButtonComponent>
-                </div>
-              </div>
+            <div className="text-center">
+              <button
+                type="submit"
+                className="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
+              >
+                Create Pharmacy
+              </button>
             </div>
           </form>
         </div>

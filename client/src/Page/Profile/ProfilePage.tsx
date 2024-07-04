@@ -171,7 +171,7 @@ export default function ProfilePage() {
                 type="button"
                 className="block relative border-0"
               ></button>
-              <h1 className="text-gray-600">{admin?.account?.role}</h1>
+              <h1 className="text-gray-600">{admin?.account?.role || ""}</h1>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                   id="user-info-email"
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Email"
-                  value={admin?.account?.user?.email}
+                  value={admin?.account?.user?.email || ""}
                   // onChange={handleChange("email")}
                   readOnly
                   disabled
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                     id="user-info-name"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
-                    value={admin?.account?.user?.username}
+                    value={admin?.account?.user?.username || ""}
                     onChange={handleChange("username")}
                     readOnly={isUserNameReadOnly}
                     disabled={isUserNameDisabled}
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                     id="user-info-phone"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Name"
-                    value={admin?.account?.user?.name}
+                    value={admin?.account?.user?.name || ""}
                     onChange={handleChange("name")}
                     readOnly={isNameReadOnly}
                     disabled={isNameDisabled}
@@ -265,7 +265,7 @@ export default function ProfilePage() {
                     id="current-password"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Current Password"
-                    value={password.oldPassword}
+                    value={password.oldPassword || ""}
                     onChange={handlePasswordChange("oldPassword")}
                   />
                 </div>
@@ -275,7 +275,7 @@ export default function ProfilePage() {
                     id="new-password"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="New Password"
-                    value={password.newPassword}
+                    value={password.newPassword || ""}
                     onChange={handlePasswordChange("newPassword")}
                   />
                 </div>
