@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
-import { LoginResponse, LoginUserInput } from "interfaces/interfaces";
 import { PasswordInput, TextInput } from "@mantine/core";
-import { LOGIN_MUTATION } from "./LoginMutation";
+import appConfig from "Lib/appConfig";
+import { LOGIN_MUTATION } from "query/loginMutation";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
+  const navigate = useNavigate();
 
   const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",
   });
 
-  const [login, { loading: loginLoader, error: loginError }] = useMutation<
-    LoginResponse,
-    { loginUserInput: LoginUserInput }
-  >(LOGIN_MUTATION);
+  const [login, { loading: loginLoader, error: loginError }] =
+    useMutation(LOGIN_MUTATION);
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +35,14 @@ export default function LoginPage() {
         variables: { loginUserInput },
       });
       console.log("Login successful", data);
+      localStorage.setItem(
+        appConfig.storage.accessToken,
+        JSON.stringify(data?.login.access_token)
+      );
+
+      if (data?.login.access_token) {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Login error", error);
     }
