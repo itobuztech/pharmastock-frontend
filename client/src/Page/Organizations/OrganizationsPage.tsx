@@ -1,61 +1,120 @@
-import React from 'react';
-import { useAppSelector } from '../../Lib/Store/hooks';
-import './Organizations.scoped.scss';
-import { OrganizationsListResponse, PaginationArgsInput } from 'interfaces/interfaces';
-import { useQuery } from '@apollo/client';
-import { ORGANIZATIONS_LIST_QUERY } from 'Page/Organizations/OrganizationsQuery';
-
-interface Organization {
-  active: boolean;
-  address: string;
-  city: string;
-  country: string;
-  createdAt: string;
-  description: string;
-  id: string;
-  name: string;
-  updatedAt: string;
-}
+import React, { act, useEffect, useState } from "react";
+import { useAppSelector } from "../../Lib/Store/hooks";
+import "./Organizations.scoped.scss";
+import {
+  OrganizationList,
+  OrganizationsListResponse,
+  PaginationArgsInput,
+} from "interfaces/interfaces";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { ORGANIZATIONS_LIST_QUERY } from "Page/Organizations/OrganizationsQuery";
+import { Container, Flex, Pagination, Space, Table } from "@mantine/core";
+import { take } from "lodash";
 
 export default function OrganizationsPage() {
-  const user = useAppSelector((state) => state.user.currentUser);
+  // Organization listing. STARTS
+  const [organization, setOrganization] =
+    useState<OrganizationList["organizations"]>();
+  const [totalCount, setTotalCount] =
+    useState<OrganizationList["organizations"]["total"]>(1);
 
-  const { data, loading, error } = useQuery<
-    OrganizationsListResponse,
-    { paginationArgsInput: PaginationArgsInput }
-  >(ORGANIZATIONS_LIST_QUERY);
+  const [organizationList] = useLazyQuery<OrganizationList>(
+    ORGANIZATIONS_LIST_QUERY,
+    {
+      onCompleted: (d) => {
+        console.log("d=", d);
 
-  const organizations = data; console.log(data)
+        if (d) {
+          const orgs = d.organizations;
+          const total = d.organizations.total;
+          const pagiCount = Math.ceil(total / 10);
+
+          setOrganization(orgs);
+          setTotalCount(pagiCount);
+        }
+      },
+    }
+  );
+
+  const [activePage, setPage] = useState(1);
+  const organizationListArr = organization?.organizations;
+
+  console.log(activePage);
+  console.log(activePage * 10 - 10);
+
+  useEffect(() => {
+    organizationList({
+      variables: {
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+      },
+    });
+  }, [organizationList, activePage]);
+
+  const rows = organizationListArr?.map((org, i) => (
+    <Table.Tr key={org.id}>
+      <Table.Td>
+        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
+      </Table.Td>
+      <Table.Td>{org.name}</Table.Td>
+      <Table.Td>{org.description}</Table.Td>
+      <Table.Td>{org.city}</Table.Td>
+      <Table.Td>{org.address}</Table.Td>
+    </Table.Tr>
+  ));
+
+  // Organization listing. ENDS
 
   return (
-    <section className='min-h-screen bg-gray-100 bg-opacity-50 pt-8'>
-      <div className='container max-w-2xl mx-auto shadow-md md:w-3/4'>
-        <div className='p-4 bg-gray-100 border-t-2 border-indigo-400 rounded-lg bg-opacity-5'>
-          <h1 className='text-gray-600 text-center text-2xl'>Organizations</h1>
+    <section className="min-h-screen bg-gray-100 bg-opacity-50 flex items-center justify-center py-8">
+      <div className="container max-w-2xl mx-auto shadow-lg rounded-lg bg-white">
+        <div className="p-6 bg-indigo-600 rounded-t-lg">
+          <h1 className="text-white text-center text-2xl font-bold">
+            Organizations List
+          </h1>
         </div>
-        <div className='space-y-6 bg-white p-4'>
-          {organizations.map((org) => (
-            <div key={org.id} className='flex items-center p-4 bg-white shadow rounded-lg'>
-              <img
-                alt={`${org.name} logo`}
-                src={org.logo}
-                className='object-cover rounded-full h-16 w-16'
-              />
-              <div className='ml-4'>
-                <h2 className='text-gray-800 text-xl font-bold'>{org.name}</h2>
-                <p className='text-gray-600'>{org.description}</p>
-                <a
-                  href={org.website}
-                  className='text-indigo-600 hover:underline'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  Visit Website
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
+        {
+          <Container>
+            <Table
+              horizontalSpacing="md"
+              verticalSpacing="md"
+              stickyHeader
+              stickyHeaderOffset={60}
+            >
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Sl No.</Table.Th>
+                  <Table.Th>Name</Table.Th>
+                  <Table.Th>Description</Table.Th>
+                  <Table.Th>City</Table.Th>
+                  <Table.Th>Address</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          </Container>
+        }
+        <Space h="md" />
+        <Flex
+          mih={50}
+          gap="md"
+          justify="center"
+          align="center"
+          direction="row"
+          wrap="wrap"
+        >
+          {
+            <Pagination
+              total={totalCount}
+              value={activePage}
+              onChange={setPage}
+              mt="sm"
+            />
+          }
+        </Flex>
+        <Space h="md" />
       </div>
     </section>
   );

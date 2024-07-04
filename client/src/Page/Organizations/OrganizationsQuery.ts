@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const ORGANIZATIONS_LIST_QUERY = gql`
-  query OrganizationsList($paginationArgs: PaginationArgs) {
+  query Organizations($paginationArgs: PaginationArgs) {
     organizations(paginationArgs: $paginationArgs) {
+      organizations {
         active
         address
         city
@@ -12,6 +13,8 @@ export const ORGANIZATIONS_LIST_QUERY = gql`
         id
         name
         updatedAt
+      }
+      total
     }
   }
 `;
