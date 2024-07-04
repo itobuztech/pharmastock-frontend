@@ -7,18 +7,21 @@ import { useMutation } from "@apollo/client";
 import { PasswordInput, TextInput } from "@mantine/core";
 import appConfig from "Lib/appConfig";
 import { LOGIN_MUTATION } from "query/loginMutation";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "Lib/Store/User/User";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",
   });
 
-  const [login, { loading: loginLoader, error: loginError }] =
-    useMutation(LOGIN_MUTATION);
+  const [login, { loading: loginLoader }] = useMutation(LOGIN_MUTATION);
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,17 +37,14 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { loginUserInput },
       });
-      console.log("Login successful", data);
-      localStorage.setItem(
-        appConfig.storage.accessToken,
-        JSON.stringify(data?.login.access_token)
-      );
+
+      dispatch(setUser(data.login.user));
 
       if (data?.login.access_token) {
         navigate("/dashboard");
       }
-    } catch (error) {
-      console.error("Login error", error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -73,8 +73,6 @@ export default function LoginPage() {
               onChange={handleChange("password")}
               required
             />
-
-            <p>{loginError && "Wrong credentials"}</p>
 
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">
