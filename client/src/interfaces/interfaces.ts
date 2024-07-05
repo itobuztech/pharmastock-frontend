@@ -98,19 +98,22 @@ export interface CreatePharmacyResponse {
 }
 
 export interface OrganizationList {
-  organizations: [
-    {
-      active?: string;
-      address?: string;
-      city?: string;
-      country?: string;
-      createdAt?: string;
-      description?: string;
-      id?: string;
-      name?: string;
-      updatedAt?: string;
-    }
-  ];
+  organizations: {
+    organizations: [
+      {
+        active?: string;
+        address?: string;
+        city?: string;
+        country?: string;
+        createdAt?: string;
+        description?: string;
+        id?: string;
+        name?: string;
+        updatedAt?: string;
+      }
+    ];
+    total: number;
+  };
 }
 // ---------------------- For Item category ------------------------//
 export interface CreateItemCategoryInput {

@@ -33,6 +33,7 @@ export default function PharmacyPage() {
   useEffect(() => {
     organizationList();
   }, [organizationList]);
+
   // Organization listing. ENDS
 
   // Pharmacy creation. STARTS
@@ -113,7 +114,7 @@ export default function PharmacyPage() {
                   </option>
 
                   {organization &&
-                    organization.map((org) => (
+                    organization.organizations.map((org) => (
                       <option key={org.id} value={org.id}>
                         {org.name}
                       </option>
