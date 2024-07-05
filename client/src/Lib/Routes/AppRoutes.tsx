@@ -14,6 +14,7 @@ import { AuthRoutes } from "Page/Auth/AuthRoutes";
 
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
+const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 const OrganizationsPage = React.lazy(() => import("Page/Organizations/OrganizationsPage"));
 const CreateItemCategoryPage = React.lazy(() => import("Page/CreateItemCategory/CreateItemCategoryPage"));
 const ItemCategoryListPage = React.lazy(() => import("Page/ItemCategoryList/ItemCategoryListPage"));
@@ -46,6 +47,11 @@ export default function AppRoutes() {
             </Route>
 
             <Route
+              path={routes.dashboard.pharmacies.path}
+              element={<PharmacyPage />}
+            />
+
+            <Route
               path={routes.dashboard.createItemCategory.path}
               element={<AuthGuard />}
             >
@@ -61,7 +67,7 @@ export default function AppRoutes() {
             >
               <Route
                 path={routes.dashboard.itemCategoryList.path}
-                element={<ItemCategoryListPage/>}
+                element={<ItemCategoryListPage />}
               />
             </Route>
 
@@ -69,9 +75,11 @@ export default function AppRoutes() {
           </Route>
 
           <Route path="*" element={<NotFound />} />
+
+          <Route path="*" element={<NotFound />} />
           {AuthRoutes}
         </Routes>
       </Suspense>
-    </div>
+    </div >
   );
 }

@@ -78,20 +78,54 @@ export interface ProfileUpdateResponse {
   updateprofile: boolean;
 }
 
+export interface CreatePharmacyInput {
+  contact_info: string;
+  location: string;
+  name: string;
+  organizationId: string;
+}
+
+export interface CreatePharmacyResponse {
+  createPharmacy: {
+    contact_info: string;
+    createdAt: string;
+    id: string;
+    location: string;
+    name: string;
+    organizationId: string;
+    updatedAt: string;
+  };
+}
+
+export interface OrganizationList {
+  organizations: [
+    {
+      active?: string;
+      address?: string;
+      city?: string;
+      country?: string;
+      createdAt?: string;
+      description?: string;
+      id?: string;
+      name?: string;
+      updatedAt?: string;
+    }
+  ];
+}
 // ---------------------- For Item category ------------------------//
-export interface CreateItemCategoryInput{
-  name : string,
-  parentCategoryId: string | any
+export interface CreateItemCategoryInput {
+  name: string,
+  parentCategoryId: string
 }
-export interface CreateItemCategoryResponse{
+export interface CreateItemCategoryResponse {
   id: string,
-  name : string
+  name: string
 }
-export interface ItemCategoryCreationError{
+export interface ItemCategoryCreationError {
   em: string
 }
 
-export interface ItemCategoryCreationSucc{
+export interface ItemCategoryCreationSucc {
   sm: string
 }
 
@@ -102,7 +136,7 @@ export interface ItemCategory {
   createdAt: string
 }
 
- export interface PaginationArgs {
-    take: Number,
-    skip: Number
-  }
+export interface PaginationArgs {
+  take: number,
+  skip: number
+}
