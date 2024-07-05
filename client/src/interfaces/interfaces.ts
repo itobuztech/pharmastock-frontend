@@ -112,3 +112,31 @@ export interface OrganizationList {
     }
   ];
 }
+// ---------------------- For Item category ------------------------//
+export interface CreateItemCategoryInput {
+  name: string,
+  parentCategoryId: string
+}
+export interface CreateItemCategoryResponse {
+  id: string,
+  name: string
+}
+export interface ItemCategoryCreationError {
+  em: string
+}
+
+export interface ItemCategoryCreationSucc {
+  sm: string
+}
+
+export interface ItemCategory {
+  id: string,
+  name: string,
+  parentCategoryId: string | null,
+  createdAt: string
+}
+
+export interface PaginationArgs {
+  take: number,
+  skip: number
+}

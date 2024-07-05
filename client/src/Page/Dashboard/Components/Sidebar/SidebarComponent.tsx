@@ -39,6 +39,21 @@ export default function SidebarComponent() {
             link={routes.dashboard.pharmacies.path}
           />
 
+          <MenuLink
+            text='Create Item Category'
+            link={routes.dashboard.createItemCategory.path}
+          />
+
+          <MenuLink
+            text='Item Category List'
+            link={routes.dashboard.itemCategoryList.path}
+          />
+
+          <MenuLink
+            text='Logout'
+            link={routes.logout.path}
+          />
+
           <MenuLink text="Logout" link={routes.logout.path} />
         </nav>
       </div>
