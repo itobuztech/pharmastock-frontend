@@ -12,6 +12,10 @@ const RegisterPage = React.lazy(
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
+const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
+const OrganizationsPage = React.lazy(() => import("Page/Organizations/OrganizationsPage"));
+const CreateItemCategoryPage = React.lazy(() => import("Page/CreateItemCategory/CreateItemCategoryPage"));
+const ItemCategoryListPage = React.lazy(() => import("Page/ItemCategoryList/ItemCategoryListPage"));
 
 export default function AppRoutes() {
   return (
@@ -29,13 +33,51 @@ export default function AppRoutes() {
                 element={<ProfilePage />}
               />
             </Route>
+
+            <Route
+              path={routes.dashboard.organizations.path}
+              element={<AuthGuard />}
+            >
+              <Route
+                path={routes.dashboard.organizations.path}
+                element={<OrganizationsPage />}
+              />
+            </Route>
+
+            <Route
+              path={routes.dashboard.pharmacies.path}
+              element={<PharmacyPage />}
+            />
+
+            <Route
+              path={routes.dashboard.createItemCategory.path}
+              element={<AuthGuard />}
+            >
+              <Route
+                path={routes.dashboard.createItemCategory.path}
+                element={<CreateItemCategoryPage />}
+              />
+            </Route>
+
+            <Route
+              path={routes.dashboard.itemCategoryList.path}
+              element={<AuthGuard />}
+            >
+              <Route
+                path={routes.dashboard.itemCategoryList.path}
+                element={<ItemCategoryListPage />}
+              />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
 
           <Route path="*" element={<NotFound />} />
           {AuthRoutes}
         </Routes>
       </Suspense>
-    </div>
+    </div >
   );
 }

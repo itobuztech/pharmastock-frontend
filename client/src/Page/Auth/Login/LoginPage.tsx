@@ -84,6 +84,7 @@ export default function LoginPage() {
                 </Link>
               </div>
             </div>
+
             <div className="flex w-full">
               <ButtonComponent type="submit" loading={loginLoader}>
                 Login

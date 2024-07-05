@@ -3,6 +3,8 @@ import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
 import { FaReact } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { dashboardRoutes } from "Lib/Routes/DashboardRoutes";
+
 export default function SidebarComponent() {
   return (
     <div
@@ -26,9 +28,36 @@ export default function SidebarComponent() {
             link={routes.dashboard.me.path}
           />
 
+          <MenuLink
+            text="Organizations"
+            activeMenuPaths={routes.dashboard.organizations.path}
+            link={routes.dashboard.organizations.path}
+          />
+
+          <MenuLink
+            text="Pharmacies"
+            activeMenuPaths={routes.dashboard.pharmacies.path}
+            link={routes.dashboard.pharmacies.path}
+          />
+
+          <MenuLink
+            text='Create Item Category'
+            link={routes.dashboard.createItemCategory.path}
+          />
+
+          <MenuLink
+            text='Item Category List'
+            link={routes.dashboard.itemCategoryList.path}
+          />
+
+          <MenuLink
+            text='Logout'
+            link={routes.logout.path}
+          />
+
           <MenuLink text="Logout" link={routes.logout.path} />
-        </nav>
-      </div>
-    </div>
+        </nav >
+      </div >
+    </div >
   );
 }
