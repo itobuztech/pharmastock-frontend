@@ -1,11 +1,7 @@
 import React, { act, useEffect, useState } from "react";
 import { useAppSelector } from "../../Lib/Store/hooks";
 import "./Organizations.scoped.scss";
-import {
-  OrganizationList,
-  OrganizationsListResponse,
-  PaginationArgsInput,
-} from "interfaces/interfaces";
+import { OrganizationList } from "interfaces/interfaces";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { ORGANIZATIONS_LIST_QUERY } from "Page/Organizations/OrganizationsQuery";
 import { Container, Flex, Pagination, Space, Table } from "@mantine/core";
@@ -22,8 +18,6 @@ export default function OrganizationsPage() {
     ORGANIZATIONS_LIST_QUERY,
     {
       onCompleted: (d) => {
-        console.log("d=", d);
-
         if (d) {
           const orgs = d.organizations;
           const total = d.organizations.total;
@@ -37,10 +31,7 @@ export default function OrganizationsPage() {
   );
 
   const [activePage, setPage] = useState(1);
-  const organizationListArr = organization?.organizations;
-
-  console.log(activePage);
-  console.log(activePage * 10 - 10);
+  const organizationListArr = organization?.organizations || [];
 
   useEffect(() => {
     organizationList({
