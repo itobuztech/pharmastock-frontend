@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AuthGuard } from "../Guards/AuthGuard";
 import routes from "./Routes";
+import { AuthRoutes } from "Page/Auth/AuthRoutes";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
@@ -9,9 +10,6 @@ const RegisterPage = React.lazy(
   () => import("Page/Auth/Register/RegisterPage")
 );
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
-
-import { AuthRoutes } from "Page/Auth/AuthRoutes";
-
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
 

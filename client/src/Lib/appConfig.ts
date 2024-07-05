@@ -1,13 +1,14 @@
-import { cleanEnv, str } from 'envalid'
+import { cleanEnv, str } from "envalid";
 
 export const appEnv = cleanEnv(import.meta.env, {
-  GENERATE_SOURCEMAP: str({ default: 'true' }),
-})
+  GENERATE_SOURCEMAP: str({ default: "true" }),
+});
 
-const appConfig  = {
+const appConfig = {
   storage: {
-    user: 'app_user',
-    store: 'app_store',
-  }
+    user: "app_user",
+    store: "app_store",
+    accessToken: "access_token",
+  },
 };
 export default appConfig;

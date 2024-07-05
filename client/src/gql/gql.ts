@@ -13,7 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      access_token\n    }\n  }\n": types.SignupDocument,
+    "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n": types.SignupDocument,
 };
 
 /**
@@ -33,7 +34,11 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      access_token\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      access_token\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

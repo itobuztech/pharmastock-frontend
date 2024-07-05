@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
-import { LoginResponse, LoginUserInput } from "interfaces/interfaces";
 import { PasswordInput, TextInput } from "@mantine/core";
-import { LOGIN_MUTATION } from "./LoginMutation";
+import appConfig from "Lib/appConfig";
+import { LOGIN_MUTATION } from "query/loginMutation";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "Lib/Store/User/User";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",
   });
 
-  const [login, { loading: loginLoader, error: loginError }] = useMutation<
-    LoginResponse,
-    { loginUserInput: LoginUserInput }
-  >(LOGIN_MUTATION);
+  const [login, { loading: loginLoader }] = useMutation(LOGIN_MUTATION);
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,9 +37,14 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { loginUserInput },
       });
-      console.log("Login successful", data);
-    } catch (error) {
-      console.error("Login error", error);
+
+      dispatch(setUser(data.login.user));
+
+      if (data?.login.access_token) {
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -66,8 +73,6 @@ export default function LoginPage() {
               onChange={handleChange("password")}
               required
             />
-
-            <p>{loginError && "Wrong credentials"}</p>
 
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">

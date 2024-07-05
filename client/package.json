@@ -73,6 +73,7 @@
     "@commitlint/config-conventional": "^17.6.6",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/client-preset": "4.3.0",
+    "@graphql-codegen/introspection": "4.0.3",
     "@tailwindcss/typography": "^0.5.9",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.195",
@@ -98,7 +99,6 @@
     "typescript": "^4.7.3",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-pwa": "^0.19.8",
-    "web-vitals": "^3.3.2",
-    "@graphql-codegen/introspection": "4.0.3"
+    "web-vitals": "^3.3.2"
   }
 }

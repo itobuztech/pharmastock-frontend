@@ -1,23 +1,26 @@
-import { dashboardRoutes } from './DashboardRoutes';
+import { dashboardRoutes } from "./DashboardRoutes";
 
 export const routes = {
   home: {
-    path: '/',
+    path: "/",
   },
   login: {
-    path: '/login'
+    path: "/login",
   },
   logout: {
-    path: '/logout'
+    path: "/logout",
   },
   forgetPassword: {
-    path: '/forget-password'
+    path: "/forget-password",
   },
   register: {
-    path: '/register'
+    path: "/register",
+  },
+  token: {
+    path: "/token",
   },
   app: {
-    path: '/app',
+    path: "/app",
   },
   dashboard: dashboardRoutes,
 };

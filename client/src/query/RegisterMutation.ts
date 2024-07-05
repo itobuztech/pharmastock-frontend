@@ -1,9 +1,9 @@
-import {gql} from "@apollo/client"
+import { gql } from "@apollo/client";
 
 export const SIGNUP_MUTATION = gql`
   mutation Signup($signupUserInput: CreateUserInput!) {
     signup(signupUserInput: $signupUserInput) {
-      access_token
+      success
     }
   }
 `;

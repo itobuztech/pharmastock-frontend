@@ -2,7 +2,7 @@ export interface SignupUserInput {
   username: string;
   name: string;
   email: string;
-  roleId: string;
+  role: string;
   password: string;
 }
 
@@ -12,13 +12,17 @@ export interface SignupResponse {
   };
 }
 
+export interface TokenID {
+  token: string;
+}
+
 export interface LoginUserInput {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
-  login: {
+export interface LoginResponseWithToken {
+  tokenConfirmation: {
     access_token: string;
     user: {
       createdAt: string;
