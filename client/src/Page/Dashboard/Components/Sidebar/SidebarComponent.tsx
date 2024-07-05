@@ -31,6 +31,16 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
+            text='Create Item Category'
+            link={routes.dashboard.createItemCategory.path}
+          />
+
+          <MenuLink
+            text='Item Category List'
+            link={routes.dashboard.itemCategoryList.path}
+          />
+
+          <MenuLink
             text='Logout'
             link={routes.logout.path}
           />
