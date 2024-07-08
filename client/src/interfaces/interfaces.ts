@@ -105,9 +105,10 @@ export interface OrganizationList {
   organizations: {
     organizations: [
       {
-        active?: string;
+        active?: true;
         address?: string;
         city?: string;
+        contact?: string;
         country?: string;
         createdAt?: string;
         description?: string;
@@ -120,14 +121,26 @@ export interface OrganizationList {
   };
 }
 
+export interface organizations {
+  active?: true;
+  address?: string;
+  city?: string;
+  contact?: string;
+  country?: string;
+  createdAt?: string;
+  description?: string;
+  id?: string;
+  name?: string;
+  updatedAt?: string;
+}
 export interface createOrganizationInput {
-  active: true;
-  address: string;
-  city: string;
-  contact: string;
-  country: string;
-  description: string;
-  name: string;
+  active?: true;
+  address?: string;
+  city?: string;
+  contact?: string;
+  country?: string;
+  description?: string;
+  name?: string;
 }
 // ---------------------- For Item category ------------------------//
 export interface CreateItemCategoryInput {

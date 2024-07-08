@@ -3064,12 +3064,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^2.9.1":
-  version: 2.9.11
-  resolution: "@hookform/resolvers@npm:2.9.11"
+"@hookform/resolvers@npm:^3.9.0":
+  version: 3.9.0
+  resolution: "@hookform/resolvers@npm:3.9.0"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 977ea038bb94457ac9f6c7ca65438ce8fcd0cf7643b9925d8bc4d66df6faa0f49ad642bee7362f86a4d3ff7ff53d18b7aea0597085993971cae00e86bf6eda73
+  checksum: 64a1e77ea2eeeba521ec624f2cea33ec2d20c60de12847b59520393780a9c8b92b3d76b7b3eeabadef85e8c776826f7bc9016fa90a890580c4ed75503c060dd1
   languageName: node
   linkType: hard
 
@@ -10580,7 +10580,7 @@ __metadata:
     "@graphql-codegen/cli": 5.0.2
     "@graphql-codegen/client-preset": 4.3.0
     "@graphql-codegen/introspection": 4.0.3
-    "@hookform/resolvers": ^2.9.1
+    "@hookform/resolvers": ^3.9.0
     "@mantine/core": ^7.1.5
     "@mantine/hooks": ^7.1.5
     "@reduxjs/toolkit": ^1.9.7
@@ -10635,7 +10635,7 @@ __metadata:
     vite-plugin-pwa: ^0.19.8
     vite-tsconfig-paths: ^4.3.1
     web-vitals: ^3.3.2
-    yup: ^1.2.0
+    yup: ^1.4.0
   languageName: unknown
   linkType: soft
 
@@ -14120,7 +14120,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yup@npm:^1.2.0":
+"yup@npm:^1.4.0":
   version: 1.4.0
   resolution: "yup@npm:1.4.0"
   dependencies:

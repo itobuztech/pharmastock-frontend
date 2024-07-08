@@ -3,6 +3,7 @@ import "./Organizations.scoped.scss";
 import {
   createOrganizationInput,
   OrganizationList,
+  // organizations,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
@@ -24,28 +25,52 @@ import countryList from "react-select-country-list";
 import { toast } from "react-toastify";
 import { CreateOrganization } from "query/organization/organizationCreate";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 export default function OrganizationsPage() {
   // Organization listing. STARTS
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
+  const [newOrgList, setNewOrgList] = useState<createOrganizationInput>();
   const [totalCount, setTotalCount] =
     useState<OrganizationList["organizations"]["total"]>(1);
   const [activePage, setActivePage] = useState(1);
   const options = useMemo(() => countryList().getData(), []);
   const [opened, { open, close }] = useDisclosure(false);
-  const { register, handleSubmit, control, reset } = useForm();
+
+  const schema = yup
+    .object({
+      name: yup.string().required(),
+      description: yup.string().required(),
+      address: yup.string().required(),
+      city: yup.string().required(),
+      contact: yup.string().required(),
+      country: yup.string().required(),
+    })
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const [addOrganization] = useMutation(CreateOrganization);
 
   const onSubmit = async (data: createOrganizationInput) => {
     try {
-      await addOrganization({
+      const response = await addOrganization({
         variables: { createOrganizationInput: data },
       });
       toast.success("Organization Added Successfully");
-
       reset();
+      close();
+      setNewOrgList(response.data);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -58,10 +83,10 @@ export default function OrganizationsPage() {
         if (d) {
           const orgs = d.organizations;
           const total = d.organizations.total;
-          const pagiCount = Math.ceil(total / 10);
+          const paginationCount = Math.ceil(total / 10);
 
           setOrganization(orgs);
-          setTotalCount(pagiCount);
+          setTotalCount(paginationCount);
         }
       },
     }
@@ -79,6 +104,44 @@ export default function OrganizationsPage() {
       },
     });
   }, [organizationList, activePage]);
+
+  console.log({ newOrgList });
+
+  // useEffect(() => {
+  //   if (newOrgList) {
+  //     setOrganization((prev) => {
+  //       const updatedOrganizations = prev
+  //         ? [...prev.organizations, newOrgList]
+  //         : [newOrgList];
+  //       return {
+  //         ...prev,
+  //         organizations: updatedOrganizations,
+  //         total: (prev?.total || 0) + 1,
+  //       };
+  //     });
+  //   }
+  // }, [newOrgList]);
+
+  // function addOrgItem(item: organizations) {
+  //   setOrganization((prevItems) => {
+  //     if (!prevItems) {
+  //       return { organizations: [item], total: 1 };
+  //     }
+
+  //     const prevOrg = prevItems?.organizations || [];
+  //     return {
+  //       ...prevItems,
+  //       organizations: [...prevOrg, item],
+  //       total: prevItems.total + 1,
+  //     };
+  //   });
+  // }
+
+  // useEffect(() => {
+  //   if (newOrgList) {
+  //     addOrgItem(newOrgList);
+  //   }
+  // }, [newOrgList]);
 
   const rows = organizationListArr?.map((org, i) => (
     <Table.Tr key={org.id}>
@@ -111,13 +174,7 @@ export default function OrganizationsPage() {
       </div>
       <div className=" bg-white">
         {
-          // <Container>
-          <Table
-            horizontalSpacing="md"
-            verticalSpacing="md"
-            // stickyHeader
-            // stickyHeaderOffset={60}
-          >
+          <Table horizontalSpacing="md" verticalSpacing="md">
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Sl No.</Table.Th>
@@ -129,7 +186,6 @@ export default function OrganizationsPage() {
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
-          // </Container>
         }
         <Space h="md" />
         <Flex
@@ -159,30 +215,50 @@ export default function OrganizationsPage() {
         centered
         size={"lg"}
       >
-        <form
-          onSubmit={() => {
-            handleSubmit(onSubmit);
-            close();
-          }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <TextInput placeholder="Name" {...register("name")} />
+            {errors.name && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
             <Textarea placeholder="Description" {...register("description")} />
+            {errors.description && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
             <TextInput placeholder="Address" {...register("address")} />
+            {errors.address && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
             <TextInput placeholder="Contact" {...register("contact")} />
+            {errors.contact && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
             <TextInput placeholder="City" {...register("city")} />
+            {errors.city && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="mb-4">
@@ -200,6 +276,11 @@ export default function OrganizationsPage() {
                 />
               )}
             />
+            {errors.country && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
           </div>
 
           <div className="text-right">
