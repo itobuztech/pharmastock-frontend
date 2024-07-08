@@ -18,7 +18,7 @@ export default function SidebarComponent() {
         >
           <FaReact size={"40px"} />
           <span className="text-gray-600  ml-4 text-2xl font-bold">
-            React UI Kit
+            Pharma Stock
           </span>
         </Link>
         <nav className="mt-10 px-6 ">
@@ -41,23 +41,20 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
-            text='Create Item Category'
+            text="Create Item Category"
             link={routes.dashboard.createItemCategory.path}
           />
 
           <MenuLink
-            text='Item Category List'
+            text="Item Category List"
             link={routes.dashboard.itemCategoryList.path}
           />
 
-          <MenuLink
-            text='Logout'
-            link={routes.logout.path}
-          />
+          <MenuLink text="Logout" link={routes.logout.path} />
 
           <MenuLink text="Logout" link={routes.logout.path} />
-        </nav >
-      </div >
-    </div >
+        </nav>
+      </div>
+    </div>
   );
 }
