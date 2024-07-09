@@ -87,9 +87,6 @@ export default function OrganizationsPage() {
 
           setOrganization(orgs);
           setTotalCount(paginationCount);
-
-          console.log({ d });
-          console.log({ orgs });
         }
       },
     }
@@ -118,9 +115,6 @@ export default function OrganizationsPage() {
 
           setOrganization(orgs);
           setTotalCount(paginationCount);
-
-          console.log({ data });
-          console.log({ orgs });
         }
       });
     }
