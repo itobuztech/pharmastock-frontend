@@ -3,7 +3,7 @@ import "./Organizations.scoped.scss";
 import {
   createOrganizationInput,
   OrganizationList,
-  // organizations,
+  organizations,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
@@ -76,7 +76,7 @@ export default function OrganizationsPage() {
     }
   };
 
-  const [organizationList] = useLazyQuery<OrganizationList>(
+  const [organizationList, { refetch }] = useLazyQuery<OrganizationList>(
     ORGANIZATIONS_LIST_QUERY,
     {
       onCompleted: (d) => {
@@ -87,6 +87,9 @@ export default function OrganizationsPage() {
 
           setOrganization(orgs);
           setTotalCount(paginationCount);
+
+          console.log({ d });
+          console.log({ orgs });
         }
       },
     }
@@ -105,43 +108,23 @@ export default function OrganizationsPage() {
     });
   }, [organizationList, activePage]);
 
-  console.log({ newOrgList });
+  useEffect(() => {
+    if (newOrgList) {
+      refetch().then(({ data }) => {
+        if (data) {
+          const orgs = data.organizations;
+          const total = data.organizations.total;
+          const paginationCount = Math.ceil(total / 10);
 
-  // useEffect(() => {
-  //   if (newOrgList) {
-  //     setOrganization((prev) => {
-  //       const updatedOrganizations = prev
-  //         ? [...prev.organizations, newOrgList]
-  //         : [newOrgList];
-  //       return {
-  //         ...prev,
-  //         organizations: updatedOrganizations,
-  //         total: (prev?.total || 0) + 1,
-  //       };
-  //     });
-  //   }
-  // }, [newOrgList]);
+          setOrganization(orgs);
+          setTotalCount(paginationCount);
 
-  // function addOrgItem(item: organizations) {
-  //   setOrganization((prevItems) => {
-  //     if (!prevItems) {
-  //       return { organizations: [item], total: 1 };
-  //     }
-
-  //     const prevOrg = prevItems?.organizations || [];
-  //     return {
-  //       ...prevItems,
-  //       organizations: [...prevOrg, item],
-  //       total: prevItems.total + 1,
-  //     };
-  //   });
-  // }
-
-  // useEffect(() => {
-  //   if (newOrgList) {
-  //     addOrgItem(newOrgList);
-  //   }
-  // }, [newOrgList]);
+          console.log({ data });
+          console.log({ orgs });
+        }
+      });
+    }
+  }, [newOrgList, refetch]);
 
   const rows = organizationListArr?.map((org, i) => (
     <Table.Tr key={org.id}>
