@@ -3,7 +3,6 @@ import "./Organizations.scoped.scss";
 import {
   createOrganizationInput,
   OrganizationList,
-  organizations,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {

@@ -55,7 +55,7 @@ export default function VerifyUser() {
 
   function switchScreen() {
     if (localStorage.getItem(appConfig.storage.accessToken)) {
-      navigate("/dashboard");
+      navigate("/dashboard/me");
     }
   }
 
