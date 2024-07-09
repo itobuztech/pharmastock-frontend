@@ -4,6 +4,7 @@ export interface DashBoardRoutes {
   path: string;
   me: DefaultRoute;
   organizations: DefaultRoute;
+  organizationDetails: DefaultRoute;
   pharmacies: DefaultRoute;
   createItemCategory: DefaultRoute;
   itemCategoryList: DefaultRoute;
@@ -20,6 +21,10 @@ export const dashboardRoutes: DashBoardRoutes = {
   organizations: {
     path: `${dashboardPath}/organizations`,
     fullPath: `${dashboardPath}/organizations`,
+  },
+  organizationDetails: {
+    path: `${dashboardPath}/organizations/:orgId`,
+    fullPath: `${dashboardPath}/organizations/:orgId`,
   },
   pharmacies: {
     path: `${dashboardPath}/pharmacies`,

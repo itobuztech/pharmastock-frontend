@@ -8,7 +8,6 @@ export const CREATE_PHARMACY = gql`
       id
       location
       name
-      organizationId
       updatedAt
     }
   }

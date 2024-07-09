@@ -112,26 +112,13 @@ export interface OrganizationList {
         country?: string;
         createdAt?: string;
         description?: string;
-        id?: string;
+        id: string;
         name?: string;
         updatedAt?: string;
       }
     ];
     total: number;
   };
-}
-
-export interface organizations {
-  active?: true;
-  address?: string;
-  city?: string;
-  contact?: string;
-  country?: string;
-  createdAt?: string;
-  description?: string;
-  id?: string;
-  name?: string;
-  updatedAt?: string;
 }
 export interface createOrganizationInput {
   active?: true;

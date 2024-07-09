@@ -10,11 +10,13 @@ import {
   Flex,
   Modal,
   Pagination,
+  Popover,
   Select,
   Space,
   Table,
   TextInput,
   Textarea,
+  Text,
 } from "@mantine/core";
 import { BsPlusLg } from "react-icons/bs";
 import { useDisclosure } from "@mantine/hooks";
@@ -26,6 +28,9 @@ import { CreateOrganization } from "query/organization/organizationCreate";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import { DeleteOrganization } from "query/organization/organizationDelete";
 
 export default function OrganizationsPage() {
   // Organization listing. STARTS
@@ -37,6 +42,12 @@ export default function OrganizationsPage() {
   const [activePage, setActivePage] = useState(1);
   const options = useMemo(() => countryList().getData(), []);
   const [opened, { open, close }] = useDisclosure(false);
+  const [
+    deleteModalOpened,
+    { open: deleteModalOpen, close: deleteModalClose },
+  ] = useDisclosure(false);
+  const navigate = useNavigate();
+  const [deleteOrgId, setDeleteOrgId] = useState<string>();
 
   const schema = yup
     .object({
@@ -60,6 +71,7 @@ export default function OrganizationsPage() {
   });
 
   const [addOrganization] = useMutation(CreateOrganization);
+  const [deleteOrganization] = useMutation(DeleteOrganization);
 
   const onSubmit = async (data: createOrganizationInput) => {
     try {
@@ -119,15 +131,69 @@ export default function OrganizationsPage() {
     }
   }, [newOrgList, refetch]);
 
+  function screenSwitch(orgId: string) {
+    navigate(`/dashboard/organizations/${orgId}`);
+  }
+
+  function handleDelete(orgId: string) {
+    const deleteItem = organization?.organizations.find((x) => x.id === orgId);
+    setDeleteOrgId(deleteItem?.id);
+    deleteModalOpen();
+  }
+
+  async function getDeleteOrganization() {
+    try {
+      await deleteOrganization({
+        variables: { deleteOrganizationInput: { id: deleteOrgId } },
+      });
+      refetch().then(({ data }) => {
+        if (data) {
+          const orgs = data.organizations;
+          const total = data.organizations.total;
+          const paginationCount = Math.ceil(total / 10);
+          setOrganization(orgs);
+          setTotalCount(paginationCount);
+        }
+      });
+    } catch (error) {}
+  }
+
   const rows = organizationListArr?.map((org, i) => (
     <Table.Tr key={org.id}>
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{org.name}</Table.Td>
-      <Table.Td>{org.description}</Table.Td>
+      <Table.Td className="w-2/5">{org.description}</Table.Td>
       <Table.Td>{org.city}</Table.Td>
       <Table.Td>{org.address}</Table.Td>
+      <Table.Td>
+        <Popover width={200} position="bottom-end" withArrow shadow="md">
+          <Popover.Target>
+            <Button variant="transparent">
+              <BiDotsHorizontalRounded size={24} />
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Button
+              variant="transparent"
+              fullWidth
+              onClick={() => screenSwitch(org.id)}
+              color="#000"
+            >
+              View
+            </Button>
+            <Button
+              variant="transparent"
+              fullWidth
+              onClick={() => handleDelete(org.id)}
+              color="#000"
+            >
+              Delete
+            </Button>
+          </Popover.Dropdown>
+        </Popover>
+      </Table.Td>
     </Table.Tr>
   ));
 
@@ -158,6 +224,7 @@ export default function OrganizationsPage() {
                 <Table.Th>Description</Table.Th>
                 <Table.Th>City</Table.Th>
                 <Table.Th>Address</Table.Th>
+                <Table.Th>Action</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
@@ -183,6 +250,30 @@ export default function OrganizationsPage() {
         </Flex>
         <Space h="md" />
       </div>
+
+      <Modal
+        opened={deleteModalOpened}
+        onClose={deleteModalClose}
+        title="Delete Organization"
+        centered
+        size={"sm"}
+      >
+        <Text size="sm" className="mb-7">
+          Are you sure you want to delete Organization?
+        </Text>
+        <div className="flex flex-wrap justify-end gap-4">
+          <Button variant="outline" onClick={deleteModalClose}>
+            No don't delete
+          </Button>
+          <Button
+            variant="filled"
+            color="red"
+            onClick={() => getDeleteOrganization()}
+          >
+            Delete
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         opened={opened}
