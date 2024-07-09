@@ -12,7 +12,7 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
-export default function Token() {
+export default function VerifyUser() {
   const query = useQuery();
   const navigate = useNavigate();
   const { height } = useViewportSize();
@@ -55,7 +55,7 @@ export default function Token() {
 
   function switchScreen() {
     if (localStorage.getItem(appConfig.storage.accessToken)) {
-      navigate("/dashboard");
+      navigate("/dashboard/me");
     }
   }
 

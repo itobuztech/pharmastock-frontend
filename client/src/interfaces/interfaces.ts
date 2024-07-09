@@ -105,9 +105,10 @@ export interface OrganizationList {
   organizations: {
     organizations: [
       {
-        active?: string;
+        active?: true;
         address?: string;
         city?: string;
+        contact?: string;
         country?: string;
         createdAt?: string;
         description?: string;
@@ -119,31 +120,53 @@ export interface OrganizationList {
     total: number;
   };
 }
+
+export interface organizations {
+  active?: true;
+  address?: string;
+  city?: string;
+  contact?: string;
+  country?: string;
+  createdAt?: string;
+  description?: string;
+  id?: string;
+  name?: string;
+  updatedAt?: string;
+}
+export interface createOrganizationInput {
+  active?: true;
+  address?: string;
+  city?: string;
+  contact?: string;
+  country?: string;
+  description?: string;
+  name?: string;
+}
 // ---------------------- For Item category ------------------------//
 export interface CreateItemCategoryInput {
-  name: string,
-  parentCategoryId: string
+  name: string;
+  parentCategoryId: string;
 }
 export interface CreateItemCategoryResponse {
-  id: string,
-  name: string
+  id: string;
+  name: string;
 }
 export interface ItemCategoryCreationError {
-  em: string
+  em: string;
 }
 
 export interface ItemCategoryCreationSucc {
-  sm: string
+  sm: string;
 }
 
 export interface ItemCategory {
-  id: string,
-  name: string,
-  parentCategoryId: string | null,
-  createdAt: string
+  id: string;
+  name: string;
+  parentCategoryId: string | null;
+  createdAt: string;
 }
 
 export interface PaginationArgs {
-  take: number,
-  skip: number
+  take: number;
+  skip: number;
 }

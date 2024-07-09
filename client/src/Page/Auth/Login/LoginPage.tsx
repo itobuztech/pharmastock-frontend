@@ -39,9 +39,10 @@ export default function LoginPage() {
       });
 
       dispatch(setUser(data.login.user));
+      localStorage.setItem("userData", JSON.stringify(data.login));
 
       if (data?.login.access_token) {
-        navigate("/dashboard");
+        navigate("/dashboard/me");
       }
     } catch (error: any) {
       toast.error(error.message);

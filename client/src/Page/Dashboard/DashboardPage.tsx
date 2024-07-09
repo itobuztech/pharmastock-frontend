@@ -5,7 +5,6 @@ import SidebarComponent from "./Components/Sidebar/SidebarComponent";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { Drawer, Skeleton } from "@mantine/core";
 import "./_dashboardPage.scoped.scss";
-import { useAppSelector } from "Lib/Store/hooks";
 
 function DashboardLoadingUi() {
   const { height } = useViewportSize();
@@ -27,12 +26,10 @@ export default function DashboardPage() {
         className="w-full dashboard-content"
         data-test-id="dashboard-content"
       >
-        <div>Dashboard content</div>
-
-        {/* <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
+        <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
         <Suspense fallback={<DashboardLoadingUi />}>
           <Outlet />
-        </Suspense> */}
+        </Suspense>
       </div>
     </div>
   );
