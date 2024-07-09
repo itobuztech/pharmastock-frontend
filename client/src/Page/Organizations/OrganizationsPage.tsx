@@ -70,7 +70,8 @@ export default function OrganizationsPage() {
     resolver: yupResolver(schema),
   });
 
-  const [addOrganization] = useMutation(CreateOrganization);
+  const [addOrganization, { loading: addOrgLoading }] =
+    useMutation(CreateOrganization);
   const [deleteOrganization] = useMutation(DeleteOrganization);
 
   const onSubmit = async (data: createOrganizationInput) => {
@@ -351,7 +352,9 @@ export default function OrganizationsPage() {
           </div>
 
           <div className="text-right">
-            <ButtonComponent type="submit">Create</ButtonComponent>
+            <ButtonComponent type="submit" loading={addOrgLoading}>
+              Create
+            </ButtonComponent>
           </div>
         </form>
       </Modal>

@@ -49,7 +49,8 @@ export default function OrganizationDetails() {
     }
   );
 
-  const [updateOrganization] = useMutation(UpdateOrganization);
+  const [updateOrganization, { loading: updateOrgLoading }] =
+    useMutation(UpdateOrganization);
 
   const onSubmit = async (data: UpdateOrganizationInput) => {
     try {
@@ -189,7 +190,9 @@ export default function OrganizationDetails() {
             </Button>
 
             {editForm ? (
-              <ButtonComponent type="submit">Update</ButtonComponent>
+              <ButtonComponent type="submit" loading={updateOrgLoading}>
+                Update
+              </ButtonComponent>
             ) : (
               <Button type="button" onClick={() => setEditForm(true)}>
                 Edit
