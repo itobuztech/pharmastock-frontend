@@ -179,7 +179,7 @@ export default function OrganizationsPage() {
               variant="transparent"
               fullWidth
               onClick={() => screenSwitch(org.id)}
-              color="#000"
+              className="hover:bg-blue-100 transition-colors text-black"
             >
               View
             </Button>
@@ -187,7 +187,7 @@ export default function OrganizationsPage() {
               variant="transparent"
               fullWidth
               onClick={() => handleDelete(org.id)}
-              color="#000"
+              className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
             >
               Delete
             </Button>

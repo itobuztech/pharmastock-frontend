@@ -24,6 +24,7 @@ const documents = {
     "\n  mutation CreateOrganization(\n    $createOrganizationInput: CreateOrganizationInput!\n  ) {\n    createOrganization(createOrganizationInput: $createOrganizationInput) {\n      active\n      address\n      city\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n      contact\n    }\n  }\n": types.CreateOrganizationDocument,
     "\n  mutation DeleteOrganization(\n    $deleteOrganizationInput: DeleteOrganizationInput!\n  ) {\n    deleteOrganization(deleteOrganizationInput: $deleteOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.DeleteOrganizationDocument,
     "\n  query Query($organizationId: String!) {\n    organization(id: $organizationId) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.QueryDocument,
+    "\n  mutation UpdateOrganization(\n    $updateOrganizationInput: UpdateOrganizationInput!\n  ) {\n    updateOrganization(updateOrganizationInput: $updateOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.UpdateOrganizationDocument,
     "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.MutationDocument,
 };
 
@@ -85,6 +86,10 @@ export function graphql(source: "\n  mutation DeleteOrganization(\n    $deleteOr
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query Query($organizationId: String!) {\n    organization(id: $organizationId) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Query($organizationId: String!) {\n    organization(id: $organizationId) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateOrganization(\n    $updateOrganizationInput: UpdateOrganizationInput!\n  ) {\n    updateOrganization(updateOrganizationInput: $updateOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateOrganization(\n    $updateOrganizationInput: UpdateOrganizationInput!\n  ) {\n    updateOrganization(updateOrganizationInput: $updateOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

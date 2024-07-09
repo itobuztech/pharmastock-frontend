@@ -21,8 +21,8 @@ export default function MenuLink({
 
   return (
     <Link
-      className={`hover:text-gray-800 hover:bg-gray-100 flex items-center p-2 my-6 transition-colors  duration-200  text-gray-600 rounded-lg no-underline ${
-        isActive ? "bg-gray-300" : ""
+      className={`hover:text-gray-800 hover:bg-blue-100 flex items-center p-2 my-6 transition-colors  duration-200  text-black rounded-lg no-underline ${
+        isActive ? "bg-blue-300" : ""
       }`}
       to={link}
     >
