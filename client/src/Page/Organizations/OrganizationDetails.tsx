@@ -64,12 +64,14 @@ export default function OrganizationDetails() {
   };
 
   useEffect(() => {
-    setValue("name", orgDetails?.organization.name);
-    setValue("description", orgDetails?.organization.description);
-    setValue("address", orgDetails?.organization.address);
-    setValue("contact", orgDetails?.organization.contact);
-    setValue("city", orgDetails?.organization.city);
-    setValue("country", orgDetails?.organization.country);
+    if (orgDetails?.organization) {
+      setValue("name", orgDetails?.organization.name);
+      setValue("description", orgDetails?.organization.description);
+      setValue("address", orgDetails?.organization.address);
+      setValue("contact", orgDetails?.organization.contact);
+      setValue("city", orgDetails?.organization.city);
+      setValue("country", orgDetails?.organization.country);
+    }
   }, [orgDetails?.organization, setValue]);
 
   return (
