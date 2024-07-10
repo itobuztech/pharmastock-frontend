@@ -84,8 +84,8 @@ export default function Pharmacy() {
   useEffect(() => {
     if (newPharmacyList) {
       refetch().then(({ data }) => {
-        console.log({ data });
-        setPharmacyList(data.data.pharmacies);
+        console.log("data--->", data);
+        setPharmacyList(data);
       });
     }
   }, [newPharmacyList, refetch]);
