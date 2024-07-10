@@ -178,7 +178,7 @@
             "deprecationReason": null
           },
           {
-            "name": "hsn_code",
+            "name": "hsnCode",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -206,7 +206,7 @@
             "deprecationReason": null
           },
           {
-            "name": "mrp_base_unit",
+            "name": "mrpBaseUnit",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -218,19 +218,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sku",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "wholesale_price",
+            "name": "wholesalePrice",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -372,7 +360,7 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "contact_info",
+            "name": "contactInfo",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -576,6 +564,18 @@
                 "name": "Float",
                 "ofType": null
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sku",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -839,6 +839,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Float",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sku",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1343,7 +1359,7 @@
             "deprecationReason": null
           },
           {
-            "name": "hsn_code",
+            "name": "hsnCode",
             "description": null,
             "args": [],
             "type": {
@@ -1391,29 +1407,13 @@
             "deprecationReason": null
           },
           {
-            "name": "mrp_base_unit",
+            "name": "mrpBaseUnit",
             "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "Float",
               "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "sku",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -1431,7 +1431,7 @@
             "deprecationReason": null
           },
           {
-            "name": "wholesale_price",
+            "name": "wholesalePrice",
             "description": null,
             "args": [],
             "type": {
@@ -3375,7 +3375,7 @@
         "description": null,
         "fields": [
           {
-            "name": "contact_info",
+            "name": "contactInfo",
             "description": null,
             "args": [],
             "type": {
@@ -4416,6 +4416,22 @@
             "deprecationReason": null
           },
           {
+            "name": "sku",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updatedAt",
             "description": null,
             "args": [],
@@ -4572,7 +4588,7 @@
             "deprecationReason": null
           },
           {
-            "name": "hsn_code",
+            "name": "hsnCode",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -4612,7 +4628,7 @@
             "deprecationReason": null
           },
           {
-            "name": "mrp_base_unit",
+            "name": "mrpBaseUnit",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -4624,19 +4640,7 @@
             "deprecationReason": null
           },
           {
-            "name": "sku",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "wholesale_price",
+            "name": "wholesalePrice",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -4770,7 +4774,7 @@
         "fields": null,
         "inputFields": [
           {
-            "name": "contact_info",
+            "name": "contactInfo",
             "description": null,
             "type": {
               "kind": "SCALAR",

@@ -8,10 +8,10 @@ import ButtonComponent from "Components/Button/ButtonComponent";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { UpdateOrganization } from "query/organization/organizationUpdate";
-import { BiArrowBack } from "react-icons/bi";
 import countryList from "react-select-country-list";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import PageHeader from "Components/PageHeader";
 
 export default function OrganizationDetails() {
   const { orgId } = useParams();
@@ -77,16 +77,12 @@ export default function OrganizationDetails() {
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
-      <div className="flex flex-wrap items-center mt-3 mb-8">
-        <Button
-          variant="transparent"
-          onClick={() => navigate(-1)}
-          className="p-0 mr-4"
-        >
-          <BiArrowBack size={24} color="black" />
-        </Button>
-        <h1 className="text-blue-900 text-2xl font-bold m-0">Details</h1>
-      </div>
+      <PageHeader
+        title="Details"
+        showBackButton={true}
+        showCreateButton={false}
+      />
+
       <div className="w-1/2 bg-white rounded-md py-6 px-6">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap gap-4 justify-between mb-6">

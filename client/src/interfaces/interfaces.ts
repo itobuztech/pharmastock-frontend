@@ -129,6 +129,21 @@ export interface createOrganizationInput {
   description?: string;
   name?: string;
 }
+
+export interface Pharmacies {
+  pharmacies: Pharmacy[];
+}
+
+export interface Pharmacy {
+  contactInfo: string;
+  createdAt: Date;
+  id: string;
+  location: string;
+  name: string;
+  organization: OrganizationsListResponse;
+  updatedAt: Date;
+}
+
 // ---------------------- For Item category ------------------------//
 export interface CreateItemCategoryInput {
   name: string;
