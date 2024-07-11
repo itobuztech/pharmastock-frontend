@@ -39,12 +39,19 @@ export default function SidebarComponent() {
 
           <MenuLink
             text="Item Category"
+            activeMenuPaths={routes.dashboard.createItemCategory.path}
             link={routes.dashboard.createItemCategory.path}
           />
 
-          <MenuLink
+          {/* <MenuLink
             text="Item Category List"
             link={routes.dashboard.itemCategoryList.path}
+          /> */}
+
+          <MenuLink
+            text="Warehouse"
+            activeMenuPaths={routes.dashboard.warehouseList.path}
+            link={routes.dashboard.warehouseList.path}
           />
 
           <MenuLink text="Logout" link={routes.logout.path} />

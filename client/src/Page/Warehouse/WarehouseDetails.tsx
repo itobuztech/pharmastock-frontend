@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
 import { Button, TextInput } from "@mantine/core";
+import ButtonComponent from "Components/Button/ButtonComponent";
 import PageHeader from "Components/PageHeader";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
-import ButtonComponent from "Components/Button/ButtonComponent";
-import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
-import { GetPharmacyDetails } from "query/pharmacy/pharmacyDetails";
-import { Pharmacy, UpdatePharmacyInput } from "gql/graphql";
-import { GetUpdatePharmacy } from "query/pharmacy/pharmacyUpdate";
+import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
+import { UpdateWarehouseInput, Warehouse } from "gql/graphql";
+import { GetWarehouseUpdate } from "query/warehouse/warehouseUpdate";
 import { toast } from "react-toastify";
 
-export default function PharmacyDetails() {
+export default function WarehouseDetails() {
   const [editForm, setEditForm] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
   const schema = yup
     .object({
-      name: yup.string().required(),
-      contactInfo: yup.string().required(),
+      // name: yup.string().required(),
       location: yup.string().required(),
+      area: yup.string().required(),
     })
     .required();
 
@@ -34,26 +34,23 @@ export default function PharmacyDetails() {
     resolver: yupResolver(schema),
   });
 
-  const { data: pharmacyDetails } = useQuery<{ pharmacy: Pharmacy }>(
-    GetPharmacyDetails,
+  const { data: warehouseDetails } = useQuery<{ warehouse: Warehouse }>(
+    GetWarehouseDetails,
     {
       variables: {
-        pharmacyId: id,
+        warehouseId: id,
       },
     }
   );
 
-  console.log({ pharmacyDetails });
+  const [updateWarehouse, { loading }] = useMutation(GetWarehouseUpdate);
 
-  const [updatePharmacy, { loading: updatePharmacyLoading }] =
-    useMutation(GetUpdatePharmacy);
-
-  const onSubmit = async (data: UpdatePharmacyInput) => {
+  const onSubmit = async (data: UpdateWarehouseInput) => {
     try {
-      await updatePharmacy({
-        variables: { updatePharmacyInput: { ...data, id: id } },
+      await updateWarehouse({
+        variables: { updateWarehouseInput: { ...data, id: id } },
       });
-      toast.success("Pharmacy Updated Successfully");
+      toast.success("Warehouse Updated Successfully");
       setEditForm(false);
     } catch (error: any) {
       toast.error(error.message);
@@ -61,24 +58,23 @@ export default function PharmacyDetails() {
   };
 
   useEffect(() => {
-    if (pharmacyDetails?.pharmacy) {
-      setValue("name", pharmacyDetails?.pharmacy.name);
-      setValue("contactInfo", pharmacyDetails?.pharmacy.contactInfo);
-      setValue("location", pharmacyDetails?.pharmacy.location);
+    if (warehouseDetails?.warehouse) {
+      setValue("area", warehouseDetails.warehouse.area);
+      setValue("location", warehouseDetails.warehouse.location);
     }
-  }, [pharmacyDetails?.pharmacy, setValue]);
+  }, [setValue, warehouseDetails?.warehouse]);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
       <PageHeader
-        title="Pharmacy Details"
+        title="Warehouse Details"
         showBackButton={true}
         showCreateButton={false}
       />
 
       <div className="w-1/2 bg-white rounded-md py-6 px-6">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <TextInput
               label="Name"
               placeholder="Name"
@@ -90,20 +86,8 @@ export default function PharmacyDetails() {
                 This field is required
               </span>
             )}
-          </div>
-          <div className="mb-4">
-            <TextInput
-              label="Contact"
-              placeholder="Contact Info"
-              {...register("contactInfo")}
-              readOnly={editForm ? false : true}
-            />
-            {errors.contactInfo && (
-              <span className="text-red-500 mt-2 block text-xs">
-                This field is required
-              </span>
-            )}
-          </div>
+          </div> */}
+
           <div className="mb-4">
             <TextInput
               label="Location"
@@ -112,6 +96,19 @@ export default function PharmacyDetails() {
               readOnly={editForm ? false : true}
             />
             {errors.location && (
+              <span className="text-red-500 mt-2 block text-xs">
+                This field is required
+              </span>
+            )}
+          </div>
+          <div className="mb-4">
+            <TextInput
+              label="Area"
+              placeholder="Area"
+              {...register("area")}
+              readOnly={editForm ? false : true}
+            />
+            {errors.area && (
               <span className="text-red-500 mt-2 block text-xs">
                 This field is required
               </span>
@@ -127,7 +124,7 @@ export default function PharmacyDetails() {
             </Button>
 
             {editForm ? (
-              <ButtonComponent type="submit" loading={updatePharmacyLoading}>
+              <ButtonComponent type="submit" loading={loading}>
                 Update
               </ButtonComponent>
             ) : (

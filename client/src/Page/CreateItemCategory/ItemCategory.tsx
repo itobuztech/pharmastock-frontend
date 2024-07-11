@@ -71,16 +71,14 @@ export default function ItemCategory() {
   const [deleteCategory] = useMutation(CategoryItemDelete);
 
   const onSubmit = async (data: CreateItemCategoryInput) => {
-    console.log({ data });
     try {
       const response = await createCategory({
         variables: { createItemCategoryInput: data },
       });
-      toast.success("Pharmacy Created Successfully");
+      toast.success("Category Created Successfully");
       reset();
       close();
       setNewCategoryList(response.data);
-      console.log({ response });
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -112,8 +110,6 @@ export default function ItemCategory() {
     }
   }, [newCategoryList, refetch]);
 
-  console.log("kunal", newCategoryList);
-
   function screenSwitch(orgId: string) {
     navigate(`/dashboard/itemCategory/${orgId}`);
   }
@@ -133,7 +129,6 @@ export default function ItemCategory() {
       });
       refetch().then(({ data }) => {
         if (data) {
-          console.log({ data });
           const itemCate = data.itemCategories;
           const total = data.itemCategories.total;
           const paginationCount = Math.ceil(total / 10);

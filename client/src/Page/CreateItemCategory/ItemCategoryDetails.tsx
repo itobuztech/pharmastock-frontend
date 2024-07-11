@@ -48,6 +48,7 @@ export default function ItemCategoryDetails() {
         variables: { updateItemCategoryInput: { ...data, id: id } },
       });
       toast.success("Category Updated Successfully");
+      setEditForm(false);
     } catch (error: any) {
       toast.error(error.message);
     }

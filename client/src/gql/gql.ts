@@ -34,6 +34,10 @@ const documents = {
     "\n  query Pharmacies {\n    pharmacies {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      organization {\n        active\n        address\n        city\n        contact\n        country\n        createdAt\n        description\n        id\n        name\n        updatedAt\n      }\n      updatedAt\n    }\n  }\n": types.PharmaciesDocument,
     "\n  mutation UpdatePharmacy($updatePharmacyInput: UpdatePharmacyInput!) {\n    updatePharmacy(updatePharmacyInput: $updatePharmacyInput) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      updatedAt\n    }\n  }\n": types.UpdatePharmacyDocument,
     "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.MutationDocument,
+    "\n  mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {\n    createWarehouse(createWarehouseInput: $createWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n      organization {\n        id\n        name\n      }\n    }\n  }\n": types.CreateWarehouseDocument,
+    "\n  mutation DeleteWarehouse($deleteWarehouseInput: DeleteWarehouseInput!) {\n    deleteWarehouse(deleteWarehouseInput: $deleteWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n": types.DeleteWarehouseDocument,
+    "\n  query WarehouseDetails($warehouseId: String!) {\n    warehouse(id: $warehouseId) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n": types.WarehouseDetailsDocument,
+    "\n  query WarehouseList {\n    warehouses {\n      total\n      warehouses {\n        area\n        createdAt\n        id\n        location\n        updatedAt\n        organization {\n          name\n          id\n        }\n      }\n    }\n  }\n": types.WarehouseListDocument,
 };
 
 /**
@@ -134,6 +138,22 @@ export function graphql(source: "\n  mutation UpdatePharmacy($updatePharmacyInpu
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {\n    createWarehouse(createWarehouseInput: $createWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n      organization {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {\n    createWarehouse(createWarehouseInput: $createWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n      organization {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteWarehouse($deleteWarehouseInput: DeleteWarehouseInput!) {\n    deleteWarehouse(deleteWarehouseInput: $deleteWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteWarehouse($deleteWarehouseInput: DeleteWarehouseInput!) {\n    deleteWarehouse(deleteWarehouseInput: $deleteWarehouseInput) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query WarehouseDetails($warehouseId: String!) {\n    warehouse(id: $warehouseId) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query WarehouseDetails($warehouseId: String!) {\n    warehouse(id: $warehouseId) {\n      area\n      createdAt\n      id\n      location\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query WarehouseList {\n    warehouses {\n      total\n      warehouses {\n        area\n        createdAt\n        id\n        location\n        updatedAt\n        organization {\n          name\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query WarehouseList {\n    warehouses {\n      total\n      warehouses {\n        area\n        createdAt\n        id\n        location\n        updatedAt\n        organization {\n          name\n          id\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
