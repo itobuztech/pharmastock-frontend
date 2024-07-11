@@ -54,7 +54,7 @@ export default function Pharmacy() {
     resolver: yupResolver(schema),
   });
 
-  const [pharmacyCreate] = useMutation(PharmacyCreate);
+  const [pharmacyCreate, { loading: addLoading }] = useMutation(PharmacyCreate);
 
   const onSubmit = async (data: CreatePharmacyInput) => {
     console.log({ data });
@@ -226,7 +226,9 @@ export default function Pharmacy() {
             )}
           </div>
           <div className="text-right">
-            <ButtonComponent type="submit">Create</ButtonComponent>
+            <ButtonComponent type="submit" loading={addLoading}>
+              Create
+            </ButtonComponent>
           </div>
         </form>
       </Modal>

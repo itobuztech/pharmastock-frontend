@@ -1,19 +1,16 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_ITEM_CATEGORY = gql`
+export const CreateCategory = gql`
   mutation CreateItemCategory(
     $createItemCategoryInput: CreateItemCategoryInput!
   ) {
     createItemCategory(createItemCategoryInput: $createItemCategoryInput) {
+      createdAt
       id
       name
-      createdAt
+      updatedAt
       Item {
         id
-        Category {
-          name
-          id
-        }
       }
     }
   }

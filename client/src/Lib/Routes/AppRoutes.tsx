@@ -18,8 +18,11 @@ const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 const OrganizationsPage = React.lazy(
   () => import("Page/Organizations/OrganizationsPage")
 );
-const CreateItemCategoryPage = React.lazy(
-  () => import("Page/CreateItemCategory/CreateItemCategoryPage")
+const ItemCategory = React.lazy(
+  () => import("Page/CreateItemCategory/ItemCategory")
+);
+const ItemCategoryDetails = React.lazy(
+  () => import("Page/CreateItemCategory/ItemCategoryDetails")
 );
 const ItemCategoryListPage = React.lazy(
   () => import("Page/ItemCategoryList/ItemCategoryListPage")
@@ -58,12 +61,17 @@ export default function AppRoutes() {
 
             <Route
               path={routes.dashboard.pharmacies.path}
-              element={<PharmacyPage />}
-            />
-            <Route
-              path={routes.dashboard.pharmacyDetails.path}
-              element={<PharmacyDetails />}
-            />
+              element={<AuthGuard />}
+            >
+              <Route
+                path={routes.dashboard.pharmacies.path}
+                element={<PharmacyPage />}
+              />
+              <Route
+                path={routes.dashboard.pharmacyDetails.path}
+                element={<PharmacyDetails />}
+              />
+            </Route>
 
             <Route
               path={routes.dashboard.createItemCategory.path}
@@ -71,7 +79,11 @@ export default function AppRoutes() {
             >
               <Route
                 path={routes.dashboard.createItemCategory.path}
-                element={<CreateItemCategoryPage />}
+                element={<ItemCategory />}
+              />
+              <Route
+                path={routes.dashboard.createItemCategoryDetails.path}
+                element={<ItemCategoryDetails />}
               />
             </Route>
 

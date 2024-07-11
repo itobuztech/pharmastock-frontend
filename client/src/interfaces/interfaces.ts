@@ -161,14 +161,35 @@ export interface ItemCategoryCreationSucc {
   sm: string;
 }
 
-export interface ItemCategory {
-  id: string;
-  name: string;
-  parentCategoryId: string | null;
-  createdAt: string;
-}
+// export interface ItemCategory {
+//   id: string;
+//   name: string;
+//   parentCategoryId: string | null;
+//   createdAt: string;
+// }
 
 export interface PaginationArgs {
   take: number;
   skip: number;
+}
+
+export interface CreateItemCategories {
+  itemCategories: ItemCategories;
+}
+
+export interface ItemCategories {
+  total: number;
+  itemCategories: CategoryItem[];
+}
+
+export interface CategoryItem {
+  createdAt: string;
+  id: string;
+  name: string;
+  updatedAt: string;
+  Item?: Item;
+}
+
+export interface Item {
+  id: string;
 }
