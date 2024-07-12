@@ -1,9 +1,7 @@
 import React from "react";
 import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
-import { FaReact } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { dashboardRoutes } from "Lib/Routes/DashboardRoutes";
 
 export default function SidebarComponent() {
   return (
@@ -16,8 +14,7 @@ export default function SidebarComponent() {
           className="flex items-center justify-start mx-6 mt-10 no-underline"
           to={"/dashboard"}
         >
-          <FaReact size={"40px"} />
-          <span className="text-gray-600  ml-4 text-2xl font-bold">
+          <span className="text-black  ml-4 text-2xl font-bold">
             Pharma Stock
           </span>
         </Link>
@@ -49,8 +46,6 @@ export default function SidebarComponent() {
             text="Item Category List"
             link={routes.dashboard.itemCategoryList.path}
           />
-
-          <MenuLink text="Logout" link={routes.logout.path} />
 
           <MenuLink text="Logout" link={routes.logout.path} />
         </nav>

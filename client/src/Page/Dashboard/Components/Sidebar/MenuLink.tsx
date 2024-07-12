@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function MenuLink({
   text,
   activeMenuPaths,
-  link
+  link,
 }: {
   text: string;
   activeMenuPaths?: string;
@@ -21,11 +21,12 @@ export default function MenuLink({
 
   return (
     <Link
-      className={`hover:text-gray-800 hover:bg-gray-100 flex items-center p-2 my-6 transition-colors  duration-200  text-gray-600 rounded-lg no-underline ${
-        isActive ? 'bg-gray-300' : ''
+      className={`hover:text-gray-800 hover:bg-blue-100 flex items-center p-2 my-6 transition-colors  duration-200  text-black rounded-lg no-underline ${
+        isActive ? "bg-blue-300" : ""
       }`}
-      to={link}>
-      <span className='mx-4 text-lg font-normal'>{text}</span>
+      to={link}
+    >
+      <span className="mx-4 text-lg font-normal">{text}</span>
     </Link>
   );
 }
