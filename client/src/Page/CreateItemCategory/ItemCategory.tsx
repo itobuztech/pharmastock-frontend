@@ -165,34 +165,37 @@ export default function ItemCategory() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
       <PageHeader title="Category" showCreateButton={true} onClick={open} />
 
-      <Table horizontalSpacing="md" verticalSpacing="md">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Items</Table.Th>
-            <Table.Th>Stock</Table.Th>
-            <Table.Th>Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
-      <Flex
-        mih={50}
-        gap="md"
-        justify="center"
-        align="center"
-        direction="row"
-        wrap="wrap"
-      >
-        <Pagination
-          total={totalCount}
-          value={activePage}
-          onChange={setActivePage}
-          mt="sm"
-        />
-      </Flex>
+      <div className="bg-white">
+        <Table horizontalSpacing="md" verticalSpacing="md">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Items</Table.Th>
+              <Table.Th>Stock</Table.Th>
+              <Table.Th>Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+        <Flex
+          mih={50}
+          gap="md"
+          justify="center"
+          align="center"
+          direction="row"
+          wrap="wrap"
+        >
+          <Pagination
+            total={totalCount}
+            value={activePage}
+            onChange={setActivePage}
+            mt="sm"
+          />
+        </Flex>
+        <Space h="md" />
+      </div>
 
       <ConfirmationModal
         title="Category"

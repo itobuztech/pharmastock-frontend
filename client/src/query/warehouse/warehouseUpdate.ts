@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GetWarehouseUpdate = gql`
-  mutation Mutation($updateWarehouseInput: UpdateWarehouseInput!) {
+  mutation WarehouseUpdate($updateWarehouseInput: UpdateWarehouseInput!) {
     updateWarehouse(updateWarehouseInput: $updateWarehouseInput) {
       area
       createdAt
