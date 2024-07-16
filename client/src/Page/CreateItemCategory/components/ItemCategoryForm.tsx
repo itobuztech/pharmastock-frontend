@@ -60,7 +60,7 @@ export default function ItemCategoryForm({
         toast.error(err.message);
       },
       onCompleted: (d) => {
-        toast.success("Pharmacy Created Successfully");
+        toast.success("Category Created Successfully");
         if (close) {
           close();
         }

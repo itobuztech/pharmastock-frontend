@@ -32,7 +32,7 @@ export default function ItemCategoryTable({
       <Table.Td>{item.name}</Table.Td>
       <Table.Td>12</Table.Td>
       <Table.Td>23</Table.Td>
-      <Table.Td>
+      <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
@@ -43,14 +43,18 @@ export default function ItemCategoryTable({
 
   return (
     <div className="bg-white overflow-auto">
-      <Table horizontalSpacing="md" verticalSpacing="md">
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="md"
+        className="w-[700px] md:w-full"
+      >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Name</Table.Th>
             <Table.Th>Items</Table.Th>
             <Table.Th>Stock</Table.Th>
-            <Table.Th>Action</Table.Th>
+            <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
