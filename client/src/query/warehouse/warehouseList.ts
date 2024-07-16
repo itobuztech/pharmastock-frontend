@@ -10,6 +10,7 @@ export const GetWarehouseList = gql`
         id
         location
         updatedAt
+        name
         organization {
           name
           id

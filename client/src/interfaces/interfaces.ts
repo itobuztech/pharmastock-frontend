@@ -206,5 +206,10 @@ export interface WarehouseItem {
   createdAt: string;
   id: string;
   location: string;
+  name: string;
   updatedAt: string;
+  organization: {
+    id: string;
+    name: string;
+  };
 }
