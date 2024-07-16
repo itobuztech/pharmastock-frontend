@@ -55,25 +55,30 @@ export default function LoginPage() {
       className="flex justify-center items-center"
     >
       <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
-        <div className="self-center mb-6 text-xl font-light text-gray-600 sm:text-2xl ">
-          Login To Your Account
-        </div>
+        <h1 className="self-center font-light text-black m-0">Welcome</h1>
+        <h3 className="self-center font-light text-black m-0">
+          Login to your account
+        </h3>
         <div className="mt-8">
           <form onSubmit={handleSubmit}>
-            <TextInput
-              label="Email"
-              placeholder="Email"
-              value={loginUserInput.email}
-              onChange={handleChange("email")}
-              required
-            />
-            <PasswordInput
-              label="Password"
-              placeholder="Password"
-              value={loginUserInput.password}
-              onChange={handleChange("password")}
-              required
-            />
+            <div className="mb-4">
+              <TextInput
+                label="Email"
+                placeholder="Email"
+                value={loginUserInput.email}
+                onChange={handleChange("email")}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <PasswordInput
+                label="Password"
+                placeholder="Password"
+                value={loginUserInput.password}
+                onChange={handleChange("password")}
+                required
+              />
+            </div>
 
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">
@@ -86,20 +91,27 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex w-full">
-              <ButtonComponent type="submit" loading={loginLoader}>
+            <div className="text-right w-full">
+              <ButtonComponent
+                type="submit"
+                loading={loginLoader}
+                fullWidth={true}
+              >
                 Login
               </ButtonComponent>
             </div>
           </form>
         </div>
         <div className="flex items-center justify-center mt-6">
-          <Link
-            to={routes.register.path}
-            className="inline-flex items-center text-xs  text-center text-gray-500 hover:text-gray-700"
-          >
-            <span className="ml-2">You don&#x27;t have an account?</span>
-          </Link>
+          <span className="inline-flex items-center text-xs text-center text-gray-500">
+            You don&#x27;t have an account yet?&nbsp;
+            <Link
+              to={routes.register.path}
+              className="text-blue-900 hover:text-blue-600 transition-colors"
+            >
+              Sign Up
+            </Link>
+          </span>
         </div>
       </div>
     </div>

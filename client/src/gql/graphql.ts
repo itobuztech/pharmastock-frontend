@@ -44,6 +44,7 @@ export type CreateItemInput = {
   hsnCode?: InputMaybe<Scalars['String']['input']>;
   instructions: Scalars['String']['input'];
   mrpBaseUnit?: InputMaybe<Scalars['Float']['input']>;
+  name: Scalars['String']['input'];
   wholesalePrice?: InputMaybe<Scalars['Float']['input']>;
 };
 
@@ -71,13 +72,18 @@ export type CreatePharmacyStockInput = {
   warehouseId: Scalars['String']['input'];
 };
 
+export type CreateSkuNameInput = {
+  itemId: Scalars['String']['input'];
+  organizationId: Scalars['String']['input'];
+  warehouseId: Scalars['String']['input'];
+};
+
 export type CreateStockMovementInput = {
   batchName?: InputMaybe<Scalars['String']['input']>;
   expiry?: InputMaybe<Scalars['DateTime']['input']>;
   itemId: Scalars['String']['input'];
   pharmacyStockId?: InputMaybe<Scalars['String']['input']>;
   qty: Scalars['Float']['input'];
-  sku?: InputMaybe<Scalars['String']['input']>;
   warehouseStockId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -95,6 +101,7 @@ export type CreateWarehouseInput = {
   adminId?: InputMaybe<Scalars['String']['input']>;
   area: Scalars['String']['input'];
   location: Scalars['String']['input'];
+  name: Scalars['String']['input'];
   organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -102,6 +109,7 @@ export type CreateWarehouseStockInput = {
   batchName: Scalars['String']['input'];
   expiry: Scalars['DateTime']['input'];
   itemId: Scalars['String']['input'];
+  organizationId: Scalars['String']['input'];
   qty: Scalars['Float']['input'];
   sku: Scalars['String']['input'];
   stockLevel?: InputMaybe<Scalars['String']['input']>;
@@ -161,6 +169,11 @@ export type ForgotPasswordResponse = {
   token: Scalars['String']['output'];
 };
 
+export type GenerateSku = {
+  __typename?: 'GenerateSku';
+  sku: Scalars['String']['output'];
+};
+
 export type Item = {
   __typename?: 'Item';
   Category?: Maybe<Array<ItemCategory>>;
@@ -170,6 +183,7 @@ export type Item = {
   id: Scalars['String']['output'];
   instructions: Scalars['String']['output'];
   mrpBaseUnit?: Maybe<Scalars['Float']['output']>;
+  name: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   wholesalePrice?: Maybe<Scalars['Float']['output']>;
 };
@@ -234,6 +248,7 @@ export type Mutation = {
   deleteWarehouse: Warehouse;
   deleteWarehouseStock: WarehouseStock;
   forgotPassword: ForgotPasswordResponse;
+  generateSKU: GenerateSku;
   login: LoginResponse;
   resetPassword: Scalars['Boolean']['output'];
   signup: SignupResponse;
@@ -343,6 +358,11 @@ export type MutationForgotPasswordArgs = {
 };
 
 
+export type MutationGenerateSkuArgs = {
+  generateSkuNameInput: CreateSkuNameInput;
+};
+
+
 export type MutationLoginArgs = {
   loginUserInput: LoginUserInput;
 };
@@ -429,6 +449,12 @@ export type PaginatedOrganizations = {
   total: Scalars['Float']['output'];
 };
 
+export type PaginatedPharmacies = {
+  __typename?: 'PaginatedPharmacies';
+  pharmacies: Array<Pharmacy>;
+  total: Scalars['Float']['output'];
+};
+
 export type PaginatedPharmacyStocks = {
   __typename?: 'PaginatedPharmacyStocks';
   pharmacyStocks: Array<PharmacyStock>;
@@ -493,8 +519,9 @@ export type Query = {
   organization: Organization;
   organizationByName: Organization;
   organizations?: Maybe<PaginatedOrganizations>;
-  pharmacies?: Maybe<Array<Pharmacy>>;
+  pharmacies?: Maybe<PaginatedPharmacies>;
   pharmacy: Pharmacy;
+  sku: Sku;
   stockMovement: StockMovement;
   stockMovements?: Maybe<Array<StockMovement>>;
   user: User;
@@ -561,6 +588,13 @@ export type QueryPharmacyArgs = {
 };
 
 
+export type QuerySkuArgs = {
+  itemId: Scalars['String']['input'];
+  organizationId: Scalars['String']['input'];
+  warehouseId: Scalars['String']['input'];
+};
+
+
 export type QueryStockMovementArgs = {
   id: Scalars['String']['input'];
 };
@@ -610,12 +644,17 @@ export type SignupResponse = {
   success: Scalars['String']['output'];
 };
 
-export enum StockLevel {
-  High = 'HIGH',
-  Low = 'LOW',
-  Negative = 'NEGATIVE',
-  Positive = 'POSITIVE'
-}
+export type Sku = {
+  __typename?: 'Sku';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  sku: Scalars['String']['output'];
+  stockLevel: Scalars['String']['output'];
+  stockStatus?: Maybe<Scalars['String']['output']>;
+  stocklevelMax?: Maybe<Scalars['String']['output']>;
+  stocklevelMin?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
 
 export type StockMovement = {
   __typename?: 'StockMovement';
@@ -626,7 +665,6 @@ export type StockMovement = {
   itemId: Scalars['String']['output'];
   pharmacyStockId?: Maybe<Scalars['String']['output']>;
   qty: Scalars['Float']['output'];
-  sku: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   warehouseStockId?: Maybe<Scalars['String']['output']>;
 };
@@ -648,6 +686,7 @@ export type UpdateItemInput = {
   id: Scalars['String']['input'];
   instructions?: InputMaybe<Scalars['String']['input']>;
   mrpBaseUnit?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   wholesalePrice?: InputMaybe<Scalars['Float']['input']>;
 };
 
@@ -680,6 +719,7 @@ export type UpdateWarehouseInput = {
   area?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   location?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -710,27 +750,25 @@ export type ValidateForgotPasswordResponse = {
 
 export type Warehouse = {
   __typename?: 'Warehouse';
+  admin?: Maybe<User>;
   area: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
   location: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   organization?: Maybe<Organization>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  user?: Maybe<User>;
 };
 
 export type WarehouseStock = {
   __typename?: 'WarehouseStock';
+  SKU: Sku;
   createdAt: Scalars['DateTime']['output'];
   finalQty: Scalars['Float']['output'];
   id: Scalars['String']['output'];
-  item?: Maybe<Item>;
-  stockLevel?: Maybe<StockLevel>;
-  stockStatus?: Maybe<Scalars['String']['output']>;
-  stocklevelMax?: Maybe<Scalars['Float']['output']>;
-  stocklevelMin?: Maybe<Scalars['Float']['output']>;
+  item: Item;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  warehouse?: Maybe<Warehouse>;
+  warehouse: Warehouse;
 };
 
 export type LoginMutationVariables = Exact<{
@@ -829,10 +867,12 @@ export type PharmacyQueryVariables = Exact<{
 
 export type PharmacyQuery = { __typename?: 'Query', pharmacy: { __typename?: 'Pharmacy', contactInfo?: string | null, createdAt: any, id: string, location: string, name: string, updatedAt?: any | null, organization?: { __typename?: 'Organization', active?: boolean | null, address: string, city: string, contact: string, country: string, createdAt: any, description: string, id: string, name: string, updatedAt?: any | null } | null } };
 
-export type PharmaciesQueryVariables = Exact<{ [key: string]: never; }>;
+export type PharmaciesQueryVariables = Exact<{
+  paginationArgs?: InputMaybe<PaginationArgs>;
+}>;
 
 
-export type PharmaciesQuery = { __typename?: 'Query', pharmacies?: Array<{ __typename?: 'Pharmacy', contactInfo?: string | null, createdAt: any, id: string, location: string, name: string, updatedAt?: any | null, organization?: { __typename?: 'Organization', active?: boolean | null, address: string, city: string, contact: string, country: string, createdAt: any, description: string, id: string, name: string, updatedAt?: any | null } | null }> | null };
+export type PharmaciesQuery = { __typename?: 'Query', pharmacies?: { __typename?: 'PaginatedPharmacies', total: number, pharmacies: Array<{ __typename?: 'Pharmacy', contactInfo?: string | null, createdAt: any, id: string, location: string, name: string, updatedAt?: any | null, organization?: { __typename?: 'Organization', id: string, name: string } | null }> } | null };
 
 export type UpdatePharmacyMutationVariables = Exact<{
   updatePharmacyInput: UpdatePharmacyInput;
@@ -863,6 +903,6 @@ export const UpdateOrganizationDocument = {"kind":"Document","definitions":[{"ki
 export const CreatePharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreatePharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createPharmacyInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreatePharmacyInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createPharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createPharmacyInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createPharmacyInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreatePharmacyMutation, CreatePharmacyMutationVariables>;
 export const DeletePharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeletePharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deletePharmacyInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeletePharmacyInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"deletePharmacyInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deletePharmacyInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<DeletePharmacyMutation, DeletePharmacyMutationVariables>;
 export const PharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Pharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"city"}},{"kind":"Field","name":{"kind":"Name","value":"contact"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<PharmacyQuery, PharmacyQueryVariables>;
-export const PharmaciesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Pharmacies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"address"}},{"kind":"Field","name":{"kind":"Name","value":"city"}},{"kind":"Field","name":{"kind":"Name","value":"contact"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<PharmaciesQuery, PharmaciesQueryVariables>;
+export const PharmaciesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Pharmacies"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacies"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<PharmaciesQuery, PharmaciesQueryVariables>;
 export const UpdatePharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updatePharmacyInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdatePharmacyInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updatePharmacyInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updatePharmacyInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<UpdatePharmacyMutation, UpdatePharmacyMutationVariables>;
 export const MutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Mutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tokenConfirmationInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TokenConfirmationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tokenConfirmation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tokenConfirmationInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tokenConfirmationInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"emailConfirmationToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailConfirmed"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<MutationMutation, MutationMutationVariables>;

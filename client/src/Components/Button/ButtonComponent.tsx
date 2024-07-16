@@ -1,7 +1,7 @@
-import { Button, ButtonVariant, DefaultMantineColor } from '@mantine/core';
+import { Button, ButtonVariant, DefaultMantineColor } from "@mantine/core";
 
 export const defaultButtonConfig = {
-  color: 'violet'
+  color: "violet",
 };
 
 export default function ButtonComponent({
@@ -13,18 +13,18 @@ export default function ButtonComponent({
   className,
   testId,
   type,
+  fullWidth,
 }: {
-  onClick?: () =>  void
+  onClick?: () => void;
   loading?: boolean;
-  type?: 'submit' | 'button';
+  type?: "submit" | "button";
   color?: DefaultMantineColor | undefined;
   className?: string;
   children: any;
   testId?: string;
-  variant?: ButtonVariant
+  variant?: ButtonVariant;
+  fullWidth?: boolean;
 }) {
-
-
   return (
     <Button
       loading={loading}
@@ -33,7 +33,9 @@ export default function ButtonComponent({
       color={color}
       type={type}
       variant={variant}
-      onClick={onClick && onClick}>
+      fullWidth={fullWidth}
+      onClick={onClick && onClick}
+    >
       {children}
     </Button>
   );
