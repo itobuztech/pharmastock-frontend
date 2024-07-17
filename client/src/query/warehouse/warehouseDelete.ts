@@ -8,6 +8,7 @@ export const DeleteWarehouse = gql`
       id
       location
       updatedAt
+      name
     }
   }
 `;

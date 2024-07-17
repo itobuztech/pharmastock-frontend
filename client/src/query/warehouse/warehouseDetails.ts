@@ -8,6 +8,11 @@ export const GetWarehouseDetails = gql`
       id
       location
       updatedAt
+      name
+      organization {
+        name
+        id
+      }
     }
   }
 `;

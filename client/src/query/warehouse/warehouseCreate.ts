@@ -8,6 +8,7 @@ export const CreateWarehouse = gql`
       id
       location
       updatedAt
+      name
       organization {
         id
         name
