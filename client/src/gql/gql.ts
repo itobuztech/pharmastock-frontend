@@ -14,12 +14,16 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.LoginDocument,
-    "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      id\n      name\n      createdAt\n      Item {\n        id\n        Category {\n          name\n          id\n        }\n      }\n    }\n  }\n": types.CreateItemCategoryDocument,
     "\n  query Organizations($paginationArgs: PaginationArgs) {\n    organizations(paginationArgs: $paginationArgs) {\n      organizations {\n        active\n        address\n        city\n        country\n        createdAt\n        description\n        id\n        name\n        updatedAt\n      }\n      total\n    }\n  }\n": types.OrganizationsDocument,
     "\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.AccountDocument,
     "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n": types.ResetPasswordDocument,
     "\n  mutation Updateprofile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n": types.UpdateprofileDocument,
     "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n": types.SignupDocument,
+    "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n": types.CreateItemCategoryDocument,
+    "\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n": types.DeleteItemCategoryDocument,
+    "\n  query CategoryItem($itemCategoryId: String!) {\n    itemCategory(id: $itemCategoryId) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.CategoryItemDocument,
+    "\n  query ItemCategories($paginationArgs: PaginationArgs) {\n    itemCategories(paginationArgs: $paginationArgs) {\n      total\n      itemCategories {\n        createdAt\n        id\n        name\n        parentCategory {\n          id\n        }\n        updatedAt\n      }\n    }\n  }\n": types.ItemCategoriesDocument,
+    "\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.UpdateItemCategoryDocument,
     "\n  mutation CreateOrganization(\n    $createOrganizationInput: CreateOrganizationInput!\n  ) {\n    createOrganization(createOrganizationInput: $createOrganizationInput) {\n      active\n      address\n      city\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n      contact\n    }\n  }\n": types.CreateOrganizationDocument,
     "\n  mutation DeleteOrganization(\n    $deleteOrganizationInput: DeleteOrganizationInput!\n  ) {\n    deleteOrganization(deleteOrganizationInput: $deleteOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.DeleteOrganizationDocument,
     "\n  query Query($organizationId: String!) {\n    organization(id: $organizationId) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.QueryDocument,
@@ -53,10 +57,6 @@ export function graphql(source: "\n  mutation Login($loginUserInput: LoginUserIn
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      id\n      name\n      createdAt\n      Item {\n        id\n        Category {\n          name\n          id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      id\n      name\n      createdAt\n      Item {\n        id\n        Category {\n          name\n          id\n        }\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n  query Organizations($paginationArgs: PaginationArgs) {\n    organizations(paginationArgs: $paginationArgs) {\n      organizations {\n        active\n        address\n        city\n        country\n        createdAt\n        description\n        id\n        name\n        updatedAt\n      }\n      total\n    }\n  }\n"): (typeof documents)["\n  query Organizations($paginationArgs: PaginationArgs) {\n    organizations(paginationArgs: $paginationArgs) {\n      organizations {\n        active\n        address\n        city\n        country\n        createdAt\n        description\n        id\n        name\n        updatedAt\n      }\n      total\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -74,6 +74,26 @@ export function graphql(source: "\n  mutation Updateprofile($updateProfileInput:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query CategoryItem($itemCategoryId: String!) {\n    itemCategory(id: $itemCategoryId) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query CategoryItem($itemCategoryId: String!) {\n    itemCategory(id: $itemCategoryId) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query ItemCategories($paginationArgs: PaginationArgs) {\n    itemCategories(paginationArgs: $paginationArgs) {\n      total\n      itemCategories {\n        createdAt\n        id\n        name\n        parentCategory {\n          id\n        }\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query ItemCategories($paginationArgs: PaginationArgs) {\n    itemCategories(paginationArgs: $paginationArgs) {\n      total\n      itemCategories {\n        createdAt\n        id\n        name\n        parentCategory {\n          id\n        }\n        updatedAt\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

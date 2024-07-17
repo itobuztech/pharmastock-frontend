@@ -18,7 +18,7 @@ export default function PageHeader({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-wrap items-center justify-between mt-2 mb-8">
+    <div className="flex flex-wrap items-center justify-between mt-1 mb-8">
       <div className="flex flex-wrap items-center justify-between">
         {showBackButton && (
           <Button

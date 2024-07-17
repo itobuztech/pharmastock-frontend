@@ -38,7 +38,7 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
-            text="Create Item Category"
+            text="Item Category"
             link={routes.dashboard.createItemCategory.path}
           />
 

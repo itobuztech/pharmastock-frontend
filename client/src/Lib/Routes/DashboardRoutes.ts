@@ -8,6 +8,7 @@ export interface DashBoardRoutes {
   pharmacies: DefaultRoute;
   pharmacyDetails: DefaultRoute;
   createItemCategory: DefaultRoute;
+  createItemCategoryDetails: DefaultRoute;
   itemCategoryList: DefaultRoute;
 }
 
@@ -36,8 +37,12 @@ export const dashboardRoutes: DashBoardRoutes = {
     fullPath: `${dashboardPath}/pharmacies/:id`,
   },
   createItemCategory: {
-    path: `${dashboardPath}/createItemCategory`,
-    fullPath: `${dashboardPath}/createItemCategory`,
+    path: `${dashboardPath}/itemCategory`,
+    fullPath: `${dashboardPath}/itemCategory`,
+  },
+  createItemCategoryDetails: {
+    path: `${dashboardPath}/itemCategory/:id`,
+    fullPath: `${dashboardPath}/itemCategory/:id`,
   },
   itemCategoryList: {
     path: `${dashboardPath}/itemCategoryList`,
