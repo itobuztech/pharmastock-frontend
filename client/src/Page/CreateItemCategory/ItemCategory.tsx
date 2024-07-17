@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -11,6 +11,7 @@ import ConfirmationModal from "Components/ConfirmationModal";
 import { CategoryItemDelete } from "query/category/categoryDelete";
 import ItemCategoryTable from "./components/ItemCategoryTable";
 import ItemCategoryForm from "./components/ItemCategoryForm";
+import EmptyList from "Components/EmptyList";
 
 export default function ItemCategory() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -28,7 +29,7 @@ export default function ItemCategory() {
   ] = useDisclosure(false);
 
   // Category list query
-  const [fetchItemCategoryList, { refetch }] =
+  const [fetchItemCategoryList, { refetch, loading }] =
     useLazyQuery<CreateItemCategories>(GetItemCategoryList, {
       onError: (err) => {
         toast.error(err.message);
@@ -107,16 +108,28 @@ export default function ItemCategory() {
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Category" showCreateButton={true} onClick={open} />
 
-      <ItemCategoryTable
-        activePage={activePage}
-        setActivePage={setActivePage}
-        itemCategoryList={itemCategoryList}
-        handleDelete={handleDelete}
-        totalCount={totalCount}
-      />
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {itemCategoryList?.itemCategories.length === 0 ? (
+        <EmptyList />
+      ) : (
+        <ItemCategoryTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          itemCategoryList={itemCategoryList}
+          handleDelete={handleDelete}
+          totalCount={totalCount}
+        />
+      )}
 
       <ConfirmationModal
         title="Category"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Pharmacies } from "interfaces/interfaces";
 import { GetPharmacyList } from "query/pharmacy/pharmacyList";
@@ -11,6 +11,7 @@ import ConfirmationModal from "Components/ConfirmationModal";
 import { DeletePharmacy } from "query/pharmacy/pharmacyDelete";
 import PharmacyTable from "./components/PharmacyTable";
 import PharmacyForm from "./components/PharmacyForm";
+import EmptyList from "Components/EmptyList";
 
 export default function Pharmacy() {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
@@ -27,7 +28,7 @@ export default function Pharmacy() {
   ] = useDisclosure(false);
 
   // Pharmacy list query
-  const [fetchPharmacyList, { refetch }] = useLazyQuery<Pharmacies>(
+  const [fetchPharmacyList, { refetch, loading }] = useLazyQuery<Pharmacies>(
     GetPharmacyList,
     {
       onError: (err) => {
@@ -111,21 +112,32 @@ export default function Pharmacy() {
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy List"
         showCreateButton={true}
         onClick={open}
       />
 
-      <PharmacyTable
-        activePage={activePage}
-        setActivePage={setActivePage}
-        pharmacyList={pharmacyList}
-        handleDelete={handleDelete}
-        totalCount={totalCount}
-      />
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
 
+      {!pharmacyList?.pharmacies.length ? (
+        <EmptyList />
+      ) : (
+        <PharmacyTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          pharmacyList={pharmacyList}
+          handleDelete={handleDelete}
+          totalCount={totalCount}
+        />
+      )}
       <ConfirmationModal
         title="Pharmacy"
         modalOpen={deleteModalOpened}

@@ -46,7 +46,7 @@ export default function ItemCategoryTable({
       <Table
         horizontalSpacing="md"
         verticalSpacing="md"
-        className="w-[700px] md:w-full"
+        className="w-[700px] md:w-[900px] lg:w-full"
       >
         <Table.Thead>
           <Table.Tr>

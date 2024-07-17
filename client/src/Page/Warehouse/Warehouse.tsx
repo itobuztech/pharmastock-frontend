@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
@@ -10,6 +10,7 @@ import { DeleteWarehouse } from "query/warehouse/warehouseDelete";
 import ConfirmationModal from "Components/ConfirmationModal";
 import WarehouseListTable from "./components/WarehouseListTable";
 import WarehouseForm from "./components/WarehouseForm";
+import EmptyList from "Components/EmptyList";
 
 export default function Warehouse() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -25,9 +26,8 @@ export default function Warehouse() {
 
   const [editForm, setEditForm] = useState(true);
 
-  const [fetchWarehouseList, { refetch }] = useLazyQuery<CreateWarehouses>(
-    GetWarehouseList,
-    {
+  const [fetchWarehouseList, { refetch, loading }] =
+    useLazyQuery<CreateWarehouses>(GetWarehouseList, {
       onError: (err) => {
         toast.error(err.message);
       },
@@ -40,8 +40,7 @@ export default function Warehouse() {
           setTotalCount(paginationCount);
         }
       },
-    }
-  );
+    });
 
   useEffect(() => {
     fetchWarehouseList({
@@ -102,16 +101,28 @@ export default function Warehouse() {
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Warehouse" showCreateButton={true} onClick={open} />
 
-      <WarehouseListTable
-        activePage={activePage}
-        setActivePage={setActivePage}
-        warehouseList={warehouseList}
-        handleDelete={handleDelete}
-        totalCount={totalCount}
-      />
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {warehouseList?.warehouses.length === 0 ? (
+        <EmptyList />
+      ) : (
+        <WarehouseListTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          warehouseList={warehouseList}
+          handleDelete={handleDelete}
+          totalCount={totalCount}
+        />
+      )}
 
       <ConfirmationModal
         title="Warehouse"

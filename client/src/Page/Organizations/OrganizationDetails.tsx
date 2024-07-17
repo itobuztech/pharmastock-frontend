@@ -19,14 +19,14 @@ export default function OrganizationDetails() {
   });
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Details"
         showBackButton={true}
         showCreateButton={false}
       />
 
-      <div className="w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
         <OrganizationForm
           editForm={editForm}
           setEditForm={setEditForm}

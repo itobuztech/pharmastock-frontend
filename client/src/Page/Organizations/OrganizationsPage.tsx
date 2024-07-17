@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "./Organizations.scoped.scss";
 import {
   createOrganizationInput,
   OrganizationList,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
@@ -14,6 +13,7 @@ import PageHeader from "Components/PageHeader";
 import ConfirmationModal from "Components/ConfirmationModal";
 import OrganizationTable from "./components/OrganizationTable";
 import OrganizationForm from "./components/OrganizationForm";
+import EmptyList from "Components/EmptyList";
 
 export default function OrganizationsPage() {
   // Organization listing. STARTS
@@ -50,9 +50,8 @@ export default function OrganizationsPage() {
     },
   });
 
-  const [organizationList, { refetch }] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
+  const [organizationList, { refetch, loading }] =
+    useLazyQuery<OrganizationList>(ORGANIZATIONS_LIST_QUERY, {
       onError: (error) => {
         toast.error(error.message);
       },
@@ -66,8 +65,7 @@ export default function OrganizationsPage() {
           setTotalCount(paginationCount);
         }
       },
-    }
-  );
+    });
 
   useEffect(() => {
     organizationList({
@@ -108,20 +106,32 @@ export default function OrganizationsPage() {
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
         showCreateButton={true}
         onClick={open}
       />
 
-      <OrganizationTable
-        organizationList={organization}
-        activePage={activePage}
-        handleDelete={handleDelete}
-        totalCount={totalCount}
-        setActivePage={setActivePage}
-      />
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {!organization?.organizations.length ? (
+        <EmptyList />
+      ) : (
+        <OrganizationTable
+          organizationList={organization}
+          activePage={activePage}
+          handleDelete={handleDelete}
+          totalCount={totalCount}
+          setActivePage={setActivePage}
+        />
+      )}
 
       <ConfirmationModal
         title="Organization"
