@@ -12,6 +12,9 @@ export const GetItemCategoryList = gql`
           id
         }
         updatedAt
+        Item {
+          id
+        }
       }
     }
   }

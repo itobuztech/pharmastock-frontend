@@ -24,13 +24,12 @@ const ItemCategory = React.lazy(
 const ItemCategoryDetails = React.lazy(
   () => import("Page/CreateItemCategory/ItemCategoryDetails")
 );
-const ItemCategoryListPage = React.lazy(
-  () => import("Page/ItemCategoryList/ItemCategoryListPage")
-);
 const Warehouse = React.lazy(() => import("Page/Warehouse/Warehouse"));
 const WarehouseDetails = React.lazy(
   () => import("Page/Warehouse/WarehouseDetails")
 );
+const ItemList = React.lazy(() => import("Page/Item/ItemList"));
+const ItemDetails = React.lazy(() => import("Page/Item/ItemDetails"));
 
 export default function AppRoutes() {
   return (
@@ -92,16 +91,6 @@ export default function AppRoutes() {
             </Route>
 
             <Route
-              path={routes.dashboard.itemCategoryList.path}
-              element={<AuthGuard />}
-            >
-              <Route
-                path={routes.dashboard.itemCategoryList.path}
-                element={<ItemCategoryListPage />}
-              />
-            </Route>
-
-            <Route
               path={routes.dashboard.warehouseList.path}
               element={<AuthGuard />}
             >
@@ -112,6 +101,20 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.warehouseDetails.path}
                 element={<WarehouseDetails />}
+              />
+            </Route>
+
+            <Route
+              path={routes.dashboard.itemList.path}
+              element={<AuthGuard />}
+            >
+              <Route
+                path={routes.dashboard.itemList.path}
+                element={<ItemList />}
+              />
+              <Route
+                path={routes.dashboard.itemDetails.path}
+                element={<ItemDetails />}
               />
             </Route>
 

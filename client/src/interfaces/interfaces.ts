@@ -158,21 +158,21 @@ export interface Pharmacy {
 }
 
 // ---------------------- For Item category ------------------------//
-export interface CreateItemCategoryInput {
-  name: string;
-  parentCategoryId: string;
-}
-export interface CreateItemCategoryResponse {
-  id: string;
-  name: string;
-}
-export interface ItemCategoryCreationError {
-  em: string;
-}
+// export interface CreateItemCategoryInput {
+//   name: string;
+//   parentCategoryId: string;
+// }
+// export interface CreateItemCategoryResponse {
+//   id: string;
+//   name: string;
+// }
+// export interface ItemCategoryCreationError {
+//   em: string;
+// }
 
-export interface ItemCategoryCreationSucc {
-  sm: string;
-}
+// export interface ItemCategoryCreationSucc {
+//   sm: string;
+// }
 
 // export interface ItemCategory {
 //   id: string;
@@ -203,9 +203,9 @@ export interface CategoryItem {
   Item?: Item;
 }
 
-export interface Item {
-  id: string;
-}
+// export interface Item {
+//   id: string;
+// }
 
 export interface CreateWarehouses {
   warehouses: Warehouses;
@@ -225,4 +225,26 @@ export interface WarehouseItem {
     id: string;
     name: string;
   };
+}
+
+export interface ItemLists {
+  items: Items;
+}
+
+export interface Items {
+  items: Item[];
+  total: number;
+}
+
+export interface Item {
+  baseUnit: string;
+  createdAt: string;
+  hsnCode: string;
+  id: string;
+  instructions: string;
+  mrpBaseUnit: number;
+  updatedAt: string;
+  wholesalePrice: number;
+  Category: CategoryItem[];
+  name: string;
 }
