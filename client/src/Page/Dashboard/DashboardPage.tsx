@@ -16,7 +16,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex" data-test-id="dashboard-container">
-      {width > 768 && <SidebarComponent />}
+      {width > 1024 && <SidebarComponent />}
 
       <Drawer opened={opened} onClose={close}>
         <SidebarComponent />

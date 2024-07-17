@@ -30,10 +30,10 @@ export default function OrganizationTable({
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{org.name}</Table.Td>
-      <Table.Td className="w-2/5">{org.description}</Table.Td>
+      <Table.Td className="w-auto lg:w-2/5">{org.description}</Table.Td>
       <Table.Td>{org.city}</Table.Td>
       <Table.Td>{org.address}</Table.Td>
-      <Table.Td>
+      <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(org.id)}
           handleDelete={() => handleDelete(org.id)}
@@ -43,8 +43,12 @@ export default function OrganizationTable({
   ));
 
   return (
-    <div className=" bg-white">
-      <Table horizontalSpacing="md" verticalSpacing="md">
+    <div className=" bg-white overflow-auto">
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="md"
+        className="w-[600px] md:w-[800px] lg:w-full"
+      >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
@@ -52,12 +56,14 @@ export default function OrganizationTable({
             <Table.Th>Description</Table.Th>
             <Table.Th>City</Table.Th>
             <Table.Th>Address</Table.Th>
-            <Table.Th>Action</Table.Th>
+            <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
+
       <Space h="md" />
+
       <Flex
         mih={50}
         gap="md"

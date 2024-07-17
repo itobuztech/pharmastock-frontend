@@ -12,7 +12,7 @@ export default function SidebarComponent() {
       <div className="w-72 h-screen">
         <Link
           className="flex items-center justify-start mx-6 mt-10 no-underline"
-          to={"/dashboard"}
+          to={`/${routes.dashboard}`}
         >
           <span className="text-black  ml-4 text-2xl font-bold">
             Pharma Stock
@@ -42,11 +42,6 @@ export default function SidebarComponent() {
             activeMenuPaths={routes.dashboard.createItemCategory.path}
             link={routes.dashboard.createItemCategory.path}
           />
-
-          {/* <MenuLink
-            text="Item Category List"
-            link={routes.dashboard.itemCategoryList.path}
-          /> */}
 
           <MenuLink
             text="Items"

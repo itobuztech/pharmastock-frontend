@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ItemLists, Items } from "interfaces/interfaces";
@@ -25,20 +25,23 @@ export default function ItemList() {
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
 
-  const [fetchItemList, { refetch }] = useLazyQuery<ItemLists>(GetItemLists, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: (d) => {
-      if (d) {
-        const items = d.items;
-        const total = d.items.total;
-        const paginationCount = Math.ceil(total / 10);
-        setItemList(items);
-        setTotalCount(paginationCount);
-      }
-    },
-  });
+  const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
+    GetItemLists,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: (d) => {
+        if (d) {
+          const items = d.items;
+          const total = d.items.total;
+          const paginationCount = Math.ceil(total / 10);
+          setItemList(items);
+          setTotalCount(paginationCount);
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     fetchItemList({
@@ -98,8 +101,16 @@ export default function ItemList() {
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Items" showCreateButton={true} onClick={open} />
+
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
 
       {itemList?.items.length === 0 ? (
         <EmptyList />
