@@ -206,3 +206,23 @@ export interface CategoryItem {
 export interface Item {
   id: string;
 }
+
+export interface CreateWarehouses {
+  warehouses: Warehouses;
+}
+export interface Warehouses {
+  total: number;
+  warehouses: WarehouseItem[];
+}
+export interface WarehouseItem {
+  area: string;
+  createdAt: string;
+  id: string;
+  location: string;
+  name: string;
+  updatedAt: string;
+  organization: {
+    id: string;
+    name: string;
+  };
+}
