@@ -4,6 +4,7 @@ import { AuthGuard } from "../Guards/AuthGuard";
 import routes from "./Routes";
 import { AuthRoutes } from "Page/Auth/AuthRoutes";
 import OrganizationDetails from "Page/Organizations/OrganizationDetails";
+import PharmacyDetails from "Page/Pharmacy/PharmacyDetails";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
@@ -58,6 +59,10 @@ export default function AppRoutes() {
             <Route
               path={routes.dashboard.pharmacies.path}
               element={<PharmacyPage />}
+            />
+            <Route
+              path={routes.dashboard.pharmacyDetails.path}
+              element={<PharmacyDetails />}
             />
 
             <Route

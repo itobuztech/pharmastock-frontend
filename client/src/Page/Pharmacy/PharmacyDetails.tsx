@@ -1,0 +1,42 @@
+import React, { useState } from "react";
+import PageHeader from "Components/PageHeader";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GetPharmacyDetails } from "query/pharmacy/pharmacyDetails";
+import { Pharmacy } from "gql/graphql";
+import PharmacyForm from "./components/PharmacyForm";
+
+export default function PharmacyDetails() {
+  const [editForm, setEditForm] = useState(false);
+  const { id } = useParams();
+
+  const { data: pharmacyDetails, refetch } = useQuery<{ pharmacy: Pharmacy }>(
+    GetPharmacyDetails,
+    {
+      variables: {
+        pharmacyId: id,
+      },
+    }
+  );
+
+  return (
+    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
+      <PageHeader
+        title="Pharmacy Details"
+        showBackButton={true}
+        showCreateButton={false}
+      />
+
+      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
+        <PharmacyForm
+          id={id}
+          close={() => console.log()}
+          pharmacyDetails={pharmacyDetails?.pharmacy}
+          refetchPharmacyDetails={refetch}
+          editForm={editForm}
+          setEditForm={setEditForm}
+        />
+      </div>
+    </section>
+  );
+}

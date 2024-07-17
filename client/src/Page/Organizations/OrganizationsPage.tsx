@@ -6,19 +6,15 @@ import {
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
-  Button,
   Flex,
   Modal,
   Pagination,
-  Popover,
   Select,
   Space,
   Table,
   TextInput,
   Textarea,
-  Text,
 } from "@mantine/core";
-import { BsPlusLg } from "react-icons/bs";
 import { useDisclosure } from "@mantine/hooks";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { Controller, useForm } from "react-hook-form";
@@ -28,9 +24,11 @@ import { CreateOrganization } from "query/organization/organizationCreate";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { DeleteOrganization } from "query/organization/organizationDelete";
+import PageHeader from "Components/PageHeader";
+import ActionPopover from "Components/ActionPopover";
+import ConfirmationModal from "Components/ConfirmationModal";
 
 export default function OrganizationsPage() {
   // Organization listing. STARTS
@@ -156,7 +154,11 @@ export default function OrganizationsPage() {
           setTotalCount(paginationCount);
         }
       });
-    } catch (error) {}
+      deleteModalClose();
+      toast.success("Organization Deleted Successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   const rows = organizationListArr?.map((org, i) => (
@@ -169,31 +171,10 @@ export default function OrganizationsPage() {
       <Table.Td>{org.city}</Table.Td>
       <Table.Td>{org.address}</Table.Td>
       <Table.Td>
-        <Popover width={200} position="bottom-end" withArrow shadow="md">
-          <Popover.Target>
-            <Button variant="transparent">
-              <BiDotsHorizontalRounded size={24} />
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Button
-              variant="transparent"
-              fullWidth
-              onClick={() => screenSwitch(org.id)}
-              className="hover:bg-blue-100 transition-colors text-black"
-            >
-              View
-            </Button>
-            <Button
-              variant="transparent"
-              fullWidth
-              onClick={() => handleDelete(org.id)}
-              className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
-            >
-              Delete
-            </Button>
-          </Popover.Dropdown>
-        </Popover>
+        <ActionPopover
+          handleView={() => screenSwitch(org.id)}
+          handleDelete={() => handleDelete(org.id)}
+        />
       </Table.Td>
     </Table.Tr>
   ));
@@ -202,19 +183,12 @@ export default function OrganizationsPage() {
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
-      <div className="flex flex-wrap items-center justify-between mt-2 mb-8">
-        <h1 className="text-blue-900 text-2xl font-bold m-0">
-          Organizations List
-        </h1>
-        <Button
-          leftSection={<BsPlusLg size={18} />}
-          color="rgba(37, 99, 235, 1)"
-          size="md"
-          onClick={open}
-        >
-          Add Organization
-        </Button>
-      </div>
+      <PageHeader
+        title="Organizations List"
+        showCreateButton={true}
+        onClick={open}
+      />
+
       <div className=" bg-white">
         {
           <Table horizontalSpacing="md" verticalSpacing="md">
@@ -252,29 +226,12 @@ export default function OrganizationsPage() {
         <Space h="md" />
       </div>
 
-      <Modal
-        opened={deleteModalOpened}
-        onClose={deleteModalClose}
-        title="Delete Organization"
-        centered
-        size={"sm"}
-      >
-        <Text size="sm" className="mb-7">
-          Are you sure you want to delete Organization?
-        </Text>
-        <div className="flex flex-wrap justify-end gap-4">
-          <Button variant="outline" onClick={deleteModalClose}>
-            No don't delete
-          </Button>
-          <Button
-            variant="filled"
-            color="red"
-            onClick={() => getDeleteOrganization()}
-          >
-            Delete
-          </Button>
-        </div>
-      </Modal>
+      <ConfirmationModal
+        title="Organization"
+        modalOpen={deleteModalOpened}
+        modalClose={deleteModalClose}
+        deleteItem={() => getDeleteOrganization()}
+      />
 
       <Modal
         opened={opened}

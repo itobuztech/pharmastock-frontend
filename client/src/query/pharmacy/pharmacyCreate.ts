@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_PHARMACY = gql`
+export const PharmacyCreate = gql`
   mutation CreatePharmacy($createPharmacyInput: CreatePharmacyInput!) {
     createPharmacy(createPharmacyInput: $createPharmacyInput) {
-      contact_info
+      contactInfo
       createdAt
       id
       location
