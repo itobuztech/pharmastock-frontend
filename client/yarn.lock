@@ -3231,9 +3231,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/core@npm:^7.1.5":
-  version: 7.11.1
-  resolution: "@mantine/core@npm:7.11.1"
+"@mantine/core@npm:^7.11.2":
+  version: 7.11.2
+  resolution: "@mantine/core@npm:7.11.2"
   dependencies:
     "@floating-ui/react": ^0.26.9
     clsx: ^2.1.1
@@ -3242,19 +3242,19 @@ __metadata:
     react-textarea-autosize: 8.5.3
     type-fest: ^4.12.0
   peerDependencies:
-    "@mantine/hooks": 7.11.1
+    "@mantine/hooks": 7.11.2
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 92b2bddc1cc476fe176a9d1d0cdb2c9cabcd9e372f09fd0ce6ac469993eb03b2f99dcdeea8166511d702480634ab83d3e54db2a0160253c19bfb1313cbed37ed
+  checksum: 75d8bd93c6278c5fb67070c6e39ce0a2777f825fe0324d3f49003b756035dbda63a2b60c753a34d04586801d3fc30f404f34da7053bac142ee38fa06f33bae67
   languageName: node
   linkType: hard
 
-"@mantine/hooks@npm:^7.1.5":
-  version: 7.11.1
-  resolution: "@mantine/hooks@npm:7.11.1"
+"@mantine/hooks@npm:^7.11.2":
+  version: 7.11.2
+  resolution: "@mantine/hooks@npm:7.11.2"
   peerDependencies:
     react: ^18.2.0
-  checksum: 69658cfaeae375fc64aaf3f321bbac824205df499fe532e920d50b3d8cb14b774d31ad60c256b4f6811c7f2027284c735db9450f288c3c4e509149dd30c5a312
+  checksum: a21a0d8c18d40b500f9658d1a08866c073d7fad61904e398e186c08f9716db073383ac3beb4c7ac4dd4003740c12ca7f861c6eb53ef12a9f20a3ff632b5c83f5
   languageName: node
   linkType: hard
 
@@ -10629,8 +10629,8 @@ __metadata:
     "@graphql-codegen/client-preset": 4.3.0
     "@graphql-codegen/introspection": 4.0.3
     "@hookform/resolvers": ^3.9.0
-    "@mantine/core": ^7.1.5
-    "@mantine/hooks": ^7.1.5
+    "@mantine/core": ^7.11.2
+    "@mantine/hooks": ^7.11.2
     "@reduxjs/toolkit": ^1.9.7
     "@sentry/react": ^7.5.0
     "@sentry/tracing": ^7.5.0
