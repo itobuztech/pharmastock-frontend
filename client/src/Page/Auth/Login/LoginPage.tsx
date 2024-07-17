@@ -5,7 +5,6 @@ import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
 import { PasswordInput, TextInput } from "@mantine/core";
-import appConfig from "Lib/appConfig";
 import { LOGIN_MUTATION } from "query/loginMutation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
