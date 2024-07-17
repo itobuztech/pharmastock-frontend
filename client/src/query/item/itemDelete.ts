@@ -15,6 +15,7 @@ export const ItemDelete = gql`
       mrpBaseUnit
       updatedAt
       wholesalePrice
+      name
     }
   }
 `;

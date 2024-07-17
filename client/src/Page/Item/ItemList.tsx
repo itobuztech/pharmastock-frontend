@@ -4,15 +4,13 @@ import { useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { ItemCreate } from "query/item/itemCreate";
-import { CreateItemInput } from "gql/graphql";
 import { GetItemLists } from "query/item/itemList";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { ItemDelete } from "query/item/itemDelete";
 import { toast } from "react-toastify";
-import { FaRegSadTear } from "react-icons/fa";
 import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
+import EmptyList from "Components/EmptyList";
 
 export default function ItemList() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -25,23 +23,12 @@ export default function ItemList() {
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
-
-  const [itemCreate] = useMutation(ItemCreate);
-
-  const onSubmit = async (data: CreateItemInput) => {
-    try {
-      const response = await itemCreate({
-        variables: { createItemInput: data },
-      });
-      toast.success("Item Created Successfully");
-      close();
-      setNewItemList(response.data);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
+  const [editForm, setEditForm] = useState(true);
 
   const [fetchItemList, { refetch }] = useLazyQuery<ItemLists>(GetItemLists, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
     onCompleted: (d) => {
       if (d) {
         const items = d.items;
@@ -52,7 +39,6 @@ export default function ItemList() {
       }
     },
   });
-  const [deleteCategory] = useMutation(ItemDelete);
 
   useEffect(() => {
     fetchItemList({
@@ -63,7 +49,7 @@ export default function ItemList() {
         },
       },
     });
-  }, [activePage, fetchItemList]);
+  }, [activePage, fetchItemList, refetch]);
 
   useEffect(() => {
     if (newItemList) {
@@ -79,17 +65,11 @@ export default function ItemList() {
     }
   }, [newItemList, refetch]);
 
-  function handleDelete(catId: string) {
-    const deleteItem = itemList?.items.find((x) => x.id === catId);
-    setDeletedId(deleteItem?.id);
-    deleteModalOpen();
-  }
-
-  async function getDeleteItem() {
-    try {
-      await deleteCategory({
-        variables: { deleteItemInput: { id: deletedId } },
-      });
+  const [deleteCategory] = useMutation(ItemDelete, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: () => {
       refetch().then(({ data }) => {
         if (data) {
           const item = data.items;
@@ -102,22 +82,27 @@ export default function ItemList() {
       });
       deleteModalClose();
       toast.success("Item Deleted Successfully");
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+    },
+  });
+
+  function handleDelete(catId: string) {
+    const deleteItem = itemList?.items.find((x) => x.id === catId);
+    setDeletedId(deleteItem?.id);
+    deleteModalOpen();
+  }
+
+  function getDeleteItem() {
+    deleteCategory({
+      variables: { deleteItemInput: { id: deletedId } },
+    });
   }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-8 px-8">
       <PageHeader title="Items" showCreateButton={true} onClick={open} />
 
-      {!itemList?.items.length ? (
-        <div className="text-center h-96 items-center justify-center flex">
-          <div>
-            <FaRegSadTear size={60} className="text-teal-400" />
-            <h3 className="mt-0">No Records</h3>
-          </div>
-        </div>
+      {itemList?.items.length === 0 ? (
+        <EmptyList />
       ) : (
         <ItemTable
           itemList={itemList}
@@ -135,8 +120,14 @@ export default function ItemList() {
         deleteItem={() => getDeleteItem()}
       />
 
-      <Modal opened={opened} onClose={close} title="Item" centered size={"sm"}>
-        <ItemForm onSubmit={onSubmit} />
+      <Modal opened={opened} onClose={close} title="Item" centered size={"lg"}>
+        <ItemForm
+          close={close}
+          editForm={editForm}
+          setEditForm={setEditForm}
+          setNewItemList={setNewItemList}
+          refetchItem={refetch}
+        />
       </Modal>
     </section>
   );

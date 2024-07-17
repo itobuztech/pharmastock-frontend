@@ -228,4 +228,5 @@ export interface Item {
   updatedAt: string;
   wholesalePrice: number;
   Category: CategoryItem[];
+  name: string;
 }

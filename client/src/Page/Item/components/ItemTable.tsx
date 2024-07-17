@@ -1,6 +1,7 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import { Items } from "interfaces/interfaces";
+import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +21,7 @@ export default function ItemTable({
   const navigate = useNavigate();
 
   function screenSwitch(itemId: string) {
-    navigate(`/dashboard/items/${itemId}`);
+    navigate(`${routes.dashboard.itemList.path}/${itemId}`);
   }
 
   const rows = itemList?.items.map((item, i) => (
@@ -28,7 +29,7 @@ export default function ItemTable({
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
-      {/* <Table.Td></Table.Td> */}
+      <Table.Td>{item.name}</Table.Td>
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
       <Table.Td>{item.instructions}</Table.Td>
@@ -44,12 +45,16 @@ export default function ItemTable({
   ));
 
   return (
-    <div className="bg-white">
-      <Table horizontalSpacing="md" verticalSpacing="md">
+    <div className="bg-white overflow-auto">
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="md"
+        className="w-[900px] md:w-[1000px] lg:w-full"
+      >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
-            {/* <Table.Th>Name</Table.Th> */}
+            <Table.Th>Name</Table.Th>
             <Table.Th>Base Unit</Table.Th>
             <Table.Th>HSN Code</Table.Th>
             <Table.Th>Instructions</Table.Th>

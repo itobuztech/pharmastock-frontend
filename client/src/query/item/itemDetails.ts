@@ -15,6 +15,7 @@ export const GetItemDetails = gql`
       mrpBaseUnit
       updatedAt
       wholesalePrice
+      name
     }
   }
 `;

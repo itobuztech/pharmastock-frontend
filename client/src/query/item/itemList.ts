@@ -12,6 +12,7 @@ export const GetItemLists = gql`
         mrpBaseUnit
         updatedAt
         wholesalePrice
+        name
         Category {
           id
           name

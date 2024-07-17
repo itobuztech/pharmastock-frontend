@@ -1,11 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const ItemCreate = gql`
-  mutation ItemCreate($createItemInput: CreateItemInput!) {
+  mutation CreateItem($createItemInput: CreateItemInput!) {
     createItem(createItemInput: $createItemInput) {
       Category {
+        createdAt
         id
         name
+        updatedAt
       }
       baseUnit
       createdAt
@@ -15,6 +17,7 @@ export const ItemCreate = gql`
       mrpBaseUnit
       updatedAt
       wholesalePrice
+      name
     }
   }
 `;
