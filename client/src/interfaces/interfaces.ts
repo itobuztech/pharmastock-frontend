@@ -131,7 +131,20 @@ export interface createOrganizationInput {
 }
 
 export interface Pharmacies {
-  pharmacies: Pharmacy[];
+  pharmacies: {
+    pharmacies: [
+      {
+        contactInfo: string;
+        createdAt: Date;
+        id: string;
+        location: string;
+        name: string;
+        organization: OrganizationsListResponse;
+        updatedAt: string;
+      }
+    ];
+    total: number;
+  };
 }
 
 export interface Pharmacy {
