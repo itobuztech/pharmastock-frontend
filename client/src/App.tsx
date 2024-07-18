@@ -2,6 +2,7 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MantineProvider } from "@mantine/core";
+import "react-datepicker/dist/react-datepicker.css";
 
 import ScrollToTop from "./Components/ScrollToTop";
 import TrackRedirectLinks from "./Components/TrackRedirectLinks";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button, Select, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,11 +9,9 @@ import {
   UpdateWarehouseInput,
   Warehouse,
 } from "gql/graphql";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { CreateWarehouse } from "query/warehouse/warehouseCreate";
 import { toast } from "react-toastify";
-import { OrganizationList } from "interfaces/interfaces";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { useNavigate } from "react-router-dom";
 import { GetWarehouseUpdate } from "query/warehouse/warehouseUpdate";
 
@@ -25,6 +23,7 @@ export default function WarehouseForm({
   warehouseDetails,
   refetchWarehouse,
   setNewWarehouseList,
+  selectOrgItem,
 }: {
   close?: () => void;
   editForm?: boolean;
@@ -33,10 +32,14 @@ export default function WarehouseForm({
   warehouseDetails?: { warehouse: Warehouse };
   refetchWarehouse: () => void;
   setNewWarehouseList?: React.Dispatch<React.SetStateAction<undefined>>;
+  selectOrgItem:
+    | {
+        value: string;
+        label: string;
+      }[]
+    | undefined;
 }) {
   const navigate = useNavigate();
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
 
   const schema = yup
     .object({
@@ -105,30 +108,6 @@ export default function WarehouseForm({
       setNewWarehouseList(response.data);
     }
   };
-
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
 
   useEffect(() => {
     if (warehouseDetails?.warehouse) {

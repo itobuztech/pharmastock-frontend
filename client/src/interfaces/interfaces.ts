@@ -248,3 +248,35 @@ export interface Item {
   Category: CategoryItem[];
   name: string;
 }
+
+export interface GenerateSkuData {
+  generateSKU: GenerateSku;
+}
+
+export interface GenerateSku {
+  sku: string;
+}
+
+export interface WarehouseStocksData {
+  warehouseStocks: WarehouseStocks;
+}
+
+export interface WarehouseStocks {
+  total: number;
+  warehouseStocks: WarehouseStock[];
+}
+
+export interface WarehouseStock {
+  SKU: Sku;
+  createdAt: string;
+  finalQty: number;
+  id: string;
+  item: Item;
+  updatedAt: string;
+  warehouse: WarehouseItem;
+}
+
+export interface Sku {
+  id: string;
+  sku: string;
+}
