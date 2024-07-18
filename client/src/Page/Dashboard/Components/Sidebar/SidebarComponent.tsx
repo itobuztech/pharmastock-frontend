@@ -55,6 +55,12 @@ export default function SidebarComponent() {
             link={routes.dashboard.warehouseList.path}
           />
 
+          <MenuLink
+            text="Warehouse Stocks"
+            activeMenuPaths={routes.dashboard.warehouseStock.path}
+            link={routes.dashboard.warehouseStock.path}
+          />
+
           <MenuLink text="Logout" link={routes.logout.path} />
         </nav>
       </div>
