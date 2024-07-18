@@ -141,6 +141,7 @@ export default function WarehouseStock() {
         <WarehouseStockForm
           selectOrgItem={selectOrgItem}
           selectWarehouseItem={selectWarehouseItem}
+          close={close}
         />
       </Modal>
     </section>
