@@ -22,7 +22,7 @@ export default function WarehouseStockTable({
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
-    navigate(`${routes.dashboard.warehouseList.path}/${id}`);
+    navigate(`${routes.dashboard.warehouseStock.path}/${id}`);
   }
 
   const rows = warehouseStocksList?.warehouseStocks.map((item, i) => (
