@@ -8,37 +8,17 @@ import {
   CreateWarehouses,
   OrganizationList,
   Warehouses,
-  WarehouseStocks,
 } from "interfaces/interfaces";
 import { useLazyQuery } from "@apollo/client";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
 import { toast } from "react-toastify";
-import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
-  // const [warehouseStocksList, setWarehouseStocksList] = useState<WarehouseStocks>();
-  // const [totalCount, setTotalCount] = useState(1);
 
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
-
-  // const [fetchWarehouseStocksList, { refetch, loading }] =
-  //   useLazyQuery<WarehouseStocks>(GetWarehouseStocks, {
-  //     onError: (err) => {
-  //       toast.error(err.message);
-  //     },
-  //     onCompleted: (d) => {
-  //       if (d) {
-  //         const item = d.warehouseStocks;
-  //         const total = d.total;
-  //         const paginationCount = Math.ceil(total / 10);
-  //         setWarehouseStocksList(item);
-  //         setTotalCount(paginationCount);
-  //       }
-  //     },
-  //   });
 
   const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
     GetWarehouseList,
