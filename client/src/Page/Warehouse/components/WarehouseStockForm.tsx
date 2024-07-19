@@ -3,43 +3,57 @@ import { NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
+import {
+  CreateWarehouseStockInput,
+  Warehouse,
+  WarehouseStock,
+} from "gql/graphql";
 import { GetItemLists } from "query/item/itemList";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { GenerateSku, ItemLists, Items } from "interfaces/interfaces";
+import {
+  GenerateSku,
+  ItemLists,
+  Items,
+  OrganizationList,
+} from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetGenerateSKU } from "query/warehouse/warehouseGenerateSku";
 import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
+import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 
 export default function WarehouseStockForm({
   close,
   warehouseDetails,
-  selectOrgItem,
+  // selectOrgItem,
   id,
   selectWarehouseItem,
+  warehouseStockDetails,
 }: {
   close?: () => void;
   warehouseDetails?: { warehouse: Warehouse };
-  selectOrgItem:
+  selectOrgItem?:
     | {
         value: string;
         label: string;
-      }[]
-    | undefined;
+      }[];
   id?: string;
   selectWarehouseItem?:
     | {
         value: string;
         label: string;
-      }[]
-    | undefined;
+      }[];
+  warehouseStockDetails?: {
+    warehouseStock: WarehouseStock;
+  };
 }) {
   const [itemList, setItemList] = useState<Items>();
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [sku, setSku] = useState<GenerateSku>();
   const [startDate, setStartDate] = useState<Date>(new Date());
+  const [organization, setOrganization] =
+    useState<OrganizationList["organizations"]>();
 
   const schema = yup
     .object({
@@ -126,6 +140,30 @@ export default function WarehouseStockForm({
     }
   }, [sku, setValue]);
 
+  // Get Organization List
+  const [organizationList] = useLazyQuery<OrganizationList>(
+    ORGANIZATIONS_LIST_QUERY,
+    {
+      onCompleted: (d) => {
+        if (d) {
+          const orgs = d.organizations;
+          setOrganization(orgs);
+        }
+      },
+    }
+  );
+
+  useEffect(() => {
+    organizationList();
+  }, [organizationList]);
+
+  const organizationListArr = organization?.organizations;
+
+  const selectOrgItem = organizationListArr?.map((item) => ({
+    value: item.id,
+    label: item.name as string,
+  }));
+
   useEffect(() => {
     if (warehouseDetails?.warehouse) {
       setValue("warehouseId", warehouseDetails.warehouse.name);
@@ -133,6 +171,21 @@ export default function WarehouseStockForm({
         setValue("organizationId", warehouseDetails.warehouse.organization?.id);
     }
   }, [setValue, warehouseDetails?.warehouse]);
+
+  useEffect(() => {
+    if (warehouseStockDetails?.warehouseStock) {
+      setValue(
+        "warehouseId",
+        warehouseStockDetails?.warehouseStock.warehouse.id
+      );
+      setValue("itemId", warehouseStockDetails.warehouseStock.item.id);
+      setValue("sku", warehouseStockDetails.warehouseStock.SKU.sku);
+      setValue("qty", warehouseStockDetails.warehouseStock.finalQty);
+      // setValue("expiry", warehouseStockDetails.warehouseStock);
+      // warehouseStockDetails.warehouseStock.?.id &&
+      //   setValue("organizationId", warehouseStockDetails?.warehouseStock.organization?.id);
+    }
+  }, [setValue, warehouseStockDetails?.warehouseStock]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -205,16 +258,6 @@ export default function WarehouseStockForm({
                   },
                 });
 
-                // const res = await fetchSku({
-                //   variables: {
-                //     generateSkuNameInput: {
-                //       organizationId:
-                //         warehouseDetails?.warehouse.organization?.id,
-                //       warehouseId: id,
-                //       itemId: value,
-                //     },
-                //   },
-                // });
                 setSku(res.data?.generateSKU.sku);
                 field.onChange(value);
               }}
