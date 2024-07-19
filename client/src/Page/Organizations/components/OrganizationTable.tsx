@@ -10,12 +10,14 @@ export default function OrganizationTable({
   setActivePage,
   organizationList,
   handleDelete,
+  handleUserModal,
   totalCount,
 }: {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   organizationList?: OrganizationList["organizations"];
   handleDelete: (id: string) => void;
+  handleUserModal(id: string): void;
   totalCount: number;
 }) {
   const navigate = useNavigate();
@@ -37,6 +39,8 @@ export default function OrganizationTable({
         <ActionPopover
           handleView={() => screenSwitch(org.id)}
           handleDelete={() => handleDelete(org.id)}
+          handleUserModal={() => handleUserModal(org.id)}
+          showUserModal={true}
         />
       </Table.Td>
     </Table.Tr>

@@ -5,9 +5,13 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 export default function ActionPopover({
   handleView,
   handleDelete,
+  handleUserModal,
+  showUserModal,
 }: {
   handleView: () => void;
   handleDelete: () => void;
+  handleUserModal?: () => void;
+  showUserModal?: boolean;
 }) {
   return (
     <Popover width={200} position="bottom-end" withArrow shadow="md">
@@ -25,6 +29,16 @@ export default function ActionPopover({
         >
           View
         </Button>
+        {showUserModal && (
+          <Button
+            variant="transparent"
+            fullWidth
+            onClick={handleUserModal}
+            className="hover:bg-blue-100 transition-colors text-black"
+          >
+            Add User
+          </Button>
+        )}
         <Button
           variant="transparent"
           fullWidth

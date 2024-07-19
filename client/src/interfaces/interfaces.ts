@@ -280,3 +280,13 @@ export interface Sku {
   id: string;
   sku: string;
 }
+
+export enum UserRole {
+  Admin = "ADMIN",
+  Staff = "STAFF",
+}
+
+export interface SelectOrgItem {
+  value?: string;
+  label?: string;
+}
