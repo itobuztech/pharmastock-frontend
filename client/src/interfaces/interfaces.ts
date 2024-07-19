@@ -290,3 +290,29 @@ export interface SelectOrgItem {
   value?: string;
   label?: string;
 }
+
+export interface UserData {
+  users: Users;
+}
+
+export interface Users {
+  total: number;
+  users: User[];
+}
+
+export interface User {
+  createdAt: string;
+  email: string;
+  emailConfirmationToken?: string;
+  id: string;
+  isEmailConfirmed: boolean;
+  name: string;
+  organization?: Organization;
+  updatedAt: string;
+  username: string;
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+}
