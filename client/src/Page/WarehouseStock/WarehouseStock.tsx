@@ -1,4 +1,4 @@
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -8,17 +8,54 @@ import {
   CreateWarehouses,
   OrganizationList,
   Warehouses,
+  WarehouseStocks,
+  WarehouseStocksData,
 } from "interfaces/interfaces";
 import { useLazyQuery } from "@apollo/client";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
 import { toast } from "react-toastify";
+import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
+import WarehouseStockTable from "./components/WarehouseStockTable";
+import EmptyList from "Components/EmptyList";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
-
+  const [warehouseStocksList, setWarehouseStocksList] =
+    useState<WarehouseStocks>();
+  const [totalCount, setTotalCount] = useState(1);
+  const [activePage, setActivePage] = useState(1);
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
+
+  const [fetchWarehouseStocksList, { refetch, loading }] =
+    useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: (d) => {
+        if (d) {
+          const item = d.warehouseStocks;
+          const total = d.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(item);
+          setTotalCount(paginationCount);
+        }
+      },
+    });
+
+  console.log({ warehouseStocksList });
+
+  useEffect(() => {
+    fetchWarehouseStocksList({
+      variables: {
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+      },
+    });
+  }, [activePage, fetchWarehouseStocksList, refetch]);
 
   const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
     GetWarehouseList,
@@ -74,6 +111,25 @@ export default function WarehouseStock() {
         showCreateButton={true}
         onClick={open}
       />
+
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {!warehouseStocksList?.warehouseStocks.length ? (
+        <EmptyList />
+      ) : (
+        <WarehouseStockTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalCount={totalCount}
+          warehouseStocksList={warehouseStocksList}
+        />
+      )}
 
       <Modal
         opened={opened}

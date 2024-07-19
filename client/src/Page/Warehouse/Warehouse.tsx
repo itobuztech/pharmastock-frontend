@@ -143,7 +143,7 @@ export default function Warehouse() {
         />
       )}
 
-      {warehouseList?.warehouses.length === 0 ? (
+      {!warehouseList?.warehouses.length ? (
         <EmptyList />
       ) : (
         <WarehouseListTable
