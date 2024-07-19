@@ -34,6 +34,9 @@ const ItemDetails = React.lazy(() => import("Page/Item/ItemDetails"));
 const WarehouseStock = React.lazy(
   () => import("Page/WarehouseStock/WarehouseStock")
 );
+const WarehouseStockDetails = React.lazy(
+  () => import("Page/WarehouseStock/WarehouseStockDetails")
+);
 
 export default function AppRoutes() {
   return (
@@ -129,6 +132,10 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.warehouseStock.path}
                 element={<WarehouseStock />}
+              />
+              <Route
+                path={routes.dashboard.warehouseStockDetails.path}
+                element={<WarehouseStockDetails />}
               />
             </Route>
 
