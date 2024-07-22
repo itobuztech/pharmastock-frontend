@@ -38,6 +38,8 @@ const WarehouseStockDetails = React.lazy(
   () => import("Page/WarehouseStock/WarehouseStockDetails")
 );
 
+const UserList = React.lazy(() => import("Page/User/UserList"));
+
 export default function AppRoutes() {
   return (
     <div>
@@ -136,6 +138,13 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.warehouseStockDetails.path}
                 element={<WarehouseStockDetails />}
+              />
+            </Route>
+
+            <Route path={routes.dashboard.users.path} element={<AuthGuard />}>
+              <Route
+                path={routes.dashboard.users.path}
+                element={<UserList />}
               />
             </Route>
 

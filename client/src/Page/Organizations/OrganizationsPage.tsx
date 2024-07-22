@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   createOrganizationInput,
   OrganizationList,
+  SelectOrgItem,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { LoadingOverlay, Modal } from "@mantine/core";
@@ -14,6 +15,7 @@ import ConfirmationModal from "Components/ConfirmationModal";
 import OrganizationTable from "./components/OrganizationTable";
 import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
+import UserCreateForm from "Page/User/components/UserCreateForm";
 
 export default function OrganizationsPage() {
   // Organization listing. STARTS
@@ -30,6 +32,10 @@ export default function OrganizationsPage() {
   ] = useDisclosure(false);
   const [deleteOrgId, setDeleteOrgId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
+  const [selectItem, setSelectItem] = useState<SelectOrgItem>();
+
+  const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
+    useDisclosure(false);
 
   const [deleteOrganization] = useMutation(DeleteOrganization, {
     onError: (error) => {
@@ -105,6 +111,15 @@ export default function OrganizationsPage() {
     });
   }
 
+  function handleUserModal(orgId: string) {
+    const selectItem = organization?.organizations.find((x) => x.id === orgId);
+    setSelectItem({
+      value: selectItem?.id,
+      label: selectItem?.name,
+    });
+    userModalOpen();
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -113,6 +128,7 @@ export default function OrganizationsPage() {
         onClick={open}
       />
 
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -121,6 +137,7 @@ export default function OrganizationsPage() {
         />
       )}
 
+      {/* ==== Organization Empty List and List ==== */}
       {!organization?.organizations.length ? (
         <EmptyList />
       ) : (
@@ -130,9 +147,11 @@ export default function OrganizationsPage() {
           handleDelete={handleDelete}
           totalCount={totalCount}
           setActivePage={setActivePage}
+          handleUserModal={handleUserModal}
         />
       )}
 
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Organization"
         modalOpen={deleteModalOpened}
@@ -140,6 +159,18 @@ export default function OrganizationsPage() {
         deleteItem={() => getDeleteOrganization()}
       />
 
+      {/* ==== Create User Modal ==== */}
+      <Modal
+        opened={userModalOpened}
+        onClose={userModalClose}
+        title="Create User"
+        centered
+        size={"lg"}
+      >
+        <UserCreateForm selectItem={selectItem} close={userModalClose} />
+      </Modal>
+
+      {/* ==== Create Organization Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}

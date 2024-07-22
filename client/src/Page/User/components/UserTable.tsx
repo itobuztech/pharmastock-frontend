@@ -1,46 +1,32 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
-import { OrganizationList } from "interfaces/interfaces";
-import React from "react";
 import ActionPopover from "Components/ActionPopover";
-import { useNavigate } from "react-router-dom";
-import routes from "Lib/Routes/Routes";
+import { Users } from "interfaces/interfaces";
+import React from "react";
 
-export default function OrganizationTable({
+export default function UserTable({
   activePage,
   setActivePage,
-  organizationList,
-  handleDelete,
-  handleUserModal,
+  userList,
   totalCount,
 }: {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  organizationList?: OrganizationList["organizations"];
-  handleDelete: (id: string) => void;
-  handleUserModal(id: string): void;
+  userList?: Users;
   totalCount: number;
 }) {
-  const navigate = useNavigate();
-
-  function screenSwitch(id: string) {
-    navigate(`${routes.dashboard.organizations.path}/${id}`);
-  }
-
-  const rows = organizationList?.organizations?.map((org, i) => (
-    <Table.Tr key={org.id}>
+  const rows = userList?.users?.map((item, i) => (
+    <Table.Tr key={item.id}>
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
-      <Table.Td>{org.name}</Table.Td>
-      <Table.Td className="w-auto lg:w-2/5">{org.description}</Table.Td>
-      <Table.Td>{org.city}</Table.Td>
-      <Table.Td>{org.address}</Table.Td>
+      <Table.Td>{item.username}</Table.Td>
+      <Table.Td>{item.name}</Table.Td>
+      <Table.Td>{item.email}</Table.Td>
+      <Table.Td>{item.organization?.name}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
-          handleView={() => screenSwitch(org.id)}
-          handleDelete={() => handleDelete(org.id)}
-          handleUserModal={() => handleUserModal(org.id)}
-          showUserModal={true}
+          handleView={() => console.log(item.id)}
+          handleDelete={() => console.log(item.id)}
         />
       </Table.Td>
     </Table.Tr>
@@ -56,10 +42,10 @@ export default function OrganizationTable({
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
+            <Table.Th>Username</Table.Th>
             <Table.Th>Name</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>City</Table.Th>
-            <Table.Th>Address</Table.Th>
+            <Table.Th>Email</Table.Th>
+            <Table.Th>Organization Name</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
