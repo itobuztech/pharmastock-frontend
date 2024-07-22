@@ -52,7 +52,7 @@ export interface OrganizationsListResponse {
   updatedAt: string;
 }
 
-export interface Adminprofile {
+export interface AdminProfile {
   account: {
     role: string;
     user: {
