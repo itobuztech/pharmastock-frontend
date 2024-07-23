@@ -333,3 +333,22 @@ export interface WarehouseStock {
   updatedAt: string;
   warehouse: WarehouseItem;
 }
+
+export interface PharmacyStocksLists {
+  PharmacyStocks: PharmacyStocks;
+}
+
+export interface PharmacyStocks {
+  pharmacyStocks: PharmacyStock[];
+  total: number;
+}
+
+export interface PharmacyStock {
+  createdAt: string;
+  finalQty: number;
+  id: string;
+  itemId: string;
+  pharmacy: Pharmacy;
+  updatedAt: string;
+  warehouse: WarehouseItem;
+}

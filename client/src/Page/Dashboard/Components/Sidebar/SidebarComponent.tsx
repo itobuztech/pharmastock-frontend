@@ -38,6 +38,12 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
+            text="Pharmacy Stocks"
+            activeMenuPaths={routes.dashboard.pharmaciesStock.path}
+            link={routes.dashboard.pharmaciesStock.path}
+          />
+
+          <MenuLink
             text="Item Category"
             activeMenuPaths={routes.dashboard.createItemCategory.path}
             link={routes.dashboard.createItemCategory.path}
