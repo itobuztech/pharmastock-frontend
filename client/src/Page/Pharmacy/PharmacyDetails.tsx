@@ -8,11 +8,14 @@ import PharmacyForm from "./components/PharmacyForm";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PharmacyStockForm from "Page/PharmacyStock/components/PharmacyStockForm";
+// import PharmacyStockTable from "Page/PharmacyStock/components/PharmacyStockTable";
 
 export default function PharmacyDetails() {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
+  // const [activePage, setActivePage] = useState(1);
+  // const [totalCount, setTotalCount] = useState(1);
 
   const { data: pharmacyDetails, refetch } = useQuery<{ pharmacy: Pharmacy }>(
     GetPharmacyDetails,
@@ -42,6 +45,14 @@ export default function PharmacyDetails() {
           setEditForm={setEditForm}
         />
       </div>
+
+      {/* <div className="mt-8">
+        <PharmacyStockTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalCount={totalCount}
+        />
+      </div> */}
 
       <Modal
         opened={opened}
