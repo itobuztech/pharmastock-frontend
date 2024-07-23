@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { Button } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
+import routes from "Lib/Routes/Routes";
 import appConfig from "Lib/appConfig";
 import { TokenConfirmationInput } from "gql/graphql";
 import { LoginResponseWithToken } from "interfaces/interfaces";
@@ -55,7 +56,7 @@ export default function VerifyUser() {
 
   function switchScreen() {
     if (localStorage.getItem(appConfig.storage.accessToken)) {
-      navigate("/dashboard/me");
+      navigate(`${routes.dashboard.profile.path}`);
     }
   }
 
