@@ -167,7 +167,7 @@ export default function Warehouse() {
         onClose={close}
         title="Warehouse"
         centered
-        size={"sm"}
+        size={"lg"}
       >
         <WarehouseForm
           editForm={editForm}

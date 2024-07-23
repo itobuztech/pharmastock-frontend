@@ -316,3 +316,22 @@ export interface Organization {
   id: string;
   name: string;
 }
+
+export interface CreateWarehouseStocksByWarehouse {
+  warehouseStocksByWarehouse: WarehouseStocksByWarehouse;
+}
+
+export interface WarehouseStocksByWarehouse {
+  total: number;
+  warehouseStocks: WarehouseStock[];
+}
+
+export interface WarehouseStock {
+  SKU: Sku;
+  createdAt: string;
+  finalQty: number;
+  id: string;
+  item: Item;
+  updatedAt: string;
+  warehouse: WarehouseItem;
+}

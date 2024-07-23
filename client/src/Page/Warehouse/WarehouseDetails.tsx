@@ -5,11 +5,19 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
 import { Warehouse } from "gql/graphql";
 import WarehouseForm from "./components/WarehouseForm";
-import { Modal } from "@mantine/core";
+import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
-import { OrganizationList } from "interfaces/interfaces";
+import {
+  CreateWarehouseStocksByWarehouse,
+  OrganizationList,
+  WarehouseStocksByWarehouse,
+} from "interfaces/interfaces";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
+import WarehouseStockTable from "Page/WarehouseStock/components/WarehouseStockTable";
+import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
+import { toast } from "react-toastify";
+import EmptyList from "Components/EmptyList";
 
 export default function WarehouseDetails() {
   const [editForm, setEditForm] = useState(false);
@@ -17,6 +25,10 @@ export default function WarehouseDetails() {
   const [opened, { open, close }] = useDisclosure(false);
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
+  const [totalCount, setTotalCount] = useState(1);
+  const [activePage, setActivePage] = useState(1);
+  const [warehouseStocksList, setWarehouseStocksList] =
+    useState<WarehouseStocksByWarehouse>();
 
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
@@ -25,6 +37,37 @@ export default function WarehouseDetails() {
       warehouseId: id,
     },
   });
+
+  const [fetchWarehouseStocksByWarehouse, { loading }] =
+    useLazyQuery<CreateWarehouseStocksByWarehouse>(
+      GetWarehouseStocksByWarehouse,
+      {
+        onError: (err) => {
+          toast.error(err.message);
+        },
+        onCompleted: (d) => {
+          if (d) {
+            const item = d.warehouseStocksByWarehouse;
+            const total = d.warehouseStocksByWarehouse.total;
+            const paginationCount = Math.ceil(total / 10);
+            setWarehouseStocksList(item);
+            setTotalCount(paginationCount);
+          }
+        },
+      }
+    );
+
+  useEffect(() => {
+    fetchWarehouseStocksByWarehouse({
+      variables: {
+        warehouseId: id,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+      },
+    });
+  }, [activePage, fetchWarehouseStocksByWarehouse, id]);
 
   // Get Organization List
   const [organizationList] = useLazyQuery<OrganizationList>(
@@ -68,6 +111,28 @@ export default function WarehouseDetails() {
           warehouseDetails={warehouseDetails}
           selectOrgItem={selectOrgItem}
         />
+      </div>
+
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      <div className="mt-8">
+        {!warehouseStocksList?.warehouseStocks.length ? (
+          <EmptyList />
+        ) : (
+          <WarehouseStockTable
+            activePage={activePage}
+            setActivePage={setActivePage}
+            totalCount={totalCount}
+            warehouseStocksList={warehouseStocksList}
+            // handleDelete={handleDelete}
+          />
+        )}
       </div>
 
       <Modal
