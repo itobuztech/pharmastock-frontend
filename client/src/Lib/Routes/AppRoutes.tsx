@@ -53,9 +53,9 @@ export default function AppRoutes() {
           <Route path={routes.login.path} element={<LoginPage />} />
 
           <Route path={routes.dashboard.path} element={<DashboardPage />}>
-            <Route path={routes.dashboard.me.path} element={<AuthGuard />}>
+            <Route path={routes.dashboard.profile.path} element={<AuthGuard />}>
               <Route
-                path={routes.dashboard.me.path}
+                path={routes.dashboard.profile.path}
                 element={<ProfilePage />}
               />
             </Route>

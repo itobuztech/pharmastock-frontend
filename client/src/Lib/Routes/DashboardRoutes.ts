@@ -2,7 +2,7 @@ import { DefaultRoute } from "./DefaultRoute.Interface";
 
 export interface DashBoardRoutes {
   path: string;
-  me: DefaultRoute;
+  profile: DefaultRoute;
   organizations: DefaultRoute;
   organizationDetails: DefaultRoute;
   pharmacies: DefaultRoute;
@@ -24,9 +24,9 @@ const dashboardPath = "/dashboard";
 
 export const dashboardRoutes: DashBoardRoutes = {
   path: dashboardPath,
-  me: {
-    path: `${dashboardPath}/me`,
-    fullPath: `${dashboardPath}/me`,
+  profile: {
+    path: `${dashboardPath}/profile`,
+    fullPath: `${dashboardPath}/profile`,
   },
   organizations: {
     path: `${dashboardPath}/organizations`,
