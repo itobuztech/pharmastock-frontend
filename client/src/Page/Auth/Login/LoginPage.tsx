@@ -9,6 +9,7 @@ import { LOGIN_MUTATION } from "query/loginMutation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "Lib/Store/User/User";
+import { fetchPermissionsRequest } from "Lib/Store/Permissions/Permission";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
@@ -36,7 +37,7 @@ export default function LoginPage() {
       const { data } = await login({
         variables: { loginUserInput },
       });
-
+      dispatch(fetchPermissionsRequest());
       dispatch(setUser(data.login.user));
       localStorage.setItem("userData", JSON.stringify(data.login));
 

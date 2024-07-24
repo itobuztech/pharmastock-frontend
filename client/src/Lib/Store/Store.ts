@@ -4,6 +4,8 @@ import counterReducer from "./Counter/Counter";
 import rootSaga from "./rootsaga";
 import userReducer from "./User/User";
 import helperSlice from "./Helper/Helper.Slice";
+import permissionsReducer from './Permissions/Permission.Slice';
+import { watchFetchPermissions } from './Permissions/Permission.Saga';
 
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [sagaMiddleware];
@@ -19,12 +21,15 @@ export const store = configureStore({
     counter: counterReducer,
     user: userReducer,
     helper: helperSlice,
+    permissions: permissionsReducer,
   },
   preloadedState: appState,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(middleware),
 });
+
 sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(watchFetchPermissions);
 
 function handleChange() {
   // const state = store.getState();
@@ -36,5 +41,4 @@ store.subscribe(handleChange);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

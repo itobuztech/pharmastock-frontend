@@ -20,6 +20,7 @@ const documents = {
     "\n  query CategoryItem($itemCategoryId: String!) {\n    itemCategory(id: $itemCategoryId) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.CategoryItemDocument,
     "\n  query ItemCategories($paginationArgs: PaginationArgs) {\n    itemCategories(paginationArgs: $paginationArgs) {\n      total\n      itemCategories {\n        createdAt\n        id\n        name\n        parentCategory {\n          id\n        }\n        updatedAt\n        Item {\n          id\n        }\n      }\n    }\n  }\n": types.ItemCategoriesDocument,
     "\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.UpdateItemCategoryDocument,
+    "\n  query getPermissions {\n    getpermissions \n  }\n": types.GetPermissionsDocument,
     "\n  mutation CreateItem($createItemInput: CreateItemInput!) {\n    createItem(createItemInput: $createItemInput) {\n      Category {\n        createdAt\n        id\n        name\n        updatedAt\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.CreateItemDocument,
     "\n  mutation ItemDelete($deleteItemInput: DeleteItemInput!) {\n    deleteItem(deleteItemInput: $deleteItemInput) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.ItemDeleteDocument,
     "\n  query Item($itemId: String!) {\n    item(id: $itemId) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.ItemDocument,
@@ -96,6 +97,10 @@ export function graphql(source: "\n  query ItemCategories($paginationArgs: Pagin
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getPermissions {\n    getpermissions \n  }\n"): (typeof documents)["\n  query getPermissions {\n    getpermissions \n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

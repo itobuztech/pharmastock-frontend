@@ -70,6 +70,7 @@ export const userSlice = createSlice({
     logout: (state) => {
       const store = appStore.get();
       store.user = null;
+      store.permission = null;
       state.currentUser = null;
       appStore.set(store);
     },

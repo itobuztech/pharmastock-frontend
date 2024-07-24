@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "Lib/Store/hooks";
+import { USER_PERMISSION_FIELDS } from "enums/enums";
 
 export default function SidebarComponent() {
+  const permission = useAppSelector((state) => state.permissions.permissions);
+
+  const handleSliderOptionsVisible = (
+    field: USER_PERMISSION_FIELDS
+  ): boolean => {
+    return permission[field]?.CAPABILITIES?.VIEW !== null;
+  };
+
   return (
     <div
       className="flex flex-col sm:flex-row sm:justify-around"
@@ -19,60 +29,84 @@ export default function SidebarComponent() {
           </span>
         </Link>
         <nav className="mt-10 px-6 ">
-          <MenuLink
-            text="Profile"
-            activeMenuPaths={routes.dashboard.profile.path}
-            link={routes.dashboard.profile.path}
-          />
+            <MenuLink
+              text="Profile"
+              activeMenuPaths={routes.dashboard.profile.path}
+              link={routes.dashboard.profile.path}
+            />
 
-          <MenuLink
-            text="Organizations"
-            activeMenuPaths={routes.dashboard.organizations.path}
-            link={routes.dashboard.organizations.path}
-          />
-
-          <MenuLink
-            text="Pharmacies"
-            activeMenuPaths={routes.dashboard.pharmacies.path}
-            link={routes.dashboard.pharmacies.path}
-          />
-
-          <MenuLink
-            text="Pharmacy Stocks"
-            activeMenuPaths={routes.dashboard.pharmaciesStock.path}
-            link={routes.dashboard.pharmaciesStock.path}
-          />
-
-          <MenuLink
-            text="Item Category"
-            activeMenuPaths={routes.dashboard.createItemCategory.path}
-            link={routes.dashboard.createItemCategory.path}
-          />
-
-          <MenuLink
-            text="Items"
-            activeMenuPaths={routes.dashboard.itemList.path}
-            link={routes.dashboard.itemList.path}
-          />
-
-          <MenuLink
-            text="Warehouse"
-            activeMenuPaths={routes.dashboard.warehouseList.path}
-            link={routes.dashboard.warehouseList.path}
-          />
-
-          <MenuLink
-            text="Warehouse Stocks"
-            activeMenuPaths={routes.dashboard.warehouseStock.path}
-            link={routes.dashboard.warehouseStock.path}
-          />
-
-          <MenuLink
-            text="Users"
-            activeMenuPaths={routes.dashboard.users.path}
-            link={routes.dashboard.users.path}
-          />
-
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Organizations"
+              activeMenuPaths={routes.dashboard.organizations.path}
+              link={routes.dashboard.organizations.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Pharmacies"
+              activeMenuPaths={routes.dashboard.pharmacies.path}
+              link={routes.dashboard.pharmacies.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Pharmacy Stocks"
+              activeMenuPaths={routes.dashboard.pharmaciesStock.path}
+              link={routes.dashboard.pharmaciesStock.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Item Category"
+              activeMenuPaths={routes.dashboard.createItemCategory.path}
+              link={routes.dashboard.createItemCategory.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Items"
+              activeMenuPaths={routes.dashboard.itemList.path}
+              link={routes.dashboard.itemList.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Warehouse"
+              activeMenuPaths={routes.dashboard.warehouseList.path}
+              link={routes.dashboard.warehouseList.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Warehouse Stocks"
+              activeMenuPaths={routes.dashboard.warehouseStock.path}
+              link={routes.dashboard.warehouseStock.path}
+            />
+          )}
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.USER_PERMISSION
+          ) && (
+            <MenuLink
+              text="Users"
+              activeMenuPaths={routes.dashboard.users.path}
+              link={routes.dashboard.users.path}
+            />
+          )}
           <MenuLink text="Logout" link={routes.logout.path} />
         </nav>
       </div>
