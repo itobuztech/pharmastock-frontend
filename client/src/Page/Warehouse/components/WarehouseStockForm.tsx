@@ -4,14 +4,14 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
-import { GetItemLists } from "query/item/itemList";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { GenerateSku, ItemLists, Items } from "interfaces/interfaces";
+import { useMutation } from "@apollo/client";
+import { GenerateSku } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetGenerateSKU } from "query/warehouse/warehouseGenerateSku";
 import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
+import useItemList from "Lib/customHooks/useItemList";
 
 export default function WarehouseStockForm({
   close,
@@ -36,10 +36,10 @@ export default function WarehouseStockForm({
       }[]
     | undefined;
 }) {
-  const [itemList, setItemList] = useState<Items>();
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [sku, setSku] = useState<GenerateSku>();
   const [startDate, setStartDate] = useState<Date>(new Date());
+  const selectItem = useItemList();
 
   const schema = yup
     .object({
@@ -92,27 +92,6 @@ export default function WarehouseStockForm({
       },
     });
   };
-
-  const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: (d) => {
-      if (d) {
-        const items = d.items;
-        setItemList(items);
-      }
-    },
-  });
-
-  useEffect(() => {
-    fetchItemList();
-  }, [fetchItemList]);
-
-  const selectItem = itemList?.items?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
 
   const [fetchSku] = useMutation(GetGenerateSKU, {
     onError: (err) => {
@@ -204,17 +183,6 @@ export default function WarehouseStockForm({
                     },
                   },
                 });
-
-                // const res = await fetchSku({
-                //   variables: {
-                //     generateSkuNameInput: {
-                //       organizationId:
-                //         warehouseDetails?.warehouse.organization?.id,
-                //       warehouseId: id,
-                //       itemId: value,
-                //     },
-                //   },
-                // });
                 setSku(res.data?.generateSKU.sku);
                 field.onChange(value);
               }}

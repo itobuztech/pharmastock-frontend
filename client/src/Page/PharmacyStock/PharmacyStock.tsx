@@ -5,12 +5,20 @@ import { useLazyQuery } from "@apollo/client";
 import { PharmacyStocksList } from "query/pharmacyStock/pharmacyStocksList";
 import { toast } from "react-toastify";
 import { PharmacyStocks, PharmacyStocksLists } from "interfaces/interfaces";
+import { useDisclosure } from "@mantine/hooks";
+import { LoadingOverlay, Modal } from "@mantine/core";
+import PharmacyStockForm from "./components/PharmacyStockForm";
+import EmptyList from "Components/EmptyList";
+import { CreatePharmacyStockInput } from "gql/graphql";
 
 export default function PharmacyStock() {
   const [pharmacyStocksList, setPharmacyStocksList] =
     useState<PharmacyStocks>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [newPharmacyStockList, setNewPharmacyStockList] =
+    useState<CreatePharmacyStockInput>();
 
   // Pharmacy list query
   const [fetchPharmaciesStockList, { refetch, loading }] =
@@ -41,6 +49,21 @@ export default function PharmacyStock() {
     });
   }, [activePage, fetchPharmaciesStockList, refetch]);
 
+  // Update new pharmacy in list
+  useEffect(() => {
+    if (newPharmacyStockList) {
+      refetch().then(({ data }) => {
+        if (data) {
+          const pharmaList = data.PharmacyStocks;
+          const total = data.PharmacyStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setPharmacyStocksList(pharmaList);
+          setTotalCount(paginationCount);
+        }
+      });
+    }
+  }, [newPharmacyStockList, refetch]);
+
   console.log({ pharmacyStocksList });
 
   return (
@@ -48,15 +71,44 @@ export default function PharmacyStock() {
       <PageHeader
         title="Pharmacy Stocks"
         showBackButton={true}
-        showCreateButton={false}
+        showCreateButton={true}
+        buttonText="Add Pharmacy Stock"
+        onClick={open}
       />
 
-      <PharmacyStockTable
-        activePage={activePage}
-        setActivePage={setActivePage}
-        totalCount={totalCount}
-        pharmaciesStockList={pharmacyStocksList}
-      />
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {!pharmacyStocksList?.pharmacyStocks.length ? (
+        <EmptyList />
+      ) : (
+        <PharmacyStockTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalCount={totalCount}
+          pharmaciesStockList={pharmacyStocksList}
+        />
+      )}
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Create Pharmacy Stock"
+        centered
+        size={"sm"}
+      >
+        <PharmacyStockForm
+          // pharmacyName={pharmacyDetails?.pharmacy.name}
+          // pharmacyId={pharmacyDetails?.pharmacy.id}
+          setNewPharmacyStockList={setNewPharmacyStockList}
+          close={close}
+        />
+      </Modal>
     </section>
   );
 }

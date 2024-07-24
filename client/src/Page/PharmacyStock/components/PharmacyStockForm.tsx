@@ -12,23 +12,34 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
-import { CreatePharmacyStockInput } from "gql/graphql";
+import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 
 export default function PharmacyStockForm({
   pharmacyName,
   pharmacyId,
   close,
+  pharmacyStockDetails,
+  id,
+  setNewPharmacyStockList,
 }: {
   pharmacyName?: string;
   pharmacyId?: string;
   close: () => void;
+  pharmacyStockDetails?: PharmacyStock;
+  id?: string;
+  setNewPharmacyStockList?: React.Dispatch<
+    React.SetStateAction<CreatePharmacyStockInput | undefined>
+  >;
 }) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
+  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
 
   const selectWarehouseItems = useWarehouseItems();
+  const selectPharmaList = usePharmacyList();
 
   const schema = yup
     .object({
@@ -63,12 +74,10 @@ export default function PharmacyStockForm({
   });
 
   const onSubmit = async (data: CreatePharmacyStockInput) => {
-    console.log(data, pharmacyId);
     const response = await pharmacyStockCreate({
       variables: { createPharmacyStockInput: { ...data, pharmacyId } },
     });
-    console.log(response.data);
-    // setNewPharmacyList(response.data);
+    setNewPharmacyStockList(response.data);
   };
 
   const [fetchWarehouseStocksByWarehouse] =
@@ -104,15 +113,49 @@ export default function PharmacyStockForm({
     pharmacyName && setValue("pharmacyId", pharmacyName);
   }, [pharmacyName, setValue]);
 
+  useEffect(() => {
+    console.log("update", pharmacyStockDetails?.finalQty);
+    if (pharmacyStockDetails) {
+      pharmacyStockDetails.pharmacy?.name &&
+        setValue("pharmacyId", pharmacyStockDetails.pharmacy?.name);
+      pharmacyStockDetails.warehouse?.id &&
+        setValue("warehouseId", pharmacyStockDetails.warehouse?.id);
+      setQtyValue(pharmacyStockDetails.finalQty);
+    }
+  }, [pharmacyStockDetails, setValue]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <TextInput
-          label="Pharmacy"
-          placeholder="Pharmacy"
-          {...register("pharmacyId")}
-          error={errors.pharmacyId && "This field is required"}
-        />
+        {id || pharmacyId ? (
+          <TextInput
+            label="Pharmacy"
+            placeholder="Pharmacy"
+            {...register("pharmacyId")}
+            error={errors.pharmacyId && "This field is required"}
+            disabled={id || pharmacyId ? true : false}
+          />
+        ) : (
+          <Controller
+            name="pharmacyId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                data={selectPharmaList}
+                label="Select Pharmacy"
+                placeholder="Select Pharmacy"
+                value={field.value}
+                onChange={(value) => {
+                  handleParentChange(value!);
+                  field.onChange(value);
+                }}
+                error={errors.pharmacyId && "This field is required"}
+                disabled={id ? true : false}
+              />
+            )}
+          />
+        )}
       </div>
 
       <div className="mb-4">
@@ -131,6 +174,7 @@ export default function PharmacyStockForm({
                 field.onChange(value);
               }}
               error={errors.warehouseId && "This field is required"}
+              disabled={id ? true : false}
             />
           )}
         />
@@ -156,22 +200,37 @@ export default function PharmacyStockForm({
         />
       </div>
 
+      {id && (
+        <div className="mb-4">
+          <NumberInput
+            label="Total Quantity"
+            placeholder="Qty"
+            value={qtyValue}
+            onChange={setQtyValue}
+            min={0}
+            max={1000000}
+            disabled
+            error={errors.qty && "This field is required"}
+          />
+        </div>
+      )}
+
       <div className="mb-4">
         <NumberInput
-          label="Qty"
+          label="Add Quantity"
           placeholder="Qty"
           {...register("qty")}
-          value={qtyValue}
-          onChange={setQtyValue}
+          value={qtyAddValue}
+          onChange={setQtyAddValue}
           min={0}
-          max={100000}
+          max={1000000}
           error={errors.qty && "This field is required"}
         />
       </div>
 
       <div className="text-right mt-8">
         <ButtonComponent type="submit" loading={loading}>
-          Create
+          {id ? "Update" : "Create"}
         </ButtonComponent>
       </div>
     </form>

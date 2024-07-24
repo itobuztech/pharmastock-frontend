@@ -19,11 +19,11 @@ export default function PharmacyStockTable({
   // handleDelete: (id: string) => void;
   totalCount: number;
 }) {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // function screenSwitch(id: string) {
-  //   navigate(`${routes.dashboard.pharmacies.path}/${id}`);
-  // }
+  function screenSwitch(id: string) {
+    navigate(`${routes.dashboard.pharmaciesStock.path}/${id}`);
+  }
 
   const rows = pharmaciesStockList?.pharmacyStocks.map((item, i) => (
     <Table.Tr key={item.id}>
@@ -31,11 +31,12 @@ export default function PharmacyStockTable({
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
-      <Table.Td>{item.finalQty}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
+      {/* <Table.Td></Table.Td> */}
+      <Table.Td>{item.finalQty}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
-          handleView={() => console.log(item.id)}
+          handleView={() => screenSwitch(item.id)}
           handleDelete={() => console.log(item.id)}
         />
       </Table.Td>
@@ -53,8 +54,9 @@ export default function PharmacyStockTable({
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
+            <Table.Th>Warehouse</Table.Th>
+            {/* <Table.Th>Item</Table.Th> */}
             <Table.Th>Qty</Table.Th>
-            <Table.Th>Warehouse Name</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>

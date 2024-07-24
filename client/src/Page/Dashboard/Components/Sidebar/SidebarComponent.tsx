@@ -32,6 +32,18 @@ export default function SidebarComponent() {
           />
 
           <MenuLink
+            text="Warehouse"
+            activeMenuPaths={routes.dashboard.warehouseList.path}
+            link={routes.dashboard.warehouseList.path}
+          />
+
+          <MenuLink
+            text="Warehouse Stocks"
+            activeMenuPaths={routes.dashboard.warehouseStock.path}
+            link={routes.dashboard.warehouseStock.path}
+          />
+
+          <MenuLink
             text="Pharmacies"
             activeMenuPaths={routes.dashboard.pharmacies.path}
             link={routes.dashboard.pharmacies.path}
@@ -53,18 +65,6 @@ export default function SidebarComponent() {
             text="Items"
             activeMenuPaths={routes.dashboard.itemList.path}
             link={routes.dashboard.itemList.path}
-          />
-
-          <MenuLink
-            text="Warehouse"
-            activeMenuPaths={routes.dashboard.warehouseList.path}
-            link={routes.dashboard.warehouseList.path}
-          />
-
-          <MenuLink
-            text="Warehouse Stocks"
-            activeMenuPaths={routes.dashboard.warehouseStock.path}
-            link={routes.dashboard.warehouseStock.path}
           />
 
           <MenuLink

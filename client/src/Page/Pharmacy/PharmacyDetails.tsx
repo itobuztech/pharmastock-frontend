@@ -33,6 +33,7 @@ export default function PharmacyDetails() {
         showBackButton={true}
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Pharmacy Stock"
       />
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
