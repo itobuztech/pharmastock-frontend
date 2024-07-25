@@ -5,6 +5,8 @@ import routes from '../../Routes/Routes';
 import { helperSliceActions } from '../Helper/Helper.Slice';
 import { userSliceActions } from './User.Slice';
 import { toast } from 'react-toastify';
+import { userPermissionActions } from '../Permissions/Permission.Slice';
+import { fetchPermissionsSuccess } from '../Permissions/Permission';
 
 function* loginMiddleWare({ payload }: { payload: LoginPayload }): any {
     try {
@@ -35,6 +37,8 @@ function* forgetPasswordSaga() {
 }
 
 function* logOutMiddleWare() {
+  yield put(userPermissionActions.setPermission({}))
+  yield put(fetchPermissionsSuccess({}));
   yield put(helperSliceActions.setRedirectUrl(routes.login.path));
 }
 

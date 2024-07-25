@@ -31,7 +31,7 @@ export const userPermissionSlice = createSlice({
         appStore.set(store);
       } else {
         state.permissions = {};
-        store.permission = null;
+        store.permission = {};
         appStore.set(store);
       }
     },
