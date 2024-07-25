@@ -75,6 +75,10 @@ export default function Warehouse() {
     }
   }, [newWarehouseList, refetch]);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const [deleteWarehouse] = useMutation(DeleteWarehouse, {
     onError: (err) => {
       toast.error(err.message);

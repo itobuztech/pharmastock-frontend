@@ -18,6 +18,8 @@ export const WarehouseStockCreate = gql`
         id
         name
       }
+      totalMrpBaseUnit
+      totalWholesalePrice
       updatedAt
       warehouse {
         id

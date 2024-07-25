@@ -30,9 +30,8 @@ export default function WarehouseStockDetails() {
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
         <WarehouseStockForm
           warehouseStockDetails={warehouseStockDetails}
-          // selectOrgItem={selectOrgItem}
-          // id={id}
-          // close={close}
+          refetchItem={refetch}
+          warehouseStockId={id}
         />
       </div>
     </section>

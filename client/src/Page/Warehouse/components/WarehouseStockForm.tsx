@@ -12,10 +12,8 @@ import { GetItemLists } from "query/item/itemList";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   CreateWarehouses,
-  GenerateSku,
   ItemLists,
   Items,
-  OrganizationList,
   Warehouses,
 } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
@@ -24,6 +22,7 @@ import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 
 export default function WarehouseStockForm({
   close,
@@ -33,6 +32,8 @@ export default function WarehouseStockForm({
   selectWarehouseItem,
   warehouseStockDetails,
   refetchItem,
+  setNewWarehouseStockList,
+  warehouseStockId,
 }: {
   close?: () => void;
   warehouseDetails?: { warehouse: Warehouse };
@@ -50,13 +51,19 @@ export default function WarehouseStockForm({
   warehouseStockDetails?: {
     warehouseStock: WarehouseStock;
   };
-  refetchItem?: () => void;
+  refetchItem: () => void;
+  setNewWarehouseStockList?: React.Dispatch<
+    React.SetStateAction<CreateWarehouseStockInput | undefined>
+  >;
+  warehouseStockId?: string;
 }) {
   const [itemList, setItemList] = useState<Items>();
   const [qtyValue, setQtyValue] = useState<string | number>("");
-  const [sku, setSku] = useState<GenerateSku>();
+  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
+  const [sku, setSku] = useState<string>();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
+  const selectOrgItems = useOrganizationList();
 
   const schema = yup
     .object({
@@ -92,14 +99,15 @@ export default function WarehouseStockForm({
         close();
       }
       reset();
+      setQtyAddValue("");
       refetchItem();
     },
   });
 
   const onSubmit = async (data: CreateWarehouseStockInput) => {
+    console.log(data);
     const isoString = startDate.toISOString();
-
-    await createWarehouseStock({
+    const response = await createWarehouseStock({
       variables: {
         createWarehouseStockInput: {
           ...data,
@@ -108,6 +116,9 @@ export default function WarehouseStockForm({
         },
       },
     });
+    if (setNewWarehouseStockList) {
+      setNewWarehouseStockList(response.data);
+    }
   };
 
   const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
@@ -183,16 +194,39 @@ export default function WarehouseStockForm({
       );
       setValue("itemId", warehouseStockDetails.warehouseStock.item.id);
       setValue("sku", warehouseStockDetails.warehouseStock.SKU.sku);
-      setValue("qty", warehouseStockDetails.warehouseStock.finalQty);
+      // setValue("qty", warehouseStockDetails.warehouseStock.finalQty);
+      setQtyValue(warehouseStockDetails.warehouseStock.finalQty);
       // setValue("expiry", warehouseStockDetails.warehouseStock);
-      // warehouseStockDetails.warehouseStock.id &&
-      //   setValue("organizationId", warehouseStockDetails?.warehouseStock.?.id);
+      warehouseStockDetails?.warehouseStock.warehouse.organization?.id &&
+        setValue(
+          "organizationId",
+          warehouseStockDetails?.warehouseStock.warehouse.organization?.id
+        );
     }
   }, [setValue, warehouseStockDetails?.warehouseStock]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
+          <Controller
+            name="organizationId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label="Select Organization"
+                placeholder="Select Organization"
+                onChange={(value) => field.onChange(value)}
+                value={field.value}
+                data={warehouseStockId ? selectOrgItems : selectOrgItem}
+                maxDropdownHeight={300}
+                error={errors.organizationId && "This field is required"}
+                disabled={id || warehouseStockId ? true : false}
+              />
+            )}
+          />
+        </div>
         <div className="flex-1">
           {id ? (
             <TextInput
@@ -216,29 +250,11 @@ export default function WarehouseStockForm({
                   data={selectWarehouseItem || selectWarehouseItems}
                   maxDropdownHeight={300}
                   error={errors.warehouseId && "This field is required"}
+                  disabled={id || warehouseStockId ? true : false}
                 />
               )}
             />
           )}
-        </div>
-        <div className="flex-1">
-          <Controller
-            name="organizationId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Select Organization"
-                placeholder="Select Organization"
-                onChange={(value) => field.onChange(value)}
-                value={field.value}
-                data={selectOrgItem}
-                maxDropdownHeight={300}
-                error={errors.organizationId && "This field is required"}
-                disabled={id ? true : false}
-              />
-            )}
-          />
         </div>
       </div>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
@@ -271,6 +287,7 @@ export default function WarehouseStockForm({
                 maxDropdownHeight={300}
                 error={errors.itemId && "This field is required"}
                 searchable
+                disabled={id || warehouseStockId ? true : false}
                 nothingFoundMessage="Nothing found..."
               />
             )}
@@ -282,22 +299,47 @@ export default function WarehouseStockForm({
             placeholder="SKU"
             {...register("sku")}
             error={errors.sku && "This field is required"}
+            disabled={id || warehouseStockId ? true : false}
           />
         </div>
       </div>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <NumberInput
-            label="Quantity"
+            label="Total Quantity"
             placeholder="Qty"
-            {...register("qty")}
             value={qtyValue}
             onChange={setQtyValue}
             min={0}
-            max={10000}
-            error={errors.qty && "This field is required"}
+            max={1000000}
+            disabled
           />
         </div>
+        {warehouseStockId ? (
+          <div className="flex-1">
+            <NumberInput
+              label="Add Quantity"
+              placeholder="Qty"
+              {...register("qty")}
+              value={qtyAddValue}
+              onChange={setQtyAddValue}
+              min={0}
+              max={10000}
+              error={errors.qty && "This field is required"}
+            />
+          </div>
+        ) : (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
+            />
+          </div>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Batch Name"
@@ -306,31 +348,36 @@ export default function WarehouseStockForm({
             error={errors.batchName && "This field is required"}
           />
         </div>
-      </div>
-      <div className="mb-4 datePicker">
-        <span className="block text-sm font-medium leading-[21px]">
-          Expiry Date
-        </span>
-        <Controller
-          name="expiry"
-          control={control}
-          render={({ field }) => (
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => {
-                setStartDate(date);
-                field.onChange(date);
-              }}
-              dateFormat="MMMM d, yyyy"
-              placeholderText="Select expiry date"
-              className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
-            />
+        <div className="flex-1 datePicker">
+          <span className="block text-sm font-medium leading-[23px]">
+            Expiry Date
+          </span>
+          <Controller
+            name="expiry"
+            control={control}
+            render={({ field }) => (
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => {
+                  setStartDate(date);
+                  field.onChange(date);
+                }}
+                minDate={new Date()}
+                dateFormat="MMMM d, yyyy"
+                placeholderText="Select expiry date"
+                className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+              />
+            )}
+          />
+          {errors.expiry && (
+            <span className="text-xs text-red-500">This field is required</span>
           )}
-        />
-        {errors.expiry && "This field is required"}
+        </div>
       </div>
       <div className="text-right mt-6">
-        <ButtonComponent type="submit">Create</ButtonComponent>
+        <ButtonComponent type="submit">
+          {warehouseStockId ? "Update" : "Create"}
+        </ButtonComponent>
       </div>
     </form>
   );

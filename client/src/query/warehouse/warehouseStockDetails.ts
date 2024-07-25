@@ -14,10 +14,16 @@ export const GetWarehouseStockDetails = gql`
         id
         name
       }
+      totalMrpBaseUnit
+      totalWholesalePrice
       updatedAt
       warehouse {
         id
         name
+        organization {
+          id
+          name
+        }
       }
     }
   }

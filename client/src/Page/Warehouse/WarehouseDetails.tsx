@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
-import { Warehouse } from "gql/graphql";
+import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
 import WarehouseForm from "./components/WarehouseForm";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -29,6 +29,8 @@ export default function WarehouseDetails() {
   const [activePage, setActivePage] = useState(1);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
+  const [newWarehouseStockList, setNewWarehouseStockList] =
+    useState<CreateWarehouseStockInput>();
 
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
@@ -38,24 +40,26 @@ export default function WarehouseDetails() {
     },
   });
 
-  const [fetchWarehouseStocksByWarehouse, { loading }] =
-    useLazyQuery<CreateWarehouseStocksByWarehouse>(
-      GetWarehouseStocksByWarehouse,
-      {
-        onError: (err) => {
-          toast.error(err.message);
-        },
-        onCompleted: (d) => {
-          if (d) {
-            const item = d.warehouseStocksByWarehouse;
-            const total = d.warehouseStocksByWarehouse.total;
-            const paginationCount = Math.ceil(total / 10);
-            setWarehouseStocksList(item);
-            setTotalCount(paginationCount);
-          }
-        },
-      }
-    );
+  const [
+    fetchWarehouseStocksByWarehouse,
+    { loading, refetch: refetchWarehouseStock },
+  ] = useLazyQuery<CreateWarehouseStocksByWarehouse>(
+    GetWarehouseStocksByWarehouse,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: (d) => {
+        if (d) {
+          const item = d.warehouseStocksByWarehouse;
+          const total = d.warehouseStocksByWarehouse.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(item);
+          setTotalCount(paginationCount);
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     fetchWarehouseStocksByWarehouse({
@@ -92,6 +96,20 @@ export default function WarehouseDetails() {
     value: item.id,
     label: item.name as string,
   }));
+
+  useEffect(() => {
+    if (newWarehouseStockList) {
+      refetchWarehouseStock().then(({ data }) => {
+        if (data) {
+          const item = data.warehouseStocksByWarehouse;
+          const total = data.warehouseStocksByWarehouse.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(item);
+          setTotalCount(paginationCount);
+        }
+      });
+    }
+  }, [newWarehouseStockList, refetchWarehouseStock, refetch]);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -147,6 +165,8 @@ export default function WarehouseDetails() {
           selectOrgItem={selectOrgItem}
           id={id}
           close={close}
+          refetchItem={refetchWarehouseStock}
+          setNewWarehouseStockList={setNewWarehouseStockList}
         />
       </Modal>
     </section>

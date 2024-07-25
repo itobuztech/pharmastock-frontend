@@ -18,6 +18,8 @@ export const WarehouseStockDelete = gql`
         id
         name
       }
+      totalMrpBaseUnit
+      totalWholesalePrice
       updatedAt
       warehouse {
         id

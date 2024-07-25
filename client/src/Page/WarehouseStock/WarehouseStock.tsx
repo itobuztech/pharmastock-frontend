@@ -16,6 +16,7 @@ import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
 import { WarehouseStockDelete } from "query/warehouse/warehouseStockDelete";
 import ConfirmationModal from "Components/ConfirmationModal";
+import { CreateWarehouseStockInput } from "gql/graphql";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -30,6 +31,8 @@ export default function WarehouseStock() {
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const [deletedId, setDeletedId] = useState<string>();
+  const [newWarehouseStockList, setNewWarehouseStockList] =
+    useState<CreateWarehouseStockInput>();
 
   const [
     fetchWarehouseStocksList,
@@ -59,6 +62,24 @@ export default function WarehouseStock() {
       },
     });
   }, [activePage, fetchWarehouseStocksList, refetchWarehouseStockList]);
+
+  useEffect(() => {
+    if (newWarehouseStockList) {
+      refetchWarehouseStockList().then(({ data }) => {
+        if (data) {
+          const items = data.warehouseStocks;
+          const total = data.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(items);
+          setTotalCount(paginationCount);
+        }
+      });
+    }
+  }, [newWarehouseStockList, refetchWarehouseStockList]);
+
+  useEffect(() => {
+    refetchWarehouseStockList();
+  }, [refetchWarehouseStockList]);
 
   const [organizationList] = useLazyQuery<OrganizationList>(
     ORGANIZATIONS_LIST_QUERY,
@@ -117,6 +138,7 @@ export default function WarehouseStock() {
     });
   }
 
+  console.log({ warehouseStocksList });
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -163,6 +185,7 @@ export default function WarehouseStock() {
           selectOrgItem={selectOrgItem}
           close={close}
           refetchItem={refetchWarehouseStockList}
+          setNewWarehouseStockList={setNewWarehouseStockList}
         />
       </Modal>
     </section>

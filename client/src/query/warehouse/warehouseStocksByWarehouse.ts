@@ -22,6 +22,8 @@ export const GetWarehouseStocksByWarehouse = gql`
           id
           name
         }
+        totalMrpBaseUnit
+        totalWholesalePrice
         updatedAt
         warehouse {
           id
