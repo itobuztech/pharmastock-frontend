@@ -70,7 +70,7 @@ export default function PharmacyStockForm({
     onError: (err) => {
       toast.error(err.message);
     },
-    onCompleted: (d) => {
+    onCompleted: () => {
       toast.success("Pharmacy Stock Created Successfully");
       if (close) {
         close();
@@ -82,7 +82,6 @@ export default function PharmacyStockForm({
   console.log({ pharmacyId });
 
   const onSubmit = async (data: CreatePharmacyStockInput) => {
-    console.log({ data });
     const response = await pharmacyStockCreate({
       variables: {
         createPharmacyStockInput: data,
@@ -213,7 +212,6 @@ export default function PharmacyStockForm({
             min={0}
             max={1000000}
             disabled
-            error={errors.qty && "This field is required"}
           />
         </div>
       )}
