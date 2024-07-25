@@ -15,6 +15,11 @@ export const GetUserDetails = gql`
       }
       updatedAt
       username
+      role {
+        id
+        name
+        userType
+      }
     }
   }
 `;

@@ -17,6 +17,11 @@ export const GetUsersList = gql`
         }
         updatedAt
         username
+        role {
+          id
+          name
+          userType
+        }
       }
     }
   }

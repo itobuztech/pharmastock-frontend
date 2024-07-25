@@ -310,6 +310,11 @@ export interface User {
   organization?: Organization;
   updatedAt: string;
   username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
 }
 
 export interface UserById {
@@ -322,6 +327,11 @@ export interface UserById {
   organization?: Organization;
   updatedAt: string;
   username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
 }
 
 export interface Organization {

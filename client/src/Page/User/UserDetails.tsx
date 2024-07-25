@@ -43,7 +43,7 @@ export default function UserDetails() {
                 label="Role"
                 placeholder="Role"
                 disabled
-                // value={userDetails?.userById.role}
+                value={userDetails?.userById.role.userType}
               />
             </div>
           </div>
