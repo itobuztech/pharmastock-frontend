@@ -15,7 +15,6 @@ export default function LoginPage() {
   const { height } = useViewportSize();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",

@@ -1,8 +1,7 @@
-// permissionsSaga.ts
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { GetPermission } from 'query/getPermission';
 import { toast } from 'react-toastify';
-import client from 'aplloClient'; // Make sure this is the correct import
+import client from 'aplloClient'; 
 import { FETCH_PERMISSIONS_REQUEST, fetchPermissionsError, fetchPermissionsSuccess } from './Permission';
 import { Permissions } from 'interfaces/interfaces';
 import { userPermissionActions } from './Permission.Slice';

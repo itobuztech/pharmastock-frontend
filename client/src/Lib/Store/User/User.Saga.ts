@@ -12,7 +12,7 @@ function* loginMiddleWare({ payload }: { payload: LoginPayload }): any {
       yield console.log(user, payload);
      toast.success('Login successful');
       yield put(userSliceActions.setUser(user));
-      yield put(helperSliceActions.setRedirectUrl(routes.dashboard.me.fullPath));
+      yield put(helperSliceActions.setRedirectUrl(routes.dashboard.profile.fullPath));
     } catch (e) {
       console.trace(e);
       console.log(e);

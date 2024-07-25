@@ -1,43 +1,3 @@
-// // permissionsReducer.ts
-// import { Permissions } from 'interfaces/interfaces';
-// import { FETCH_PERMISSIONS_SUCCESS, FETCH_PERMISSIONS_ERROR, PermissionsActionTypes } from './Permission';
-// import { appStore } from 'Lib/appStore';
-
-// interface PermissionsState {
-//   permissions: Permissions;  
-//   loading: boolean;
-//   error: string | null;
-// }
-
-// const store = appStore.get();
-
-// const initialState: PermissionsState = {
-//   permissions: store.permission,
-//   loading: false,
-//   error: null,
-// };
-
-// const permissionsReducer = (state = initialState, action: PermissionsActionTypes): PermissionsState => {
-//   switch (action.type) {
-//     case FETCH_PERMISSIONS_SUCCESS:
-//       return {
-//         ...state,
-//         permissions: action.payload,
-//         loading: false,
-//       };
-//     case FETCH_PERMISSIONS_ERROR:
-//       return {
-//         ...state,
-//         error: action.payload,
-//         loading: false,
-//       };
-//     default:
-//       return state;
-//   }
-// };
-
-// export default permissionsReducer;
-
 import { createSlice } from "@reduxjs/toolkit";
 import { appStore } from "Lib/appStore";
 import { Permissions } from "interfaces/interfaces";
@@ -51,7 +11,7 @@ export interface PermissionsState {
 const store = appStore.get();
 
 const initialState: PermissionsState = {
-  permissions: store.permission,
+  permissions: {},
   loading: false,
   error: null,
 };
@@ -70,6 +30,7 @@ export const userPermissionSlice = createSlice({
         store.permission = payload;
         appStore.set(store);
       } else {
+        state.permissions = {};
         store.permission = null;
         appStore.set(store);
       }
