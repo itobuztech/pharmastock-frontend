@@ -2,7 +2,7 @@ import { DefaultRoute } from "./DefaultRoute.Interface";
 
 export interface DashBoardRoutes {
   path: string;
-  me: DefaultRoute;
+  profile: DefaultRoute;
   organizations: DefaultRoute;
   organizationDetails: DefaultRoute;
   pharmacies: DefaultRoute;
@@ -17,15 +17,16 @@ export interface DashBoardRoutes {
   warehouseStock: DefaultRoute;
   users: DefaultRoute;
   warehouseStockDetails: DefaultRoute;
+  pharmaciesStock: DefaultRoute;
 }
 
 const dashboardPath = "/dashboard";
 
 export const dashboardRoutes: DashBoardRoutes = {
   path: dashboardPath,
-  me: {
-    path: `${dashboardPath}/me`,
-    fullPath: `${dashboardPath}/me`,
+  profile: {
+    path: `${dashboardPath}/profile`,
+    fullPath: `${dashboardPath}/profile`,
   },
   organizations: {
     path: `${dashboardPath}/organizations`,
@@ -82,5 +83,9 @@ export const dashboardRoutes: DashBoardRoutes = {
   warehouseStockDetails: {
     path: `${dashboardPath}/stocksWarehouse/:id`,
     fullPath: `${dashboardPath}/stocksWarehouse/:id`,
+  },
+  pharmaciesStock: {
+    path: `${dashboardPath}/stocksPharmacies`,
+    fullPath: `${dashboardPath}/stocksPharmacies`,
   },
 };

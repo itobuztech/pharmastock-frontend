@@ -21,8 +21,8 @@ export default function SidebarComponent() {
         <nav className="mt-10 px-6 ">
           <MenuLink
             text="Profile"
-            activeMenuPaths={routes.dashboard.me.path}
-            link={routes.dashboard.me.path}
+            activeMenuPaths={routes.dashboard.profile.path}
+            link={routes.dashboard.profile.path}
           />
 
           <MenuLink
@@ -35,6 +35,12 @@ export default function SidebarComponent() {
             text="Pharmacies"
             activeMenuPaths={routes.dashboard.pharmacies.path}
             link={routes.dashboard.pharmacies.path}
+          />
+
+          <MenuLink
+            text="Pharmacy Stocks"
+            activeMenuPaths={routes.dashboard.pharmaciesStock.path}
+            link={routes.dashboard.pharmaciesStock.path}
           />
 
           <MenuLink

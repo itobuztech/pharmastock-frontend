@@ -52,7 +52,7 @@ export interface OrganizationsListResponse {
   updatedAt: string;
 }
 
-export interface Adminprofile {
+export interface AdminProfile {
   account: {
     role: string;
     user: {
@@ -320,18 +320,35 @@ export interface Organization {
 export interface CreateWarehouseStocksByWarehouse {
   warehouseStocksByWarehouse: WarehouseStocksByWarehouse;
 }
-
 export interface WarehouseStocksByWarehouse {
   total: number;
   warehouseStocks: WarehouseStock[];
 }
-
 export interface WarehouseStock {
   SKU: Sku;
   createdAt: string;
   finalQty: number;
   id: string;
   item: Item;
+  updatedAt: string;
+  warehouse: WarehouseItem;
+}
+
+export interface PharmacyStocksLists {
+  PharmacyStocks: PharmacyStocks;
+}
+
+export interface PharmacyStocks {
+  pharmacyStocks: PharmacyStock[];
+  total: number;
+}
+
+export interface PharmacyStock {
+  createdAt: string;
+  finalQty: number;
+  id: string;
+  itemId: string;
+  pharmacy: Pharmacy;
   updatedAt: string;
   warehouse: WarehouseItem;
 }

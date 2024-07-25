@@ -14,9 +14,6 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.LoginDocument,
-    "\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.AccountDocument,
-    "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n": types.ResetPasswordDocument,
-    "\n  mutation Updateprofile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n": types.UpdateprofileDocument,
     "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n": types.SignupDocument,
     "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n": types.CreateItemCategoryDocument,
     "\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n": types.DeleteItemCategoryDocument,
@@ -38,6 +35,11 @@ const documents = {
     "\n  query Pharmacy($pharmacyId: String!) {\n    pharmacy(id: $pharmacyId) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      organization {\n        active\n        address\n        city\n        contact\n        country\n        createdAt\n        description\n        id\n        name\n        updatedAt\n      }\n      updatedAt\n    }\n  }\n": types.PharmacyDocument,
     "\n  query Pharmacies($paginationArgs: PaginationArgs) {\n    pharmacies(paginationArgs: $paginationArgs) {\n      pharmacies {\n        contactInfo\n        createdAt\n        id\n        location\n        name\n        organization {\n          id\n          name\n        }\n        updatedAt\n      }\n      total\n    }\n  }\n": types.PharmaciesDocument,
     "\n  mutation UpdatePharmacy($updatePharmacyInput: UpdatePharmacyInput!) {\n    updatePharmacy(updatePharmacyInput: $updatePharmacyInput) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      updatedAt\n    }\n  }\n": types.UpdatePharmacyDocument,
+    "\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n": types.CreatePharmacyStockDocument,
+    "\n  query PharmacyStocks {\n    PharmacyStocks {\n      pharmacyStocks {\n        createdAt\n        finalQty\n        id\n        item {\n          id\n          name\n        }\n        pharmacy {\n          id\n          name\n        }\n        updatedAt\n        warehouse {\n          id\n          name\n        }\n      }\n      total\n    }\n  }\n": types.PharmacyStocksDocument,
+    "\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.AccountDocument,
+    "\n  mutation UpdateProfile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n": types.UpdateProfileDocument,
+    "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n": types.ResetPasswordDocument,
     "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.MutationDocument,
     "\n  mutation Create($createUserInput: CreateUserInput!) {\n    create(createUserInput: $createUserInput) {\n      createdAt\n      email\n      emailConfirmationToken\n      id\n      isEmailConfirmed\n      name\n      organization {\n        id\n        name\n      }\n      updatedAt\n      username\n    }\n  }\n": types.CreateDocument,
     "\n  query Users {\n    users {\n      total\n      users {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        organization {\n          id\n          name\n        }\n        updatedAt\n        username\n      }\n    }\n  }\n": types.UsersDocument,
@@ -72,18 +74,6 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n"): (typeof documents)["\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation Updateprofile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n"): (typeof documents)["\n  mutation Updateprofile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -168,6 +158,26 @@ export function graphql(source: "\n  query Pharmacies($paginationArgs: Paginatio
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdatePharmacy($updatePharmacyInput: UpdatePharmacyInput!) {\n    updatePharmacy(updatePharmacyInput: $updatePharmacyInput) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation UpdatePharmacy($updatePharmacyInput: UpdatePharmacyInput!) {\n    updatePharmacy(updatePharmacyInput: $updatePharmacyInput) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query PharmacyStocks {\n    PharmacyStocks {\n      pharmacyStocks {\n        createdAt\n        finalQty\n        id\n        item {\n          id\n          name\n        }\n        pharmacy {\n          id\n          name\n        }\n        updatedAt\n        warehouse {\n          id\n          name\n        }\n      }\n      total\n    }\n  }\n"): (typeof documents)["\n  query PharmacyStocks {\n    PharmacyStocks {\n      pharmacyStocks {\n        createdAt\n        finalQty\n        id\n        item {\n          id\n          name\n        }\n        pharmacy {\n          id\n          name\n        }\n        updatedAt\n        warehouse {\n          id\n          name\n        }\n      }\n      total\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  query Account {\n    account {\n      role\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateProfile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n"): (typeof documents)["\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
