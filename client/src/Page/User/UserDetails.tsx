@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { PasswordInput, TextInput } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
-import { User } from "interfaces/interfaces";
+import { UserById } from "interfaces/interfaces";
 import { GetUserDetails } from "query/user/userDetails";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -9,16 +9,14 @@ import { useParams } from "react-router-dom";
 export default function UserDetails() {
   const { id } = useParams();
 
-  const { data: userDetails, refetch } = useQuery<{ user: User }>(
+  const { data: userDetails } = useQuery<{ userById: UserById }>(
     GetUserDetails,
     {
       variables: {
-        email: id,
+        userByIdId: id,
       },
     }
   );
-
-  console.log({ userDetails });
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -35,9 +33,7 @@ export default function UserDetails() {
                 label="Organization"
                 placeholder="Organization"
                 disabled
-                // {...register("orgId")}
-                // error={errors.orgId && "This field is required"}
-                value={userDetails?.user.organization?.name}
+                value={userDetails?.userById.organization?.name}
               />
             </div>
           </div>
@@ -46,10 +42,8 @@ export default function UserDetails() {
               <TextInput
                 label="Role"
                 placeholder="Role"
-                // {...register("orgId")}
                 disabled
-                // error={errors.orgId && "This field is required"}
-                // value={userDetails?.user.}
+                // value={userDetails?.userById.role}
               />
             </div>
           </div>
@@ -59,20 +53,16 @@ export default function UserDetails() {
             <TextInput
               label="User Name"
               placeholder="User Name"
-              value={userDetails?.user.username}
+              value={userDetails?.userById.username}
               disabled
-              // {...register("username")}
-              // error={errors.username && "This field is required"}
             />
           </div>
           <div className="flex-1">
             <TextInput
               label="Name"
               placeholder="Name"
-              value={userDetails?.user.name}
+              value={userDetails?.userById.name}
               disabled
-              // {...register("name")}
-              // error={errors.name && "This field is required"}
             />
           </div>
         </div>
@@ -81,11 +71,8 @@ export default function UserDetails() {
             <TextInput
               label="Email"
               placeholder="Email"
-              value={userDetails?.user.email}
+              value={userDetails?.userById.email}
               disabled
-              // {...register("email")}
-              // disabled={!editForm}
-              // error={errors.email && "This field is required"}
             />
           </div>
           <div className="flex-1">
@@ -94,9 +81,6 @@ export default function UserDetails() {
               placeholder="Password"
               value="********"
               disabled
-              // {...register("password")}
-              // disabled={!editForm}
-              // error={errors.password && "This field is required"}
             />
           </div>
         </div>

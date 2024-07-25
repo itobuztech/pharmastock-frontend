@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GetUserDetails = gql`
-  query User($email: String!) {
-    user(email: $email) {
+  query UserById($userByIdId: String!) {
+    userById(id: $userByIdId) {
       createdAt
       email
       emailConfirmationToken

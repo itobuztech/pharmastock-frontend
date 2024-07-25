@@ -312,6 +312,18 @@ export interface User {
   username: string;
 }
 
+export interface UserById {
+  createdAt: string;
+  email: string;
+  emailConfirmationToken?: string;
+  id: string;
+  isEmailConfirmed: boolean;
+  name: string;
+  organization?: Organization;
+  updatedAt: string;
+  username: string;
+}
+
 export interface Organization {
   id: string;
   name: string;
