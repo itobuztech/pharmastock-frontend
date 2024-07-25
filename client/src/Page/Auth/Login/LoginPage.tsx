@@ -41,7 +41,7 @@ export default function LoginPage() {
       localStorage.setItem("userData", JSON.stringify(data.login));
 
       if (data?.login.access_token) {
-        navigate("/dashboard/me");
+        navigate(`${routes.dashboard.profile.path}`);
       }
     } catch (error: any) {
       toast.error(error.message);

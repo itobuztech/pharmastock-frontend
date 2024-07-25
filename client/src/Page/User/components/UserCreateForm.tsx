@@ -46,16 +46,16 @@ export default function UserCreateForm({
       toast.error(err.message);
     },
     onCompleted: () => {
-      toast.success("Organization Added Successfully");
+      toast.success("User Added Successfully");
       reset();
       close();
       reset();
     },
   });
 
-  const onSubmit = async (data: CreateUserInput) => {
+  const onSubmit = (data: CreateUserInput) => {
     console.log(data);
-    const response = await addUsers({
+    const response = addUsers({
       variables: {
         createUserInput: { ...data, orgId: selectItem.value },
       },
