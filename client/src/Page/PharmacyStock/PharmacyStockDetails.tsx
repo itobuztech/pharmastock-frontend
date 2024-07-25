@@ -17,7 +17,7 @@ export default function PharmacyStockDetails() {
     },
   });
 
-  // console.log({ pharmacyStockDetails, id });
+  console.log({ pharmacyStockDetails, id });
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -29,9 +29,9 @@ export default function PharmacyStockDetails() {
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
         <PharmacyStockForm
-          close={() => console.log()}
           pharmacyStockDetails={pharmacyStockDetails?.PharmacyStock}
           id={id}
+          refetchItem={refetch}
         />
       </div>
     </section>

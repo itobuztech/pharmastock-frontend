@@ -103,10 +103,9 @@ export default function PharmacyStock() {
         size={"sm"}
       >
         <PharmacyStockForm
-          // pharmacyName={pharmacyDetails?.pharmacy.name}
-          // pharmacyId={pharmacyDetails?.pharmacy.id}
           setNewPharmacyStockList={setNewPharmacyStockList}
           close={close}
+          refetchItem={refetch}
         />
       </Modal>
     </section>

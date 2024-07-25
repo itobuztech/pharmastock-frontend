@@ -6,7 +6,10 @@ export const GetPharmacyStockDetails = gql`
       createdAt
       finalQty
       id
-      itemId
+      item {
+        id
+        name
+      }
       pharmacy {
         id
         name

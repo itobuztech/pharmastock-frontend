@@ -15,6 +15,7 @@ import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksBy
 import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
 import usePharmacyList from "Lib/customHooks/usePharmacyLists";
+import useItemList from "Lib/customHooks/useItemList";
 
 export default function PharmacyStockForm({
   pharmacyName,
@@ -23,15 +24,17 @@ export default function PharmacyStockForm({
   pharmacyStockDetails,
   id,
   setNewPharmacyStockList,
+  refetchItem,
 }: {
   pharmacyName?: string;
   pharmacyId?: string;
-  close: () => void;
+  close?: () => void;
   pharmacyStockDetails?: PharmacyStock;
   id?: string;
   setNewPharmacyStockList?: React.Dispatch<
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
+  refetchItem: () => void;
 }) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
@@ -40,6 +43,7 @@ export default function PharmacyStockForm({
 
   const selectWarehouseItems = useWarehouseItems();
   const selectPharmaList = usePharmacyList();
+  const selectItem = useItemList();
 
   const schema = yup
     .object({
@@ -68,14 +72,21 @@ export default function PharmacyStockForm({
     },
     onCompleted: (d) => {
       toast.success("Pharmacy Stock Created Successfully");
-      close();
+      if (close) {
+        close();
+      }
       reset();
+      refetchItem();
     },
   });
+  console.log({ pharmacyId });
 
   const onSubmit = async (data: CreatePharmacyStockInput) => {
+    console.log({ data });
     const response = await pharmacyStockCreate({
-      variables: { createPharmacyStockInput: { ...data, pharmacyId } },
+      variables: {
+        createPharmacyStockInput: data,
+      },
     });
     setNewPharmacyStockList(response.data);
   };
@@ -110,16 +121,17 @@ export default function PharmacyStockForm({
   };
 
   useEffect(() => {
-    pharmacyName && setValue("pharmacyId", pharmacyName);
-  }, [pharmacyName, setValue]);
+    pharmacyId && setValue("pharmacyId", pharmacyId);
+  }, [pharmacyId, setValue]);
 
   useEffect(() => {
-    console.log("update", pharmacyStockDetails?.finalQty);
     if (pharmacyStockDetails) {
       pharmacyStockDetails.pharmacy?.name &&
-        setValue("pharmacyId", pharmacyStockDetails.pharmacy?.name);
+        setValue("pharmacyId", pharmacyStockDetails.pharmacy?.id);
       pharmacyStockDetails.warehouse?.id &&
         setValue("warehouseId", pharmacyStockDetails.warehouse?.id);
+      pharmacyStockDetails.item?.id &&
+        setValue("itemId", pharmacyStockDetails.item?.id);
       setQtyValue(pharmacyStockDetails.finalQty);
     }
   }, [pharmacyStockDetails, setValue]);
@@ -127,35 +139,25 @@ export default function PharmacyStockForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        {id || pharmacyId ? (
-          <TextInput
-            label="Pharmacy"
-            placeholder="Pharmacy"
-            {...register("pharmacyId")}
-            error={errors.pharmacyId && "This field is required"}
-            disabled={id || pharmacyId ? true : false}
-          />
-        ) : (
-          <Controller
-            name="pharmacyId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                data={selectPharmaList}
-                label="Select Pharmacy"
-                placeholder="Select Pharmacy"
-                value={field.value}
-                onChange={(value) => {
-                  handleParentChange(value!);
-                  field.onChange(value);
-                }}
-                error={errors.pharmacyId && "This field is required"}
-                disabled={id ? true : false}
-              />
-            )}
-          />
-        )}
+        <Controller
+          name="pharmacyId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              data={selectPharmaList}
+              label="Select Pharmacy"
+              placeholder="Select Pharmacy"
+              value={field.value}
+              onChange={(value) => {
+                console.log(value);
+                field.onChange(value);
+              }}
+              error={errors.pharmacyId && "This field is required"}
+              disabled={id || pharmacyId ? true : false}
+            />
+          )}
+        />
       </div>
 
       <div className="mb-4">
@@ -187,7 +189,7 @@ export default function PharmacyStockForm({
           render={({ field }) => (
             <Select
               {...field}
-              data={selectItems}
+              data={id ? selectItem : selectItems}
               label="Select Item"
               placeholder="Select Item"
               value={field.value}
@@ -195,6 +197,7 @@ export default function PharmacyStockForm({
                 field.onChange(value);
               }}
               error={errors.itemId && "This field is required"}
+              disabled={id ? true : false}
             />
           )}
         />
