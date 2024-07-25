@@ -11,7 +11,7 @@ export interface PermissionsState {
 const store = appStore.get();
 
 const initialState: PermissionsState = {
-  permissions: {},
+  permissions: store.permission || {},
   loading: false,
   error: null,
 };
@@ -23,7 +23,7 @@ export const userPermissionSlice = createSlice({
     
     setPermission: (state, { payload }: { payload: Permissions }) => {
       state.permissions = payload
-      state.loading = payload ? false : true;
+      state.loading = false;
       const store = appStore.get();
 
       if (payload) {
