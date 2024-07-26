@@ -41,6 +41,7 @@ export default function OrganizationTable({
           handleDelete={() => handleDelete(org.id)}
           handleUserModal={() => handleUserModal(org.id)}
           showUserModal={true}
+          showDeleteModal={true}
         />
       </Table.Td>
     </Table.Tr>

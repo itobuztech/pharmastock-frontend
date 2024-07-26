@@ -126,6 +126,7 @@ export default function OrganizationsPage() {
         title="Organizations List"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Organization"
       />
 
       {/* ==== Loading State ==== */}

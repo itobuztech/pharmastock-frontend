@@ -11,13 +11,16 @@ export const routes = {
     path: "/logout",
   },
   forgetPassword: {
-    path: "/forget-password",
+    path: "/forgotPassword",
   },
   register: {
     path: "/register",
   },
   token: {
     path: "/token",
+  },
+  forgotPasswordConfirmation: {
+    path: "/forgotpasswordconfirmation",
   },
   app: {
     path: "/app",

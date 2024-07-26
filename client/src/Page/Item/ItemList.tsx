@@ -102,7 +102,12 @@ export default function ItemList() {
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
-      <PageHeader title="Items" showCreateButton={true} onClick={open} />
+      <PageHeader
+        title="Items"
+        showCreateButton={true}
+        onClick={open}
+        buttonText="Add Items"
+      />
 
       {loading && (
         <LoadingOverlay

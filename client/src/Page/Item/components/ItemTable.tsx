@@ -33,12 +33,13 @@ export default function ItemTable({
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
       <Table.Td>{item.instructions}</Table.Td>
-      <Table.Td>{item.wholesalePrice}</Table.Td>
-      <Table.Td>{item.mrpBaseUnit}</Table.Td>
-      <Table.Td>
+      <Table.Td>₹ {item.wholesalePrice}</Table.Td>
+      <Table.Td>₹ {item.mrpBaseUnit}</Table.Td>
+      <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
+          showDeleteModal={true}
         />
       </Table.Td>
     </Table.Tr>
@@ -60,7 +61,7 @@ export default function ItemTable({
             <Table.Th>Instructions</Table.Th>
             <Table.Th>Wholesale Price</Table.Th>
             <Table.Th>MRP Base unit</Table.Th>
-            <Table.Th>Action</Table.Th>
+            <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
