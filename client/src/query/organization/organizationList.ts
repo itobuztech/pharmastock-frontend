@@ -1,8 +1,16 @@
 import { gql } from "@apollo/client";
 
 export const ORGANIZATIONS_LIST_QUERY = gql`
-  query Organizations($paginationArgs: PaginationArgs) {
-    organizations(paginationArgs: $paginationArgs) {
+  query Organizations(
+    $pagination: Boolean
+    $paginationArgs: PaginationArgs
+    $searchText: String
+  ) {
+    organizations(
+      pagination: $pagination
+      paginationArgs: $paginationArgs
+      searchText: $searchText
+    ) {
       organizations {
         active
         address
