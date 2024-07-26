@@ -12,6 +12,7 @@ import { DeletePharmacy } from "query/pharmacy/pharmacyDelete";
 import PharmacyTable from "./components/PharmacyTable";
 import PharmacyForm from "./components/PharmacyForm";
 import EmptyList from "Components/EmptyList";
+import Search from "Components/Search";
 
 export default function Pharmacy() {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
@@ -21,7 +22,7 @@ export default function Pharmacy() {
   const [deletedId, setDeletedId] = useState<string>();
   const [totalCount, setTotalCount] = useState(1);
   const [editForm, setEditForm] = useState(true);
-
+  const [searchInput, setSearchInput] = useState("");
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
@@ -69,13 +70,15 @@ export default function Pharmacy() {
   useEffect(() => {
     fetchPharmacyList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [fetchPharmacyList, activePage, refetch]);
+  }, [fetchPharmacyList, activePage, refetch, searchInput]);
 
   // Update new pharmacy in list
   useEffect(() => {
@@ -111,12 +114,33 @@ export default function Pharmacy() {
     deleteModalClose();
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchPharmacyList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy List"
         showCreateButton={true}
         onClick={open}
+      />
+
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
       />
 
       {loading && (
