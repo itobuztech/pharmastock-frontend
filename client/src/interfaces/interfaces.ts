@@ -272,6 +272,8 @@ export interface WarehouseStock {
   finalQty: number;
   id: string;
   item: Item;
+  totalMrpBaseUnit: number;
+  totalWholesalePrice: number;
   updatedAt: string;
   warehouse: WarehouseItem;
 }
@@ -310,6 +312,28 @@ export interface User {
   organization?: Organization;
   updatedAt: string;
   username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
+}
+
+export interface UserById {
+  createdAt: string;
+  email: string;
+  emailConfirmationToken?: string;
+  id: string;
+  isEmailConfirmed: boolean;
+  name: string;
+  organization?: Organization;
+  updatedAt: string;
+  username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
 }
 
 export interface Organization {
@@ -343,12 +367,23 @@ export interface PharmacyStocks {
   total: number;
 }
 
+export interface CreatePharmacyStocksByPharmacy {
+  pharmacyStocksByPharmacy: PharmacyStocksByPharmacy;
+}
+
+export interface PharmacyStocksByPharmacy {
+  pharmacyStocks: PharmacyStock[];
+  total: number;
+}
+
 export interface PharmacyStock {
   createdAt: string;
   finalQty: number;
   id: string;
-  itemId: string;
+  item: Item;
   pharmacy: Pharmacy;
+  totalMrpBaseUnit: number;
+  totalWholesalePrice: number;
   updatedAt: string;
   warehouse: WarehouseItem;
 }

@@ -37,6 +37,7 @@ export default function PharmacyTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
+          showDeleteModal={true}
         />
       </Table.Td>
     </Table.Tr>

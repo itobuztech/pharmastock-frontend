@@ -135,6 +135,7 @@ export default function Pharmacy() {
         title="Pharmacy List"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Pharmacy"
       />
 
       {/* ==== Search ==== */}

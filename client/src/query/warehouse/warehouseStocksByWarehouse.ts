@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+
 export const GetWarehouseStocksByWarehouse = gql`
   query WarehouseStocksByWarehouse(
     $warehouseId: String!
@@ -21,6 +22,8 @@ export const GetWarehouseStocksByWarehouse = gql`
           id
           name
         }
+        totalMrpBaseUnit
+        totalWholesalePrice
         updatedAt
         warehouse {
           id

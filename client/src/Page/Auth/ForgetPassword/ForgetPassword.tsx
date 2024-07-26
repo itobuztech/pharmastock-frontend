@@ -1,27 +1,48 @@
 import React from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
-import TextFieldComponent from "../../../Components/TextField/TextFieldComponent";
-import EmailIcon from "../../../Icons/Email-Icon";
 import { useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "../../../Lib/Store/hooks";
-import { userSliceActions } from "../../../Lib/Store/User/User.Slice";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
-import { ForgetPasswordPayload } from "../../../Lib/Api/Fake/Users/users.interface";
-import { Alert } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
+import { BiSolidEnvelope } from "react-icons/bi";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { ForgotPasswordInput } from "gql/graphql";
+import { useMutation } from "@apollo/client";
+import { ForgotPassword } from "query/forgotPassword/forgotPassword";
+import { toast } from "react-toastify";
 
-export default function ForgetPassWordPage() {
+export default function ForgetPassWord() {
   const { height } = useViewportSize();
-  const forGetPasswordState = useAppSelector(
-    (state) => state.user.forgetPassword
-  );
-  const dispatch = useAppDispatch();
 
-  const { register, handleSubmit } = useForm<ForgetPasswordPayload>();
+  const schema = yup
+    .object({
+      email: yup.string().required(),
+    })
+    .required();
 
-  const onSubmit = (data: ForgetPasswordPayload) => {
-    dispatch(userSliceActions.forgetPassword(data));
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const [forgotPassword, { loading }] = useMutation(ForgotPassword, {
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onCompleted: () => {
+      toast.success("An email has been sent. Please Check your email");
+    },
+  });
+
+  const onSubmit = (data: ForgotPasswordInput) => {
+    forgotPassword({
+      variables: { forgotPasswordInput: data },
+    });
   };
 
   return (
@@ -35,17 +56,22 @@ export default function ForgetPassWordPage() {
         </div>
         <div className="mt-8">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextFieldComponent
-              icon={<EmailIcon />}
+            <TextInput
+              label="Your email"
               placeholder="Your email"
-              register={register("username")}
+              rightSection={<BiSolidEnvelope />}
+              {...register("email")}
+              error={errors.email && "This field is required"}
             />
+
             <div className="flex items-center mb-6 mt-4">
               <div className="flex ml-auto">
-                <div className="inline-flex text-xs  text-gray-500 sm:text-sm  hover:text-gray-700">
-                  Already have password{" "}
-                  <Link to={routes.login.path} className="ml-1 underline">
-                    {" "}
+                <div className="inline-flex text-sm text-gray-500">
+                  Already have password&nbsp;
+                  <Link
+                    to={routes.login.path}
+                    className="text-blue-900 hover:text-blue-600 transition-colors"
+                  >
                     login
                   </Link>
                 </div>
@@ -55,17 +81,13 @@ export default function ForgetPassWordPage() {
               <ButtonComponent
                 testId="login"
                 type="submit"
-                loading={forGetPasswordState.loading}
+                fullWidth
+                loading={loading}
               >
-                Request password change
+                Request Password Change
               </ButtonComponent>
             </div>
           </form>
-          {forGetPasswordState.token && (
-            <Alert className="mt-4" variant="light" color="violet">
-              An email has been sent. Please Check your email
-            </Alert>
-          )}
         </div>
       </div>
     </div>

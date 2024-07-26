@@ -1,7 +1,9 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import { Users } from "interfaces/interfaces";
+import routes from "Lib/Routes/Routes";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UserTable({
   activePage,
@@ -14,6 +16,12 @@ export default function UserTable({
   userList?: Users;
   totalCount: number;
 }) {
+  const navigate = useNavigate();
+
+  function screenSwitch(id: string) {
+    navigate(`${routes.dashboard.users.path}/${id}`);
+  }
+
   const rows = userList?.users?.map((item, i) => (
     <Table.Tr key={item.id}>
       <Table.Td>
@@ -23,9 +31,10 @@ export default function UserTable({
       <Table.Td>{item.name}</Table.Td>
       <Table.Td>{item.email}</Table.Td>
       <Table.Td>{item.organization?.name}</Table.Td>
+      <Table.Td>{item.role.userType}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
-          handleView={() => console.log(item.id)}
+          handleView={() => screenSwitch(item.id)}
           handleDelete={() => console.log(item.id)}
         />
       </Table.Td>
@@ -46,6 +55,7 @@ export default function UserTable({
             <Table.Th>Name</Table.Th>
             <Table.Th>Email</Table.Th>
             <Table.Th>Organization Name</Table.Th>
+            <Table.Th>Role</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
