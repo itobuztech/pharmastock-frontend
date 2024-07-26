@@ -12,6 +12,9 @@ const RegisterPage = React.lazy(
   () => import("Page/Auth/Register/RegisterPage")
 );
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
+const ForgetPassword = React.lazy(
+  () => import("Page/Auth/ForgetPassword/ForgetPassword")
+);
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
 const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
@@ -54,6 +57,10 @@ export default function AppRoutes() {
           <Route path={routes.home.path} element={<IndexPage />} />
           <Route path={routes.register.path} element={<RegisterPage />} />
           <Route path={routes.login.path} element={<LoginPage />} />
+          <Route
+            path={routes.forgetPassword.path}
+            element={<ForgetPassword />}
+          />
 
           <Route path={routes.dashboard.path} element={<DashboardPage />}>
             <Route path={routes.dashboard.profile.path} element={<AuthGuard />}>
