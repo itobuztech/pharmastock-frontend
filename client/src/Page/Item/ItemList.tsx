@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
+import Search from "Components/Search";
 
 export default function ItemList() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,6 +25,7 @@ export default function ItemList() {
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -46,13 +48,15 @@ export default function ItemList() {
   useEffect(() => {
     fetchItemList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchItemList, refetch]);
+  }, [activePage, fetchItemList, refetch, searchInput]);
 
   useEffect(() => {
     if (newItemList) {
@@ -100,9 +104,30 @@ export default function ItemList() {
     });
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchItemList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Items" showCreateButton={true} onClick={open} />
+
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
 
       {loading && (
         <LoadingOverlay

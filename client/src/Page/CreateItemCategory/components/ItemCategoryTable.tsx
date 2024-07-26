@@ -30,7 +30,7 @@ export default function ItemCategoryTable({
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{item.name}</Table.Td>
-      <Table.Td>12</Table.Td>
+      <Table.Td>{item.Item?.length}</Table.Td>
       <Table.Td>23</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
