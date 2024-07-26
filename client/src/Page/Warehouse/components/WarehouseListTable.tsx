@@ -37,6 +37,7 @@ export default function WarehouseListTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
+          showDeleteModal={true}
         />
       </Table.Td>
     </Table.Tr>

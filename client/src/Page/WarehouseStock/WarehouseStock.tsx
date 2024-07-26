@@ -3,12 +3,7 @@ import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
-import {
-  OrganizationList,
-  WarehouseStocks,
-  WarehouseStocksData,
-} from "interfaces/interfaces";
+import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
@@ -17,6 +12,8 @@ import EmptyList from "Components/EmptyList";
 import { WarehouseStockDelete } from "query/warehouse/warehouseStockDelete";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { CreateWarehouseStockInput } from "gql/graphql";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,8 +21,10 @@ export default function WarehouseStock() {
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+
+  const selectOrganizationItem = useOrganizationList();
+  const selectWarehouseItem = useWarehouseItems();
+
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
@@ -81,29 +80,6 @@ export default function WarehouseStock() {
     refetchWarehouseStockList();
   }, [refetchWarehouseStockList]);
 
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
   const [deleteWarehouseStock] = useMutation(WarehouseStockDelete, {
     onError: (err) => {
       toast.error(err.message);
@@ -145,6 +121,7 @@ export default function WarehouseStock() {
         title="Warehouse Stocks"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Warehouse Stock"
       />
 
       {loading && (
@@ -163,7 +140,6 @@ export default function WarehouseStock() {
           setActivePage={setActivePage}
           totalCount={totalCount}
           warehouseStocksList={warehouseStocksList}
-          handleDelete={handleDelete}
         />
       )}
 
@@ -182,10 +158,12 @@ export default function WarehouseStock() {
         size={"xl"}
       >
         <WarehouseStockForm
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
+          selectWarehouseItem={selectWarehouseItem}
           close={close}
           refetchItem={refetchWarehouseStockList}
           setNewWarehouseStockList={setNewWarehouseStockList}
+          list={true}
         />
       </Modal>
     </section>

@@ -9,11 +9,13 @@ export default function PageHeader({
   onClick,
   showBackButton,
   showCreateButton,
+  buttonText,
 }: {
   title: string;
   onClick?: () => void;
   showBackButton?: boolean;
   showCreateButton?: boolean;
+  buttonText?: string;
 }) {
   const navigate = useNavigate();
 
@@ -37,8 +39,9 @@ export default function PageHeader({
           color="rgba(37, 99, 235, 1)"
           size="md"
           onClick={onClick}
+          className=" font-extrabold"
         >
-          Create
+          {buttonText}
         </Button>
       )}
     </div>

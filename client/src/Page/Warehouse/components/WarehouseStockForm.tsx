@@ -3,18 +3,12 @@ import { NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  CreateWarehouseStockInput,
-  Warehouse,
-  WarehouseStock,
-} from "gql/graphql";
-import { GetItemLists } from "query/item/itemList";
+import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   CreateWarehouses,
-  ItemLists,
-  Items,
   Warehouses,
+  WarehouseStock,
 } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetGenerateSKU } from "query/warehouse/warehouseGenerateSku";
@@ -23,6 +17,7 @@ import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import useItemList from "Lib/customHooks/useItemList";
 
 export default function WarehouseStockForm({
   close,
@@ -34,6 +29,7 @@ export default function WarehouseStockForm({
   refetchItem,
   setNewWarehouseStockList,
   warehouseStockId,
+  list,
 }: {
   close?: () => void;
   warehouseDetails?: { warehouse: Warehouse };
@@ -56,14 +52,15 @@ export default function WarehouseStockForm({
     React.SetStateAction<CreateWarehouseStockInput | undefined>
   >;
   warehouseStockId?: string;
+  list?: boolean;
 }) {
-  const [itemList, setItemList] = useState<Items>();
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [sku, setSku] = useState<string>();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const selectOrgItems = useOrganizationList();
+  const selectItem = useItemList();
 
   const schema = yup
     .object({
@@ -121,27 +118,6 @@ export default function WarehouseStockForm({
     }
   };
 
-  const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: (d) => {
-      if (d) {
-        const items = d.items;
-        setItemList(items);
-      }
-    },
-  });
-
-  useEffect(() => {
-    fetchItemList();
-  }, [fetchItemList]);
-
-  const selectItem = itemList?.items?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-
   const [fetchSku] = useMutation(GetGenerateSKU, {
     onError: (err) => {
       toast.error(err.message);
@@ -194,9 +170,7 @@ export default function WarehouseStockForm({
       );
       setValue("itemId", warehouseStockDetails.warehouseStock.item.id);
       setValue("sku", warehouseStockDetails.warehouseStock.SKU.sku);
-      // setValue("qty", warehouseStockDetails.warehouseStock.finalQty);
       setQtyValue(warehouseStockDetails.warehouseStock.finalQty);
-      // setValue("expiry", warehouseStockDetails.warehouseStock);
       warehouseStockDetails?.warehouseStock.warehouse.organization?.id &&
         setValue(
           "organizationId",
@@ -287,7 +261,7 @@ export default function WarehouseStockForm({
                 maxDropdownHeight={300}
                 error={errors.itemId && "This field is required"}
                 searchable
-                disabled={id || warehouseStockId ? true : false}
+                disabled={warehouseStockId ? true : false}
                 nothingFoundMessage="Nothing found..."
               />
             )}
@@ -299,23 +273,26 @@ export default function WarehouseStockForm({
             placeholder="SKU"
             {...register("sku")}
             error={errors.sku && "This field is required"}
-            disabled={id || warehouseStockId ? true : false}
+            disabled={warehouseStockId ? true : false}
           />
         </div>
       </div>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
-        <div className="flex-1">
-          <NumberInput
-            label="Total Quantity"
-            placeholder="Qty"
-            value={qtyValue}
-            onChange={setQtyValue}
-            min={0}
-            max={1000000}
-            disabled
-          />
-        </div>
-        {warehouseStockId ? (
+        {!id && !list && (
+          <div className="flex-1">
+            <NumberInput
+              label="Total Quantity"
+              placeholder="Qty"
+              value={qtyValue}
+              onChange={setQtyValue}
+              min={0}
+              max={1000000}
+              disabled
+            />
+          </div>
+        )}
+
+        {id || warehouseStockId || list ? (
           <div className="flex-1">
             <NumberInput
               label="Add Quantity"
@@ -338,16 +315,28 @@ export default function WarehouseStockForm({
             />
           </div>
         )}
+        {list && (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
+            />
+          </div>
+        )}
       </div>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
-        <div className="flex-1">
-          <TextInput
-            label="Batch Name"
-            placeholder="Batch Name"
-            {...register("batchName")}
-            error={errors.batchName && "This field is required"}
-          />
-        </div>
+        {!list && (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
+            />
+          </div>
+        )}
         <div className="flex-1 datePicker">
           <span className="block text-sm font-medium leading-[23px]">
             Expiry Date
@@ -374,6 +363,7 @@ export default function WarehouseStockForm({
           )}
         </div>
       </div>
+
       <div className="text-right mt-6">
         <ButtonComponent type="submit">
           {warehouseStockId ? "Update" : "Create"}

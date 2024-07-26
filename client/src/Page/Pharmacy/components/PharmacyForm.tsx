@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Select, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
@@ -7,11 +7,10 @@ import {
   UpdatePharmacyInput,
   Pharmacy,
 } from "gql/graphql";
-import { OrganizationList } from "interfaces/interfaces";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import { PharmacyCreate } from "query/pharmacy/pharmacyCreate";
 import { GetUpdatePharmacy } from "query/pharmacy/pharmacyUpdate";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -37,8 +36,7 @@ export default function PharmacyForm({
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+  const selectOrganizationItem = useOrganizationList();
 
   const schema = yup
     .object({
@@ -109,30 +107,6 @@ export default function PharmacyForm({
     }
   };
 
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
   // Set Values
   useEffect(() => {
     if (pharmacyDetails) {
@@ -183,7 +157,7 @@ export default function PharmacyForm({
               {...field}
               label="Select Organization"
               placeholder="Select Organization"
-              data={selectOrgItem}
+              data={selectOrganizationItem}
               maxDropdownHeight={300}
               // value={field.value}
               // onChange={(value) => field.onChange(value)}

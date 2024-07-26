@@ -8,29 +8,27 @@ import WarehouseForm from "./components/WarehouseForm";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import {
   CreateWarehouseStocksByWarehouse,
-  OrganizationList,
   WarehouseStocksByWarehouse,
 } from "interfaces/interfaces";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
-import WarehouseStockTable from "Page/WarehouseStock/components/WarehouseStockTable";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
 import { toast } from "react-toastify";
 import EmptyList from "Components/EmptyList";
+import WarehouseStockTable from "Page/WarehouseStock/components/WarehouseStockTable";
 
 export default function WarehouseDetails() {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
+  const selectOrganizationItem = useOrganizationList();
 
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
@@ -73,30 +71,6 @@ export default function WarehouseDetails() {
     });
   }, [activePage, fetchWarehouseStocksByWarehouse, id]);
 
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
   useEffect(() => {
     if (newWarehouseStockList) {
       refetchWarehouseStock().then(({ data }) => {
@@ -118,6 +92,7 @@ export default function WarehouseDetails() {
         showBackButton={true}
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Warehouse Stock"
       />
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
@@ -127,7 +102,7 @@ export default function WarehouseDetails() {
           id={id}
           refetchWarehouse={refetch}
           warehouseDetails={warehouseDetails}
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
         />
       </div>
 
@@ -162,7 +137,7 @@ export default function WarehouseDetails() {
       >
         <WarehouseStockForm
           warehouseDetails={warehouseDetails}
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
           id={id}
           close={close}
           refetchItem={refetchWarehouseStock}
