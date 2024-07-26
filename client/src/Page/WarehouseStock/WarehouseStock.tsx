@@ -3,20 +3,14 @@ import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
-import {
-  CreateWarehouses,
-  OrganizationList,
-  Warehouses,
-  WarehouseStocks,
-  WarehouseStocksData,
-} from "interfaces/interfaces";
+import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
 import { useLazyQuery } from "@apollo/client";
-import { GetWarehouseList } from "query/warehouse/warehouseList";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,9 +18,9 @@ export default function WarehouseStock() {
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
-  const [warehouseList, setWarehouseList] = useState<Warehouses>();
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+
+  const selectOrganizationItem = useOrganizationList();
+  const selectWarehouseItem = useWarehouseItems();
 
   const [fetchWarehouseStocksList, { refetch, loading }] =
     useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
@@ -44,8 +38,6 @@ export default function WarehouseStock() {
       },
     });
 
-  console.log({ warehouseStocksList });
-
   useEffect(() => {
     fetchWarehouseStocksList({
       variables: {
@@ -57,59 +49,13 @@ export default function WarehouseStock() {
     });
   }, [activePage, fetchWarehouseStocksList, refetch]);
 
-  const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
-    GetWarehouseList,
-    {
-      onError: (err) => {
-        toast.error(err.message);
-      },
-      onCompleted: (d) => {
-        if (d) {
-          const item = d.warehouses;
-          setWarehouseList(item);
-        }
-      },
-    }
-  );
-
-  const selectWarehouseItem = warehouseList?.warehouses?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
-  console.log({ selectWarehouseItem });
-
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-    fetchWarehouseList();
-  }, [organizationList, fetchWarehouseList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse Stocks"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Warehouse Stock"
       />
 
       {loading && (
@@ -139,7 +85,7 @@ export default function WarehouseStock() {
         size={"lg"}
       >
         <WarehouseStockForm
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
           selectWarehouseItem={selectWarehouseItem}
           close={close}
         />

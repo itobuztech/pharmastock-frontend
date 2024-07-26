@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const CreateUser = gql`
-  mutation Create($createUserInput: CreateUserInput!) {
-    create(createUserInput: $createUserInput) {
+export const GetUserDetails = gql`
+  query UserById($userByIdId: String!) {
+    userById(id: $userByIdId) {
       createdAt
       email
       emailConfirmationToken

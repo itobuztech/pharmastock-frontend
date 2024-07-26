@@ -12,6 +12,9 @@ const RegisterPage = React.lazy(
   () => import("Page/Auth/Register/RegisterPage")
 );
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
+const ForgetPassword = React.lazy(
+  () => import("Page/Auth/ForgetPassword/ForgetPassword")
+);
 const DashboardPage = React.lazy(() => import("Page/Dashboard/DashboardPage"));
 const ProfilePage = React.lazy(() => import("Page/Profile/ProfilePage"));
 const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
@@ -40,8 +43,12 @@ const WarehouseStockDetails = React.lazy(
 const PharmacyStock = React.lazy(
   () => import("Page/PharmacyStock/PharmacyStock")
 );
+const PharmacyStockDetails = React.lazy(
+  () => import("Page/PharmacyStock/PharmacyStockDetails")
+);
 
 const UserList = React.lazy(() => import("Page/User/UserList"));
+const UserDetails = React.lazy(() => import("Page/User/UserDetails"));
 
 export default function AppRoutes() {
   return (
@@ -51,6 +58,10 @@ export default function AppRoutes() {
           <Route path={routes.home.path} element={<IndexPage />} />
           <Route path={routes.register.path} element={<RegisterPage />} />
           <Route path={routes.login.path} element={<LoginPage />} />
+          <Route
+            path={routes.forgetPassword.path}
+            element={<ForgetPassword />}
+          />
 
           <Route path={routes.dashboard.path} element={<DashboardPage />}>
             <Route path={routes.dashboard.profile.path} element={<AuthGuard />}>
@@ -149,6 +160,10 @@ export default function AppRoutes() {
                 path={routes.dashboard.users.path}
                 element={<UserList />}
               />
+              <Route
+                path={routes.dashboard.userDetails.path}
+                element={<UserDetails />}
+              />
             </Route>
 
             <Route
@@ -158,6 +173,10 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.pharmaciesStock.path}
                 element={<PharmacyStock />}
+              />
+              <Route
+                path={routes.dashboard.pharmacyStockDetails.path}
+                element={<PharmacyStockDetails />}
               />
             </Route>
 

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GetItemLists = gql`
-  query Items {
-    items {
+  query Items($paginationArgs: PaginationArgs) {
+    items(paginationArgs: $paginationArgs) {
       items {
         baseUnit
         createdAt

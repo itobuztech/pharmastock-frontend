@@ -11,6 +11,9 @@ const RegisterPage = React.lazy(
 );
 const LogoutPage = React.lazy(() => import("../../Page/Auth/LogoutPage"));
 const VerifyUser = React.lazy(() => import("./VerifyUser/VerifyUser"));
+const VerifyForgotPassword = React.lazy(
+  () => import("./VerifyForgotPassword/VerifyForgotPassword")
+);
 
 export const AuthRoutes = [
   <Route key="AuthRoutes">
@@ -19,5 +22,9 @@ export const AuthRoutes = [
     <Route path={routes.register.path} element={<RegisterPage />} />
     <Route path={routes.logout.path} element={<LogoutPage />} />
     <Route path={routes.token.path} element={<VerifyUser />} />
+    <Route
+      path={routes.forgotPasswordConfirmation.path}
+      element={<VerifyForgotPassword />}
+    />
   </Route>,
 ];
