@@ -28,7 +28,7 @@ export default function Pharmacy() {
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
 
-  // Pharmacy list query
+  /* ====== Pharmacy List Query ====== */
   const [fetchPharmacyList, { refetch, loading }] = useLazyQuery<Pharmacies>(
     GetPharmacyList,
     {
@@ -48,7 +48,7 @@ export default function Pharmacy() {
     }
   );
 
-  // Pharmacy delete query
+  /* ====== Pharmacy Delete Query ====== */
   const [deletePharmacy] = useMutation(DeletePharmacy, {
     onError: (err) => {
       toast.error(err.message);
@@ -67,6 +67,7 @@ export default function Pharmacy() {
     },
   });
 
+  /* ====== Pharmacy Pagination Variable ====== */
   useEffect(() => {
     fetchPharmacyList({
       variables: {
@@ -80,7 +81,7 @@ export default function Pharmacy() {
     });
   }, [fetchPharmacyList, activePage, refetch, searchInput]);
 
-  // Update new pharmacy in list
+  /* ====== New Pharmacy Add In The List ====== */
   useEffect(() => {
     if (newPharmacyList) {
       refetch().then(({ data }) => {
@@ -100,7 +101,7 @@ export default function Pharmacy() {
     refetch();
   }, [refetch]);
 
-  // Pharmacy delete
+  /* ====== Handle Pharmacy Delete Function ====== */
   function handleDelete(pharmaId: string) {
     const deleteItem = pharmacyList?.pharmacies.find((x) => x.id === pharmaId);
     setDeletedId(deleteItem?.id);
@@ -143,6 +144,7 @@ export default function Pharmacy() {
         setSearchInput={setSearchInput}
       />
 
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -151,6 +153,7 @@ export default function Pharmacy() {
         />
       )}
 
+      {/* ==== Pharmacy List Empty List and List ==== */}
       {!pharmacyList?.pharmacies.length ? (
         <EmptyList />
       ) : (
@@ -162,6 +165,8 @@ export default function Pharmacy() {
           totalCount={totalCount}
         />
       )}
+
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Pharmacy"
         modalOpen={deleteModalOpened}
@@ -169,6 +174,7 @@ export default function Pharmacy() {
         deleteItem={() => getDeletePharmacy()}
       />
 
+      {/* ==== Create Pharmacy Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}
