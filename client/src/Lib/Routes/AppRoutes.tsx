@@ -48,6 +48,7 @@ const PharmacyStockDetails = React.lazy(
 );
 
 const UserList = React.lazy(() => import("Page/User/UserList"));
+const UserDetails = React.lazy(() => import("Page/User/UserDetails"));
 
 export default function AppRoutes() {
   return (
@@ -158,6 +159,10 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.users.path}
                 element={<UserList />}
+              />
+              <Route
+                path={routes.dashboard.userDetails.path}
+                element={<UserDetails />}
               />
             </Route>
 

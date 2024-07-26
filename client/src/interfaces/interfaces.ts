@@ -310,6 +310,28 @@ export interface User {
   organization?: Organization;
   updatedAt: string;
   username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
+}
+
+export interface UserById {
+  createdAt: string;
+  email: string;
+  emailConfirmationToken?: string;
+  id: string;
+  isEmailConfirmed: boolean;
+  name: string;
+  organization?: Organization;
+  updatedAt: string;
+  username: string;
+  role: {
+    id: string;
+    name: string;
+    userType: UserRole;
+  };
 }
 
 export interface Organization {

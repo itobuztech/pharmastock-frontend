@@ -35,10 +35,12 @@ export default function UserList() {
   useEffect(() => {
     fetchUserList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
   }, [fetchUserList, activePage, refetch]);

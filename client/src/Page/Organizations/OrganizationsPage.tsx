@@ -167,6 +167,10 @@ export default function OrganizationsPage() {
         title="Create User"
         centered
         size={"lg"}
+        zIndex={600}
+        overlayProps={{
+          zIndex: 500,
+        }}
       >
         <UserCreateForm selectItem={selectItem} close={userModalClose} />
       </Modal>

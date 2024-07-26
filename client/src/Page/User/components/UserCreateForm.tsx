@@ -15,7 +15,7 @@ export default function UserCreateForm({
   selectItem,
 }: {
   close: () => void;
-  selectItem: SelectOrgItem;
+  selectItem?: SelectOrgItem;
 }) {
   const schema = yup
     .object({
@@ -54,13 +54,11 @@ export default function UserCreateForm({
   });
 
   const onSubmit = (data: CreateUserInput) => {
-    console.log(data);
-    const response = addUsers({
+    addUsers({
       variables: {
-        createUserInput: { ...data, orgId: selectItem.value },
+        createUserInput: { ...data, orgId: selectItem?.value },
       },
     });
-    console.log({ response });
   };
 
   useEffect(() => {
@@ -80,7 +78,7 @@ export default function UserCreateForm({
               {...register("orgId")}
               disabled
               error={errors.orgId && "This field is required"}
-              value={selectItem.label}
+              value={selectItem?.label}
             />
           </div>
         </div>
