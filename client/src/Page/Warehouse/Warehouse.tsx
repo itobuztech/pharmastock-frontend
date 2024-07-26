@@ -70,6 +70,10 @@ export default function Warehouse() {
     }
   }, [newWarehouseList, refetch]);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const [deleteWarehouse] = useMutation(DeleteWarehouse, {
     onError: (err) => {
       toast.error(err.message);
@@ -143,7 +147,7 @@ export default function Warehouse() {
         onClose={close}
         title="Warehouse"
         centered
-        size={"sm"}
+        size={"lg"}
       >
         <WarehouseForm
           editForm={editForm}

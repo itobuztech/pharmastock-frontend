@@ -1,12 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const WarehouseStockCreate = gql`
-  mutation WarehouseStockCreate(
-    $createWarehouseStockInput: CreateWarehouseStockInput!
-  ) {
-    createWarehouseStock(
-      createWarehouseStockInput: $createWarehouseStockInput
-    ) {
+export const GetWarehouseStockDetails = gql`
+  query WarehouseStockDetails($warehouseStockId: String!) {
+    warehouseStock(id: $warehouseStockId) {
       SKU {
         id
         sku
@@ -24,6 +20,10 @@ export const WarehouseStockCreate = gql`
       warehouse {
         id
         name
+        organization {
+          id
+          name
+        }
       }
     }
   }

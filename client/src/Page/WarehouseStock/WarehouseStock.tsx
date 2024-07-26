@@ -4,11 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
 import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
+import { WarehouseStockDelete } from "query/warehouse/warehouseStockDelete";
+import ConfirmationModal from "Components/ConfirmationModal";
+import { CreateWarehouseStockInput } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 
@@ -22,21 +25,31 @@ export default function WarehouseStock() {
   const selectOrganizationItem = useOrganizationList();
   const selectWarehouseItem = useWarehouseItems();
 
-  const [fetchWarehouseStocksList, { refetch, loading }] =
-    useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
-      onError: (err) => {
-        toast.error(err.message);
-      },
-      onCompleted: (d) => {
-        if (d) {
-          const item = d.warehouseStocks;
-          const total = d.warehouseStocks.total;
-          const paginationCount = Math.ceil(total / 10);
-          setWarehouseStocksList(item);
-          setTotalCount(paginationCount);
-        }
-      },
-    });
+  const [
+    deleteModalOpened,
+    { open: deleteModalOpen, close: deleteModalClose },
+  ] = useDisclosure(false);
+  const [deletedId, setDeletedId] = useState<string>();
+  const [newWarehouseStockList, setNewWarehouseStockList] =
+    useState<CreateWarehouseStockInput>();
+
+  const [
+    fetchWarehouseStocksList,
+    { refetch: refetchWarehouseStockList, loading },
+  ] = useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: (d) => {
+      if (d) {
+        const item = d.warehouseStocks;
+        const total = d.warehouseStocks.total;
+        const paginationCount = Math.ceil(total / 10);
+        setWarehouseStocksList(item);
+        setTotalCount(paginationCount);
+      }
+    },
+  });
 
   useEffect(() => {
     fetchWarehouseStocksList({
@@ -47,8 +60,61 @@ export default function WarehouseStock() {
         },
       },
     });
-  }, [activePage, fetchWarehouseStocksList, refetch]);
+  }, [activePage, fetchWarehouseStocksList, refetchWarehouseStockList]);
 
+  useEffect(() => {
+    if (newWarehouseStockList) {
+      refetchWarehouseStockList().then(({ data }) => {
+        if (data) {
+          const items = data.warehouseStocks;
+          const total = data.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(items);
+          setTotalCount(paginationCount);
+        }
+      });
+    }
+  }, [newWarehouseStockList, refetchWarehouseStockList]);
+
+  useEffect(() => {
+    refetchWarehouseStockList();
+  }, [refetchWarehouseStockList]);
+
+  const [deleteWarehouseStock] = useMutation(WarehouseStockDelete, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: () => {
+      refetchWarehouseStockList().then(({ data }) => {
+        if (data) {
+          const items = data.warehouseStocks;
+          const total = data.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+
+          setWarehouseStocksList(items);
+          setTotalCount(paginationCount);
+        }
+      });
+      deleteModalClose();
+      toast.success("Warehouse Deleted Successfully");
+    },
+  });
+
+  function handleDelete(itemId: string) {
+    const deleteItem = warehouseStocksList?.warehouseStocks.find(
+      (x) => x.id === itemId
+    );
+    setDeletedId(deleteItem?.id);
+    deleteModalOpen();
+  }
+
+  function getDeleteWarehouse() {
+    deleteWarehouseStock({
+      variables: { deleteWarehouseStockInput: { id: deletedId } },
+    });
+  }
+
+  console.log({ warehouseStocksList });
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -77,17 +143,27 @@ export default function WarehouseStock() {
         />
       )}
 
+      <ConfirmationModal
+        title="Warehouse"
+        modalOpen={deleteModalOpened}
+        modalClose={deleteModalClose}
+        deleteItem={() => getDeleteWarehouse()}
+      />
+
       <Modal
         opened={opened}
         onClose={close}
-        title="Stocks"
+        title="Create Stocks"
         centered
-        size={"lg"}
+        size={"xl"}
       >
         <WarehouseStockForm
           selectOrgItem={selectOrganizationItem}
           selectWarehouseItem={selectWarehouseItem}
           close={close}
+          refetchItem={refetchWarehouseStockList}
+          setNewWarehouseStockList={setNewWarehouseStockList}
+          list={true}
         />
       </Modal>
     </section>
