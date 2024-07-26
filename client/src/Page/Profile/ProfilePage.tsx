@@ -7,12 +7,9 @@ import { GetUser } from "query/profile/getUserAccount";
 import { toast } from "react-toastify";
 import ChangePassword from "./component/ChangePassword";
 import ProfileForm from "./component/ProfileForm";
-import { appStore } from "Lib/appStore";
 
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<AdminProfile>();
-const store = appStore.get();
-console.log(store);
 
   const [getCurrentUser, { loading, refetch }] = useLazyQuery(GetUser, {
     onError: (err) => {

@@ -5,6 +5,8 @@ import {
   User,
 } from "../../Api/Fake/Users/users.interface";
 import { appStore } from "Lib/appStore";
+import { Permissions } from "interfaces/interfaces";
+import appConfig from "Lib/appConfig";
 
 export interface ForgetPasswordState {
   loading: boolean;
@@ -17,6 +19,7 @@ export interface UserSliceState {
     loading: boolean;
   };
   forgetPassword: ForgetPasswordState;
+  permission: Permissions; 
 }
 
 const store = appStore.get();
@@ -30,6 +33,7 @@ const initialState: UserSliceState = {
     loading: false,
     token: null,
   },
+  permission: store.permission || {},
 };
 
 export const userSlice = createSlice({
@@ -67,11 +71,19 @@ export const userSlice = createSlice({
         appStore.set(store);
       }
     },
+    setPermissions: (state, { payload }: { payload: Permissions }) => {
+      state.permission = payload;
+      const store = appStore.get();
+      store.permission = payload;
+      appStore.set(store);
+    },
     logout: (state) => {
+      state.currentUser = null;
+      state.permission = {} as Permissions;
+      localStorage.removeItem(appConfig.storage.permission);
       const store = appStore.get();
       store.user = null;
       store.permission = {};
-      state.currentUser = null;
       appStore.set(store);
     },
   },

@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../Store";
 import { appStore } from "Lib/appStore";
+import { Permissions } from "interfaces/interfaces";
+import appConfig from "Lib/appConfig";
 
 export interface UserData {
   createdAt: string;
@@ -11,16 +13,16 @@ export interface UserData {
   username: string;
 }
 
-// Define a type for the slice state
 export interface UserState {
   currentUser: null | UserData;
+  permission: Permissions
 }
 
 const store = appStore.get();
 
-// Define the initial state using that type
 const initialState: UserState = {
   currentUser: store.user,
+  permission: store.permission || {}
 };
 
 export const userSlice = createSlice({
@@ -31,10 +33,17 @@ export const userSlice = createSlice({
     setUser: (state, { payload }: { payload: UserData }) => {
       state.currentUser = payload;
     },
+    setPermission: (state, { payload }: { payload: Permissions }) => { 
+      state.permission = payload;
+      const store = appStore.get();
+      store.permission = payload;
+      appStore.set(store);
+      localStorage.setItem(appConfig.storage.permission, JSON.stringify(payload)); 
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser,setPermission } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user.currentUser;

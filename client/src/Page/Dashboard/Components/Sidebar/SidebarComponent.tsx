@@ -6,7 +6,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import { USER_PERMISSION_FIELDS } from "enums/enums";
 
 export default function SidebarComponent() {
-  const permission = useAppSelector((state) => state.permissions.permissions);
+  const permission = useAppSelector((state) => state.user.permission);
 
   const handleSliderOptionsVisible = (
     field: USER_PERMISSION_FIELDS

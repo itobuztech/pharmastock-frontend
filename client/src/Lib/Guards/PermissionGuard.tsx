@@ -1,11 +1,13 @@
+import React from 'react';
 import routes from 'Lib/Routes/Routes';
-import { useAppSelector } from 'Lib/Store/hooks';
+import { RootState } from 'Lib/Store/Store';
 import { USER_PERMISSION_FIELDS } from 'enums/enums';
-import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAppSelector } from 'Lib/Store/hooks';
 
 export default function PermissionGuard({field}:Readonly<{field: USER_PERMISSION_FIELDS}>) {
-  const permission = useAppSelector((state) => state.permissions.permissions);
+  const permission = useAppSelector((state: RootState) => state.user.permission);
+  
   const hasPermission = (
     field: USER_PERMISSION_FIELDS
   ): boolean => {

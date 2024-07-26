@@ -3,13 +3,14 @@ import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { PasswordInput, TextInput } from "@mantine/core";
 import { LOGIN_MUTATION } from "query/loginMutation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUser } from "Lib/Store/User/User";
-import { fetchPermissionsRequest } from "Lib/Store/Permissions/Permission";
+import { setPermission, setUser } from "Lib/Store/User/User";
+import { GetPermission } from "query/getPermission";
+import { Permissions } from "interfaces/interfaces";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
@@ -30,13 +31,26 @@ export default function LoginPage() {
       });
     };
 
+    const [fetchPermissions] = useLazyQuery<{ getpermissions: Permissions }>(
+      GetPermission,
+      {
+        onError: (error) => {
+          toast.error(error.message);
+        },
+        onCompleted: (d) => {
+            dispatch(setPermission(d.getpermissions));
+
+        },
+      }
+    );
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       const { data } = await login({
         variables: { loginUserInput },
       });
-      dispatch(fetchPermissionsRequest());
+      fetchPermissions();
       dispatch(setUser(data.login.user));
       localStorage.setItem("userData", JSON.stringify(data.login));
 
