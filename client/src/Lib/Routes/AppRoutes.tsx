@@ -43,6 +43,9 @@ const WarehouseStockDetails = React.lazy(
 const PharmacyStock = React.lazy(
   () => import("Page/PharmacyStock/PharmacyStock")
 );
+const PharmacyStockDetails = React.lazy(
+  () => import("Page/PharmacyStock/PharmacyStockDetails")
+);
 
 const UserList = React.lazy(() => import("Page/User/UserList"));
 
@@ -165,6 +168,10 @@ export default function AppRoutes() {
               <Route
                 path={routes.dashboard.pharmaciesStock.path}
                 element={<PharmacyStock />}
+              />
+              <Route
+                path={routes.dashboard.pharmacyStockDetails.path}
+                element={<PharmacyStockDetails />}
               />
             </Route>
 

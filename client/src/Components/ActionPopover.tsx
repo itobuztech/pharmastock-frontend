@@ -7,11 +7,13 @@ export default function ActionPopover({
   handleDelete,
   handleUserModal,
   showUserModal,
+  showDeleteModal,
 }: {
   handleView: () => void;
-  handleDelete: () => void;
+  handleDelete?: () => void;
   handleUserModal?: () => void;
   showUserModal?: boolean;
+  showDeleteModal?: boolean;
 }) {
   return (
     <Popover width={200} position="bottom-end" withArrow shadow="md">
@@ -39,14 +41,16 @@ export default function ActionPopover({
             Add User
           </Button>
         )}
-        <Button
-          variant="transparent"
-          fullWidth
-          onClick={handleDelete}
-          className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
-        >
-          Delete
-        </Button>
+        {showDeleteModal && (
+          <Button
+            variant="transparent"
+            fullWidth
+            onClick={handleDelete}
+            className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
+          >
+            Delete
+          </Button>
+        )}
       </Popover.Dropdown>
     </Popover>
   );

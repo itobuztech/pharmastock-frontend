@@ -12,23 +12,38 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
-import { CreatePharmacyStockInput } from "gql/graphql";
+import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
+import useItemList from "Lib/customHooks/useItemList";
 
 export default function PharmacyStockForm({
   pharmacyName,
   pharmacyId,
   close,
+  pharmacyStockDetails,
+  id,
+  setNewPharmacyStockList,
+  refetchItem,
 }: {
   pharmacyName?: string;
   pharmacyId?: string;
-  close: () => void;
+  close?: () => void;
+  pharmacyStockDetails?: PharmacyStock;
+  id?: string;
+  setNewPharmacyStockList?: React.Dispatch<
+    React.SetStateAction<CreatePharmacyStockInput | undefined>
+  >;
+  refetchItem: () => void;
 }) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
+  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
 
   const selectWarehouseItems = useWarehouseItems();
+  const selectPharmaList = usePharmacyList();
+  const selectItem = useItemList();
 
   const schema = yup
     .object({
@@ -55,20 +70,24 @@ export default function PharmacyStockForm({
     onError: (err) => {
       toast.error(err.message);
     },
-    onCompleted: (d) => {
+    onCompleted: () => {
       toast.success("Pharmacy Stock Created Successfully");
-      close();
+      if (close) {
+        close();
+      }
       reset();
+      refetchItem();
     },
   });
+  console.log({ pharmacyId });
 
   const onSubmit = async (data: CreatePharmacyStockInput) => {
-    console.log(data, pharmacyId);
     const response = await pharmacyStockCreate({
-      variables: { createPharmacyStockInput: { ...data, pharmacyId } },
+      variables: {
+        createPharmacyStockInput: data,
+      },
     });
-    console.log(response.data);
-    // setNewPharmacyList(response.data);
+    setNewPharmacyStockList(response.data);
   };
 
   const [fetchWarehouseStocksByWarehouse] =
@@ -101,17 +120,42 @@ export default function PharmacyStockForm({
   };
 
   useEffect(() => {
-    pharmacyName && setValue("pharmacyId", pharmacyName);
-  }, [pharmacyName, setValue]);
+    pharmacyId && setValue("pharmacyId", pharmacyId);
+  }, [pharmacyId, setValue]);
+
+  useEffect(() => {
+    if (pharmacyStockDetails) {
+      pharmacyStockDetails.pharmacy?.name &&
+        setValue("pharmacyId", pharmacyStockDetails.pharmacy?.id);
+      pharmacyStockDetails.warehouse?.id &&
+        setValue("warehouseId", pharmacyStockDetails.warehouse?.id);
+      pharmacyStockDetails.item?.id &&
+        setValue("itemId", pharmacyStockDetails.item?.id);
+      setQtyValue(pharmacyStockDetails.finalQty);
+    }
+  }, [pharmacyStockDetails, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <TextInput
-          label="Pharmacy"
-          placeholder="Pharmacy"
-          {...register("pharmacyId")}
-          error={errors.pharmacyId && "This field is required"}
+        <Controller
+          name="pharmacyId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              data={selectPharmaList}
+              label="Select Pharmacy"
+              placeholder="Select Pharmacy"
+              value={field.value}
+              onChange={(value) => {
+                console.log(value);
+                field.onChange(value);
+              }}
+              error={errors.pharmacyId && "This field is required"}
+              disabled={id || pharmacyId ? true : false}
+            />
+          )}
         />
       </div>
 
@@ -131,6 +175,7 @@ export default function PharmacyStockForm({
                 field.onChange(value);
               }}
               error={errors.warehouseId && "This field is required"}
+              disabled={id ? true : false}
             />
           )}
         />
@@ -143,7 +188,7 @@ export default function PharmacyStockForm({
           render={({ field }) => (
             <Select
               {...field}
-              data={selectItems}
+              data={id ? selectItem : selectItems}
               label="Select Item"
               placeholder="Select Item"
               value={field.value}
@@ -151,27 +196,42 @@ export default function PharmacyStockForm({
                 field.onChange(value);
               }}
               error={errors.itemId && "This field is required"}
+              disabled={id ? true : false}
             />
           )}
         />
       </div>
 
+      {id && (
+        <div className="mb-4">
+          <NumberInput
+            label="Total Quantity"
+            placeholder="Qty"
+            value={qtyValue}
+            onChange={setQtyValue}
+            min={0}
+            max={1000000}
+            disabled
+          />
+        </div>
+      )}
+
       <div className="mb-4">
         <NumberInput
-          label="Qty"
+          label="Add Quantity"
           placeholder="Qty"
           {...register("qty")}
-          value={qtyValue}
-          onChange={setQtyValue}
+          value={qtyAddValue}
+          onChange={setQtyAddValue}
           min={0}
-          max={100000}
+          max={1000000}
           error={errors.qty && "This field is required"}
         />
       </div>
 
       <div className="text-right mt-8">
         <ButtonComponent type="submit" loading={loading}>
-          Create
+          {id ? "Update" : "Create"}
         </ButtonComponent>
       </div>
     </form>

@@ -10,13 +10,11 @@ export default function WarehouseStockTable({
   activePage,
   setActivePage,
   warehouseStocksList,
-  // handleDelete,
   totalCount,
 }: {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   warehouseStocksList?: WarehouseStocks;
-  // handleDelete: (id: string) => void;
   totalCount: number;
 }) {
   const navigate = useNavigate();
@@ -38,7 +36,7 @@ export default function WarehouseStockTable({
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
-          handleDelete={() => console.log(item.id)}
+          showDeleteModal={false}
         />
       </Table.Td>
     </Table.Tr>

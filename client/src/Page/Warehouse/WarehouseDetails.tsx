@@ -1,22 +1,20 @@
 import PageHeader from "Components/PageHeader";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
 import { Warehouse } from "gql/graphql";
 import WarehouseForm from "./components/WarehouseForm";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
-import { OrganizationList } from "interfaces/interfaces";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 
 export default function WarehouseDetails() {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+  const selectOrganizationItem = useOrganizationList();
 
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
@@ -26,30 +24,6 @@ export default function WarehouseDetails() {
     },
   });
 
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -57,6 +31,7 @@ export default function WarehouseDetails() {
         showBackButton={true}
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Warehouse Stock"
       />
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
@@ -66,7 +41,7 @@ export default function WarehouseDetails() {
           id={id}
           refetchWarehouse={refetch}
           warehouseDetails={warehouseDetails}
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
         />
       </div>
 
@@ -79,7 +54,7 @@ export default function WarehouseDetails() {
       >
         <WarehouseStockForm
           warehouseDetails={warehouseDetails}
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
           id={id}
           close={close}
         />
