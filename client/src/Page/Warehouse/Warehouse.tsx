@@ -5,17 +5,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-import {
-  CreateWarehouses,
-  OrganizationList,
-  Warehouses,
-} from "interfaces/interfaces";
+import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import { DeleteWarehouse } from "query/warehouse/warehouseDelete";
 import ConfirmationModal from "Components/ConfirmationModal";
 import WarehouseListTable from "./components/WarehouseListTable";
 import WarehouseForm from "./components/WarehouseForm";
 import EmptyList from "Components/EmptyList";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import Search from "Components/Search";
 
 export default function Warehouse() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -28,11 +25,12 @@ export default function Warehouse() {
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+  const selectOrganizationItem = useOrganizationList();
 
   const [editForm, setEditForm] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
 
+  /* ====== Warehouse List Query ====== */
   const [fetchWarehouseList, { refetch, loading }] =
     useLazyQuery<CreateWarehouses>(GetWarehouseList, {
       onError: (err) => {
@@ -52,14 +50,17 @@ export default function Warehouse() {
   useEffect(() => {
     fetchWarehouseList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchWarehouseList, refetch]);
+  }, [activePage, fetchWarehouseList, refetch, searchInput]);
 
+  /* ====== New Warehouse Add In The List ====== */
   useEffect(() => {
     if (newWarehouseList) {
       refetch().then(({ data }) => {
@@ -67,7 +68,6 @@ export default function Warehouse() {
           const items = data.warehouses;
           const total = data.warehouses.total;
           const paginationCount = Math.ceil(total / 10);
-
           setWarehouseList(items);
           setTotalCount(paginationCount);
         }
@@ -75,6 +75,11 @@ export default function Warehouse() {
     }
   }, [newWarehouseList, refetch]);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  /* ====== Delete Warehouse Item Query ====== */
   const [deleteWarehouse] = useMutation(DeleteWarehouse, {
     onError: (err) => {
       toast.error(err.message);
@@ -95,6 +100,7 @@ export default function Warehouse() {
     },
   });
 
+  /* ====== Handle Delete Function ====== */
   function handleDelete(itemId: string) {
     const deleteItem = warehouseList?.warehouses.find((x) => x.id === itemId);
     setDeletedId(deleteItem?.id);
@@ -107,34 +113,37 @@ export default function Warehouse() {
     });
   }
 
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchWarehouseList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
       },
-    }
-  );
-
-  useEffect(() => {
-    organizationList();
-  }, [organizationList]);
-
-  const organizationListArr = organization?.organizations;
-
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
+    });
+  }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
-      <PageHeader title="Warehouse" showCreateButton={true} onClick={open} />
+      <PageHeader
+        title="Warehouse"
+        showCreateButton={true}
+        onClick={open}
+        buttonText="Add Warehouse"
+      />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -143,6 +152,7 @@ export default function Warehouse() {
         />
       )}
 
+      {/* ==== Warehouse Empty List and List ==== */}
       {!warehouseList?.warehouses.length ? (
         <EmptyList />
       ) : (
@@ -155,6 +165,7 @@ export default function Warehouse() {
         />
       )}
 
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Warehouse"
         modalOpen={deleteModalOpened}
@@ -162,12 +173,13 @@ export default function Warehouse() {
         deleteItem={() => getDeleteWarehouse()}
       />
 
+      {/* ==== Create Warehouse Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}
         title="Warehouse"
         centered
-        size={"sm"}
+        size={"lg"}
       >
         <WarehouseForm
           editForm={editForm}
@@ -175,7 +187,7 @@ export default function Warehouse() {
           refetchWarehouse={refetch}
           close={close}
           setNewWarehouseList={setNewWarehouseList}
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
         />
       </Modal>
     </section>

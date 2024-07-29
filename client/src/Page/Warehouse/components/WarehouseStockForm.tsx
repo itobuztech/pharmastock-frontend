@@ -4,14 +4,20 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
-import { GetItemLists } from "query/item/itemList";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { GenerateSku, ItemLists, Items } from "interfaces/interfaces";
+import {
+  CreateWarehouses,
+  Warehouses,
+  WarehouseStock,
+} from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetGenerateSKU } from "query/warehouse/warehouseGenerateSku";
 import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
+import { GetWarehouseList } from "query/warehouse/warehouseList";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import useItemList from "Lib/customHooks/useItemList";
 
 export default function WarehouseStockForm({
   close,
@@ -19,27 +25,42 @@ export default function WarehouseStockForm({
   selectOrgItem,
   id,
   selectWarehouseItem,
+  warehouseStockDetails,
+  refetchItem,
+  setNewWarehouseStockList,
+  warehouseStockId,
+  list,
 }: {
   close?: () => void;
   warehouseDetails?: { warehouse: Warehouse };
-  selectOrgItem:
+  selectOrgItem?:
     | {
         value: string;
         label: string;
-      }[]
-    | undefined;
+      }[];
   id?: string;
   selectWarehouseItem?:
     | {
         value: string;
         label: string;
-      }[]
-    | undefined;
+      }[];
+  warehouseStockDetails?: {
+    warehouseStock: WarehouseStock;
+  };
+  refetchItem: () => void;
+  setNewWarehouseStockList?: React.Dispatch<
+    React.SetStateAction<CreateWarehouseStockInput | undefined>
+  >;
+  warehouseStockId?: string;
+  list?: boolean;
 }) {
-  const [itemList, setItemList] = useState<Items>();
   const [qtyValue, setQtyValue] = useState<string | number>("");
-  const [sku, setSku] = useState<GenerateSku>();
+  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
+  const [sku, setSku] = useState<string>();
   const [startDate, setStartDate] = useState<Date>(new Date());
+  const [warehouseList, setWarehouseList] = useState<Warehouses>();
+  const selectOrgItems = useOrganizationList();
+  const selectItem = useItemList();
 
   const schema = yup
     .object({
@@ -75,13 +96,14 @@ export default function WarehouseStockForm({
         close();
       }
       reset();
+      setQtyAddValue("");
+      refetchItem();
     },
   });
 
   const onSubmit = async (data: CreateWarehouseStockInput) => {
     console.log(data);
     const isoString = startDate.toISOString();
-
     const response = await createWarehouseStock({
       variables: {
         createWarehouseStockInput: {
@@ -91,28 +113,10 @@ export default function WarehouseStockForm({
         },
       },
     });
+    if (setNewWarehouseStockList) {
+      setNewWarehouseStockList(response.data);
+    }
   };
-
-  const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: (d) => {
-      if (d) {
-        const items = d.items;
-        setItemList(items);
-      }
-    },
-  });
-
-  useEffect(() => {
-    fetchItemList();
-  }, [fetchItemList]);
-
-  const selectItem = itemList?.items?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
 
   const [fetchSku] = useMutation(GetGenerateSKU, {
     onError: (err) => {
@@ -126,6 +130,30 @@ export default function WarehouseStockForm({
     }
   }, [sku, setValue]);
 
+  const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
+    GetWarehouseList,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: (d) => {
+        if (d) {
+          const item = d.warehouses;
+          setWarehouseList(item);
+        }
+      },
+    }
+  );
+
+  useEffect(() => {
+    fetchWarehouseList();
+  }, [fetchWarehouseList]);
+
+  const selectWarehouseItems = warehouseList?.warehouses?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
+
   useEffect(() => {
     if (warehouseDetails?.warehouse) {
       setValue("warehouseId", warehouseDetails.warehouse.name);
@@ -134,152 +162,212 @@ export default function WarehouseStockForm({
     }
   }, [setValue, warehouseDetails?.warehouse]);
 
+  useEffect(() => {
+    if (warehouseStockDetails?.warehouseStock) {
+      setValue(
+        "warehouseId",
+        warehouseStockDetails?.warehouseStock.warehouse.id
+      );
+      setValue("itemId", warehouseStockDetails.warehouseStock.item.id);
+      setValue("sku", warehouseStockDetails.warehouseStock.SKU.sku);
+      setQtyValue(warehouseStockDetails.warehouseStock.finalQty);
+      warehouseStockDetails?.warehouseStock.warehouse.organization?.id &&
+        setValue(
+          "organizationId",
+          warehouseStockDetails?.warehouseStock.warehouse.organization?.id
+        );
+    }
+  }, [setValue, warehouseStockDetails?.warehouseStock]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        {id ? (
-          <TextInput
-            label="Warehouse"
-            placeholder="Warehouse"
-            {...register("warehouseId")}
-            disabled={id ? true : false}
-            error={errors.warehouseId && "This field is required"}
-          />
-        ) : (
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
           <Controller
-            name="warehouseId"
+            name="organizationId"
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
-                label="Select Warehouse"
-                placeholder="Select Warehouse"
+                label="Select Organization"
+                placeholder="Select Organization"
                 onChange={(value) => field.onChange(value)}
                 value={field.value}
-                data={selectWarehouseItem}
+                data={warehouseStockId ? selectOrgItems : selectOrgItem}
                 maxDropdownHeight={300}
-                error={errors.warehouseId && "This field is required"}
+                error={errors.organizationId && "This field is required"}
+                disabled={id || warehouseStockId ? true : false}
               />
             )}
           />
+        </div>
+        <div className="flex-1">
+          {id ? (
+            <TextInput
+              label="Warehouse"
+              placeholder="Warehouse"
+              {...register("warehouseId")}
+              disabled={id ? true : false}
+              error={errors.warehouseId && "This field is required"}
+            />
+          ) : (
+            <Controller
+              name="warehouseId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  label="Select Warehouse"
+                  placeholder="Select Warehouse"
+                  onChange={(value) => field.onChange(value)}
+                  value={field.value}
+                  data={selectWarehouseItem || selectWarehouseItems}
+                  maxDropdownHeight={300}
+                  error={errors.warehouseId && "This field is required"}
+                  disabled={id || warehouseStockId ? true : false}
+                />
+              )}
+            />
+          )}
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
+          <Controller
+            name="itemId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label="Select Item"
+                placeholder="Select Item"
+                onChange={async (value) => {
+                  const { warehouseId, organizationId } = getValues();
+                  const res = await fetchSku({
+                    variables: {
+                      generateSkuNameInput: {
+                        organizationId: organizationId,
+                        warehouseId: id ? id : warehouseId,
+                        itemId: value,
+                      },
+                    },
+                  });
+
+                  setSku(res.data?.generateSKU.sku);
+                  field.onChange(value);
+                }}
+                value={field.value}
+                data={selectItem}
+                maxDropdownHeight={300}
+                error={errors.itemId && "This field is required"}
+                searchable
+                disabled={warehouseStockId ? true : false}
+                nothingFoundMessage="Nothing found..."
+              />
+            )}
+          />
+        </div>
+        <div className="flex-1">
+          <TextInput
+            label="SKU"
+            placeholder="SKU"
+            {...register("sku")}
+            error={errors.sku && "This field is required"}
+            disabled={warehouseStockId ? true : false}
+          />
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        {!id && !list && (
+          <div className="flex-1">
+            <NumberInput
+              label="Total Quantity"
+              placeholder="Qty"
+              value={qtyValue}
+              onChange={setQtyValue}
+              min={0}
+              max={1000000}
+              disabled
+            />
+          </div>
+        )}
+
+        {id || warehouseStockId || list ? (
+          <div className="flex-1">
+            <NumberInput
+              label="Add Quantity"
+              placeholder="Qty"
+              {...register("qty")}
+              value={qtyAddValue}
+              onChange={setQtyAddValue}
+              min={0}
+              max={10000}
+              error={errors.qty && "This field is required"}
+            />
+          </div>
+        ) : (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
+            />
+          </div>
+        )}
+        {list && (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
+            />
+          </div>
         )}
       </div>
-      <div className="mb-4">
-        <Controller
-          name="organizationId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              label="Select Organization"
-              placeholder="Select Organization"
-              onChange={(value) => field.onChange(value)}
-              value={field.value}
-              data={selectOrgItem}
-              maxDropdownHeight={300}
-              error={errors.organizationId && "This field is required"}
-              disabled={id ? true : false}
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        {!list && (
+          <div className="flex-1">
+            <TextInput
+              label="Batch Name"
+              placeholder="Batch Name"
+              {...register("batchName")}
+              error={errors.batchName && "This field is required"}
             />
+          </div>
+        )}
+        <div className="flex-1 datePicker">
+          <span className="block text-sm font-medium leading-[23px]">
+            Expiry Date
+          </span>
+          <Controller
+            name="expiry"
+            control={control}
+            render={({ field }) => (
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => {
+                  setStartDate(date);
+                  field.onChange(date);
+                }}
+                minDate={new Date()}
+                dateFormat="MMMM d, yyyy"
+                placeholderText="Select expiry date"
+                className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+              />
+            )}
+          />
+          {errors.expiry && (
+            <span className="text-xs text-red-500">This field is required</span>
           )}
-        />
+        </div>
       </div>
-      <div className="mb-4">
-        <Controller
-          name="itemId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              label="Select Item"
-              placeholder="Select Item"
-              onChange={async (value) => {
-                console.log(value);
-                const { warehouseId, organizationId } = getValues();
-                const res = await fetchSku({
-                  variables: {
-                    generateSkuNameInput: {
-                      organizationId: organizationId,
-                      warehouseId: id ? id : warehouseId,
-                      itemId: value,
-                    },
-                  },
-                });
 
-                // const res = await fetchSku({
-                //   variables: {
-                //     generateSkuNameInput: {
-                //       organizationId:
-                //         warehouseDetails?.warehouse.organization?.id,
-                //       warehouseId: id,
-                //       itemId: value,
-                //     },
-                //   },
-                // });
-                setSku(res.data?.generateSKU.sku);
-                field.onChange(value);
-              }}
-              value={field.value}
-              data={selectItem}
-              maxDropdownHeight={300}
-              error={errors.itemId && "This field is required"}
-              searchable
-              nothingFoundMessage="Nothing found..."
-            />
-          )}
-        />
-      </div>
-      <div className="mb-4">
-        <TextInput
-          label="Batch Name"
-          placeholder="Batch Name"
-          {...register("batchName")}
-          error={errors.batchName && "This field is required"}
-        />
-      </div>
-      <div className="mb-4">
-        <NumberInput
-          label="Quantity"
-          placeholder="Qty"
-          {...register("qty")}
-          value={qtyValue}
-          onChange={setQtyValue}
-          min={0}
-          max={10000}
-          error={errors.qty && "This field is required"}
-        />
-      </div>
-      <div className="mb-4">
-        <TextInput
-          label="SKU"
-          placeholder="SKU"
-          {...register("sku")}
-          error={errors.sku && "This field is required"}
-        />
-      </div>
-      <div className="mb-4 datePicker">
-        <span className="block text-sm font-medium leading-[21px]">
-          Expiry Date
-        </span>
-        <Controller
-          name="expiry"
-          control={control}
-          render={({ field }) => (
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => {
-                setStartDate(date);
-                field.onChange(date);
-              }}
-              dateFormat="MMMM d, yyyy"
-              placeholderText="Select expiry date"
-              className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
-            />
-          )}
-        />
-        {errors.expiry && "This field is required"}
-      </div>
       <div className="text-right mt-6">
-        <ButtonComponent type="submit">Create</ButtonComponent>
+        <ButtonComponent type="submit">
+          {warehouseStockId ? "Update" : "Create"}
+        </ButtonComponent>
       </div>
     </form>
   );

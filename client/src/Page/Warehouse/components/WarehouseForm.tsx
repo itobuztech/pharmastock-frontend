@@ -121,51 +121,55 @@ export default function WarehouseForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <TextInput
-          label="Name"
-          placeholder="Name"
-          {...register("name")}
-          disabled={!editForm}
-          error={errors.name && "This field is required"}
-        />
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
+          <TextInput
+            label="Name"
+            placeholder="Name"
+            {...register("name")}
+            disabled={!editForm}
+            error={errors.name && "This field is required"}
+          />
+        </div>
+        <div className="flex-1">
+          <TextInput
+            label="Location"
+            placeholder="Location"
+            {...register("location")}
+            disabled={!editForm}
+            error={errors.location && "This field is required"}
+          />
+        </div>
       </div>
-      <div className="mb-4">
-        <TextInput
-          label="Location"
-          placeholder="Location"
-          {...register("location")}
-          disabled={!editForm}
-          error={errors.location && "This field is required"}
-        />
-      </div>
-      <div className="mb-4">
-        <TextInput
-          label="Area"
-          placeholder="Area"
-          {...register("area")}
-          disabled={!editForm}
-          error={errors.area && "This field is required"}
-        />
-      </div>
-      <div className="mb-4">
-        <Controller
-          name="organizationId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              label="Select Organization"
-              placeholder="Select Organization"
-              onChange={(value) => field.onChange(value)}
-              value={field.value}
-              data={selectOrgItem}
-              maxDropdownHeight={300}
-              error={errors.organizationId && "This field is required"}
-              disabled={!editForm}
-            />
-          )}
-        />
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
+          <TextInput
+            label="Area"
+            placeholder="Area"
+            {...register("area")}
+            disabled={!editForm}
+            error={errors.area && "This field is required"}
+          />
+        </div>
+        <div className="flex-1">
+          <Controller
+            name="organizationId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                label="Select Organization"
+                placeholder="Select Organization"
+                onChange={(value) => field.onChange(value)}
+                value={field.value}
+                data={selectOrgItem}
+                maxDropdownHeight={300}
+                error={errors.organizationId && "This field is required"}
+                disabled={!editForm}
+              />
+            )}
+          />
+        </div>
       </div>
 
       <div className="text-right">

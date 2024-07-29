@@ -12,6 +12,7 @@ import { DeletePharmacy } from "query/pharmacy/pharmacyDelete";
 import PharmacyTable from "./components/PharmacyTable";
 import PharmacyForm from "./components/PharmacyForm";
 import EmptyList from "Components/EmptyList";
+import Search from "Components/Search";
 
 export default function Pharmacy() {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
@@ -21,13 +22,13 @@ export default function Pharmacy() {
   const [deletedId, setDeletedId] = useState<string>();
   const [totalCount, setTotalCount] = useState(1);
   const [editForm, setEditForm] = useState(true);
-
+  const [searchInput, setSearchInput] = useState("");
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
 
-  // Pharmacy list query
+  /* ====== Pharmacy List Query ====== */
   const [fetchPharmacyList, { refetch, loading }] = useLazyQuery<Pharmacies>(
     GetPharmacyList,
     {
@@ -47,7 +48,7 @@ export default function Pharmacy() {
     }
   );
 
-  // Pharmacy delete query
+  /* ====== Pharmacy Delete Query ====== */
   const [deletePharmacy] = useMutation(DeletePharmacy, {
     onError: (err) => {
       toast.error(err.message);
@@ -66,18 +67,21 @@ export default function Pharmacy() {
     },
   });
 
+  /* ====== Pharmacy Pagination Variable ====== */
   useEffect(() => {
     fetchPharmacyList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [fetchPharmacyList, activePage, refetch]);
+  }, [fetchPharmacyList, activePage, refetch, searchInput]);
 
-  // Update new pharmacy in list
+  /* ====== New Pharmacy Add In The List ====== */
   useEffect(() => {
     if (newPharmacyList) {
       refetch().then(({ data }) => {
@@ -97,7 +101,7 @@ export default function Pharmacy() {
     refetch();
   }, [refetch]);
 
-  // Pharmacy delete
+  /* ====== Handle Pharmacy Delete Function ====== */
   function handleDelete(pharmaId: string) {
     const deleteItem = pharmacyList?.pharmacies.find((x) => x.id === pharmaId);
     setDeletedId(deleteItem?.id);
@@ -111,14 +115,37 @@ export default function Pharmacy() {
     deleteModalClose();
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchPharmacyList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy List"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Pharmacy"
       />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -127,6 +154,7 @@ export default function Pharmacy() {
         />
       )}
 
+      {/* ==== Pharmacy List Empty List and List ==== */}
       {!pharmacyList?.pharmacies.length ? (
         <EmptyList />
       ) : (
@@ -138,6 +166,8 @@ export default function Pharmacy() {
           totalCount={totalCount}
         />
       )}
+
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Pharmacy"
         modalOpen={deleteModalOpened}
@@ -145,6 +175,7 @@ export default function Pharmacy() {
         deleteItem={() => getDeletePharmacy()}
       />
 
+      {/* ==== Create Pharmacy Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}

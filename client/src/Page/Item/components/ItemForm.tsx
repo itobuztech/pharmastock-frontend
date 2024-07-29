@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   Button,
   MultiSelect,
@@ -6,13 +6,8 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import {
-  CreateItemCategories,
-  Item,
-  ItemCategories,
-} from "interfaces/interfaces";
-import { GetItemCategoryList } from "query/category/categoryList";
-import React, { useEffect, useState } from "react";
+import { Item } from "interfaces/interfaces";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -22,6 +17,7 @@ import { ItemCreate } from "query/item/itemCreate";
 import { toast } from "react-toastify";
 import { GetItemUpdate } from "query/item/itemUpdate";
 import { useNavigate } from "react-router-dom";
+import useItemCatList from "Lib/customHooks/useItemCategoryList";
 
 export default function ItemForm({
   close,
@@ -40,8 +36,8 @@ export default function ItemForm({
   setNewItemList?: React.Dispatch<React.SetStateAction<undefined>>;
   refetchItem: () => void;
 }) {
-  const [categoryList, setCategoryList] = useState<ItemCategories>();
   const navigate = useNavigate();
+  const selectItemCatList = useItemCatList();
 
   const schema = yup
     .object({
@@ -106,29 +102,6 @@ export default function ItemForm({
 
   const baseUnitArray = Object.values(BaseUnit);
 
-  console.log(baseUnitArray);
-
-  const [fetchItemCategoryList] = useLazyQuery<CreateItemCategories>(
-    GetItemCategoryList,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const itemCate = d.itemCategories;
-          setCategoryList(itemCate);
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    fetchItemCategoryList();
-  }, [fetchItemCategoryList]);
-
-  const selectCatItem = categoryList?.itemCategories.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-
   useEffect(() => {
     if (itemDetail?.item) {
       setValue("name", itemDetail?.item.name);
@@ -146,8 +119,6 @@ export default function ItemForm({
         );
     }
   }, [itemDetail?.item, setValue]);
-
-  console.log({ selectCatItem });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -205,7 +176,7 @@ export default function ItemForm({
                 {...field}
                 label="Select category"
                 placeholder="Select category"
-                data={selectCatItem}
+                data={selectItemCatList}
                 maxDropdownHeight={300}
                 onChange={(value) => field.onChange(value)}
                 value={field.value || []}

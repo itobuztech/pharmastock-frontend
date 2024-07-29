@@ -10,13 +10,11 @@ export default function WarehouseStockTable({
   activePage,
   setActivePage,
   warehouseStocksList,
-  // handleDelete,
   totalCount,
 }: {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   warehouseStocksList?: WarehouseStocks;
-  // handleDelete: (id: string) => void;
   totalCount: number;
 }) {
   const navigate = useNavigate();
@@ -34,11 +32,13 @@ export default function WarehouseStockTable({
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.item.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
+      <Table.Td>₹ {item.totalWholesalePrice}</Table.Td>
+      <Table.Td>₹ {item.totalMrpBaseUnit}</Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
-          handleDelete={() => console.log(item.id)}
+          showDeleteModal={false}
         />
       </Table.Td>
     </Table.Tr>
@@ -58,6 +58,8 @@ export default function WarehouseStockTable({
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Item</Table.Th>
             <Table.Th>Qty</Table.Th>
+            <Table.Th>Total Wholesale Price</Table.Th>
+            <Table.Th>Total MRP BaseUnit</Table.Th>
             <Table.Th>SKU</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>

@@ -5,14 +5,24 @@ import { useLazyQuery } from "@apollo/client";
 import { PharmacyStocksList } from "query/pharmacyStock/pharmacyStocksList";
 import { toast } from "react-toastify";
 import { PharmacyStocks, PharmacyStocksLists } from "interfaces/interfaces";
+import { useDisclosure } from "@mantine/hooks";
+import { LoadingOverlay, Modal } from "@mantine/core";
+import PharmacyStockForm from "./components/PharmacyStockForm";
+import EmptyList from "Components/EmptyList";
+import { CreatePharmacyStockInput } from "gql/graphql";
+import Search from "Components/Search";
 
 export default function PharmacyStock() {
   const [pharmacyStocksList, setPharmacyStocksList] =
     useState<PharmacyStocks>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [newPharmacyStockList, setNewPharmacyStockList] =
+    useState<CreatePharmacyStockInput>();
+  const [searchInput, setSearchInput] = useState("");
 
-  // Pharmacy list query
+  /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
     useLazyQuery<PharmacyStocksLists>(PharmacyStocksList, {
       onError: (err) => {
@@ -30,33 +40,101 @@ export default function PharmacyStock() {
       },
     });
 
+  /* ====== Pharmacy Stocks Pagination Variable ====== */
   useEffect(() => {
     fetchPharmaciesStockList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchPharmaciesStockList, refetch]);
+  }, [activePage, fetchPharmaciesStockList, refetch, searchInput]);
 
-  console.log({ pharmacyStocksList });
+  /* ====== New Pharmacy Stocks Add In The List ====== */
+  useEffect(() => {
+    if (newPharmacyStockList) {
+      refetch().then(({ data }) => {
+        if (data) {
+          const pharmaList = data.PharmacyStocks;
+          const total = data.PharmacyStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setPharmacyStocksList(pharmaList);
+          setTotalCount(paginationCount);
+        }
+      });
+    }
+  }, [newPharmacyStockList, refetch]);
+
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchPharmaciesStockList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy Stocks"
         showBackButton={true}
-        showCreateButton={false}
+        showCreateButton={true}
+        buttonText="Add Pharmacy Stock"
+        onClick={open}
       />
 
-      <PharmacyStockTable
-        activePage={activePage}
-        setActivePage={setActivePage}
-        totalCount={totalCount}
-        pharmaciesStockList={pharmacyStocksList}
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
       />
+
+      {/* ==== Loading State ==== */}
+      {loading && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      )}
+
+      {/* ==== PharmacyStocks List Empty List and List ==== */}
+      {!pharmacyStocksList?.pharmacyStocks.length ? (
+        <EmptyList />
+      ) : (
+        <PharmacyStockTable
+          activePage={activePage}
+          setActivePage={setActivePage}
+          totalCount={totalCount}
+          pharmaciesStockList={pharmacyStocksList}
+        />
+      )}
+
+      {/* ==== Create PharmacyStock Modal ==== */}
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Create Pharmacy Stock"
+        centered
+        size={"sm"}
+      >
+        <PharmacyStockForm
+          setNewPharmacyStockList={setNewPharmacyStockList}
+          close={close}
+          refetchItem={refetch}
+        />
+      </Modal>
     </section>
   );
 }

@@ -1,8 +1,16 @@
 import { gql } from "@apollo/client";
 
 export const GetUsersList = gql`
-  query Users {
-    users {
+  query Users(
+    $pagination: Boolean
+    $paginationArgs: PaginationArgs
+    $searchText: String
+  ) {
+    users(
+      pagination: $pagination
+      paginationArgs: $paginationArgs
+      searchText: $searchText
+    ) {
       total
       users {
         createdAt
@@ -17,6 +25,11 @@ export const GetUsersList = gql`
         }
         updatedAt
         username
+        role {
+          id
+          name
+          userType
+        }
       }
     }
   }

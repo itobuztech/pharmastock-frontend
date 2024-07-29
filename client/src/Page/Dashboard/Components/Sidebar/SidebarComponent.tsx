@@ -35,7 +35,7 @@ export default function SidebarComponent() {
               link={routes.dashboard.profile.path}
             />
 
-          {handleSliderOptionsVisible(
+{handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
           ) && (
             <MenuLink
@@ -44,42 +44,31 @@ export default function SidebarComponent() {
               link={routes.dashboard.organizations.path}
             />
           )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Pharmacies"
-              activeMenuPaths={routes.dashboard.pharmacies.path}
-              link={routes.dashboard.pharmacies.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Pharmacy Stocks"
-              activeMenuPaths={routes.dashboard.pharmaciesStock.path}
-              link={routes.dashboard.pharmaciesStock.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Item Category"
-              activeMenuPaths={routes.dashboard.createItemCategory.path}
-              link={routes.dashboard.createItemCategory.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Items"
-              activeMenuPaths={routes.dashboard.itemList.path}
-              link={routes.dashboard.itemList.path}
-            />
-          )}
+
+          <MenuLink
+            text="Pharmacies"
+            activeMenuPaths={routes.dashboard.pharmacies.path}
+            link={routes.dashboard.pharmacies.path}
+          />
+
+          <MenuLink
+            text="Pharmacy Stocks"
+            activeMenuPaths={routes.dashboard.pharmaciesStock.path}
+            link={routes.dashboard.pharmaciesStock.path}
+          />
+
+          <MenuLink
+            text="Item Category"
+            activeMenuPaths={routes.dashboard.createItemCategory.path}
+            link={routes.dashboard.createItemCategory.path}
+          />
+
+          <MenuLink
+            text="Items"
+            activeMenuPaths={routes.dashboard.itemList.path}
+            link={routes.dashboard.itemList.path}
+          />
+        )}
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
           ) && (
@@ -98,15 +87,13 @@ export default function SidebarComponent() {
               link={routes.dashboard.warehouseStock.path}
             />
           )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.USER_PERMISSION
-          ) && (
-            <MenuLink
-              text="Users"
-              activeMenuPaths={routes.dashboard.users.path}
-              link={routes.dashboard.users.path}
-            />
-          )}
+
+          <MenuLink
+            text="Users"
+            activeMenuPaths={routes.dashboard.users.path}
+            link={routes.dashboard.users.path}
+          />
+
           <MenuLink text="Logout" link={routes.logout.path} />
         </nav>
       </div>

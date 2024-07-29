@@ -3,20 +3,18 @@ import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
-import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
-import {
-  CreateWarehouses,
-  OrganizationList,
-  Warehouses,
-  WarehouseStocks,
-  WarehouseStocksData,
-} from "interfaces/interfaces";
-import { useLazyQuery } from "@apollo/client";
-import { GetWarehouseList } from "query/warehouse/warehouseList";
+import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
+import { WarehouseStockDelete } from "query/warehouse/warehouseStockDelete";
+import ConfirmationModal from "Components/ConfirmationModal";
+import { CreateWarehouseStockInput } from "gql/graphql";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
+import Search from "Components/Search";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,94 +22,142 @@ export default function WarehouseStock() {
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
-  const [warehouseList, setWarehouseList] = useState<Warehouses>();
-  const [organization, setOrganization] =
-    useState<OrganizationList["organizations"]>();
+  const [searchInput, setSearchInput] = useState("");
 
-  const [fetchWarehouseStocksList, { refetch, loading }] =
-    useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
-      onError: (err) => {
-        toast.error(err.message);
-      },
-      onCompleted: (d) => {
-        if (d) {
-          const item = d.warehouseStocks;
-          const total = d.warehouseStocks.total;
-          const paginationCount = Math.ceil(total / 10);
-          setWarehouseStocksList(item);
-          setTotalCount(paginationCount);
-        }
-      },
-    });
+  const selectOrganizationItem = useOrganizationList();
+  const selectWarehouseItem = useWarehouseItems();
 
-  console.log({ warehouseStocksList });
+  const [
+    deleteModalOpened,
+    { open: deleteModalOpen, close: deleteModalClose },
+  ] = useDisclosure(false);
+  const [deletedId, setDeletedId] = useState<string>();
+  const [newWarehouseStockList, setNewWarehouseStockList] =
+    useState<CreateWarehouseStockInput>();
 
+  /* ====== Warehouse Stocks List Query ====== */
+  const [
+    fetchWarehouseStocksList,
+    { refetch: refetchWarehouseStockList, loading },
+  ] = useLazyQuery<WarehouseStocksData>(GetWarehouseStocks, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: (d) => {
+      if (d) {
+        const item = d.warehouseStocks;
+        const total = d.warehouseStocks.total;
+        const paginationCount = Math.ceil(total / 10);
+        setWarehouseStocksList(item);
+        setTotalCount(paginationCount);
+      }
+    },
+  });
+
+  /* ====== Warehouse Stocks Pagination Variable ====== */
   useEffect(() => {
     fetchWarehouseStocksList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchWarehouseStocksList, refetch]);
+  }, [
+    activePage,
+    fetchWarehouseStocksList,
+    refetchWarehouseStockList,
+    searchInput,
+  ]);
 
-  const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
-    GetWarehouseList,
-    {
-      onError: (err) => {
-        toast.error(err.message);
-      },
-      onCompleted: (d) => {
-        if (d) {
-          const item = d.warehouses;
-          setWarehouseList(item);
+  /* ====== New Warehouse Stocks Add In The List ====== */
+  useEffect(() => {
+    if (newWarehouseStockList) {
+      refetchWarehouseStockList().then(({ data }) => {
+        if (data) {
+          const items = data.warehouseStocks;
+          const total = data.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
+          setWarehouseStocksList(items);
+          setTotalCount(paginationCount);
         }
-      },
+      });
     }
-  );
-
-  const selectWarehouseItem = warehouseList?.warehouses?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
-
-  console.log({ selectWarehouseItem });
-
-  // Get Organization List
-  const [organizationList] = useLazyQuery<OrganizationList>(
-    ORGANIZATIONS_LIST_QUERY,
-    {
-      onCompleted: (d) => {
-        if (d) {
-          const orgs = d.organizations;
-          setOrganization(orgs);
-        }
-      },
-    }
-  );
+  }, [newWarehouseStockList, refetchWarehouseStockList]);
 
   useEffect(() => {
-    organizationList();
-    fetchWarehouseList();
-  }, [organizationList, fetchWarehouseList]);
+    refetchWarehouseStockList();
+  }, [refetchWarehouseStockList]);
 
-  const organizationListArr = organization?.organizations;
+  const [deleteWarehouseStock] = useMutation(WarehouseStockDelete, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: () => {
+      refetchWarehouseStockList().then(({ data }) => {
+        if (data) {
+          const items = data.warehouseStocks;
+          const total = data.warehouseStocks.total;
+          const paginationCount = Math.ceil(total / 10);
 
-  const selectOrgItem = organizationListArr?.map((item) => ({
-    value: item.id,
-    label: item.name as string,
-  }));
+          setWarehouseStocksList(items);
+          setTotalCount(paginationCount);
+        }
+      });
+      deleteModalClose();
+      toast.success("Warehouse Deleted Successfully");
+    },
+  });
 
+  function handleDelete(itemId: string) {
+    const deleteItem = warehouseStocksList?.warehouseStocks.find(
+      (x) => x.id === itemId
+    );
+    setDeletedId(deleteItem?.id);
+    deleteModalOpen();
+  }
+
+  function getDeleteWarehouse() {
+    deleteWarehouseStock({
+      variables: { deleteWarehouseStockInput: { id: deletedId } },
+    });
+  }
+
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchWarehouseStocksList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
+  console.log({ warehouseStocksList });
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse Stocks"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Warehouse Stock"
       />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -120,6 +166,7 @@ export default function WarehouseStock() {
         />
       )}
 
+      {/* ==== WarehouseStocks List Empty List and List ==== */}
       {!warehouseStocksList?.warehouseStocks.length ? (
         <EmptyList />
       ) : (
@@ -131,17 +178,29 @@ export default function WarehouseStock() {
         />
       )}
 
+      {/* ==== Delete Confirmation Modal ==== */}
+      <ConfirmationModal
+        title="Warehouse"
+        modalOpen={deleteModalOpened}
+        modalClose={deleteModalClose}
+        deleteItem={() => getDeleteWarehouse()}
+      />
+
+      {/* ==== Create WarehouseStock Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}
-        title="Stocks"
+        title="Create Stocks"
         centered
-        size={"lg"}
+        size={"xl"}
       >
         <WarehouseStockForm
-          selectOrgItem={selectOrgItem}
+          selectOrgItem={selectOrganizationItem}
           selectWarehouseItem={selectWarehouseItem}
           close={close}
+          refetchItem={refetchWarehouseStockList}
+          setNewWarehouseStockList={setNewWarehouseStockList}
+          list={true}
         />
       </Modal>
     </section>

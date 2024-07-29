@@ -16,9 +16,9 @@ import OrganizationTable from "./components/OrganizationTable";
 import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
 import UserCreateForm from "Page/User/components/UserCreateForm";
+import Search from "Components/Search";
 
 export default function OrganizationsPage() {
-  // Organization listing. STARTS
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
   const [newOrgList, setNewOrgList] = useState<createOrganizationInput>();
@@ -33,10 +33,12 @@ export default function OrganizationsPage() {
   const [deleteOrgId, setDeleteOrgId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
   const [selectItem, setSelectItem] = useState<SelectOrgItem>();
+  const [searchInput, setSearchInput] = useState("");
 
   const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
     useDisclosure(false);
 
+  /* ====== Delete Org Query ====== */
   const [deleteOrganization] = useMutation(DeleteOrganization, {
     onError: (error) => {
       toast.error(error.message);
@@ -56,6 +58,7 @@ export default function OrganizationsPage() {
     },
   });
 
+  /* ====== Org List Query ====== */
   const [organizationList, { refetch, loading }] =
     useLazyQuery<OrganizationList>(ORGANIZATIONS_LIST_QUERY, {
       onError: (error) => {
@@ -76,14 +79,17 @@ export default function OrganizationsPage() {
   useEffect(() => {
     organizationList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [organizationList, activePage, refetch]);
+  }, [organizationList, activePage, refetch, searchInput]);
 
+  /* ====== Add New Org List ====== */
   useEffect(() => {
     if (newOrgList) {
       refetch().then(({ data }) => {
@@ -99,6 +105,7 @@ export default function OrganizationsPage() {
     }
   }, [newOrgList, refetch]);
 
+  /* ====== Handle Org Delete Function ====== */
   function handleDelete(orgId: string) {
     const deleteItem = organization?.organizations.find((x) => x.id === orgId);
     setDeleteOrgId(deleteItem?.id);
@@ -111,6 +118,7 @@ export default function OrganizationsPage() {
     });
   }
 
+  /* ====== Handle Add User Modal Function ====== */
   function handleUserModal(orgId: string) {
     const selectItem = organization?.organizations.find((x) => x.id === orgId);
     setSelectItem({
@@ -120,12 +128,34 @@ export default function OrganizationsPage() {
     userModalOpen();
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    organizationList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
         showCreateButton={true}
         onClick={open}
+        buttonText="Add Organization"
+      />
+
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
       />
 
       {/* ==== Loading State ==== */}
@@ -166,6 +196,10 @@ export default function OrganizationsPage() {
         title="Create User"
         centered
         size={"lg"}
+        zIndex={600}
+        overlayProps={{
+          zIndex: 500,
+        }}
       >
         <UserCreateForm selectItem={selectItem} close={userModalClose} />
       </Modal>

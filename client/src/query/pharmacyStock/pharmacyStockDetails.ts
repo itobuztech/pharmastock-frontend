@@ -1,10 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const PharmacyStockCreate = gql`
-  mutation CreatePharmacyStock(
-    $createPharmacyStockInput: CreatePharmacyStockInput!
-  ) {
-    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {
+export const GetPharmacyStockDetails = gql`
+  query PharmacyStock($pharmacyStockId: String!) {
+    PharmacyStock(id: $pharmacyStockId) {
       createdAt
       finalQty
       id

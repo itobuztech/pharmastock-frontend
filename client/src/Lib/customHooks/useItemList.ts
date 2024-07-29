@@ -1,0 +1,34 @@
+import { useEffect, useState } from "react";
+import { ItemLists, Items } from "interfaces/interfaces";
+import { useLazyQuery } from "@apollo/client";
+import { toast } from "react-toastify";
+import { GetItemLists } from "query/item/itemList";
+
+const useItemList = () => {
+  const [itemList, setItemList] = useState<Items>();
+
+  const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
+    onError: (err) => {
+      toast.error(err.message);
+    },
+    onCompleted: (d) => {
+      if (d) {
+        const items = d.items;
+        setItemList(items);
+      }
+    },
+  });
+
+  useEffect(() => {
+    fetchItemList();
+  }, [fetchItemList]);
+
+  const selectItems = itemList?.items?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
+
+  return selectItems;
+};
+
+export default useItemList;

@@ -1,26 +1,23 @@
 import { gql } from "@apollo/client";
 
-export const GetWarehouseStocks = gql`
-  query WarehouseStocks(
-    $pagination: Boolean
+export const GetPharmacyStocksByPharmacy = gql`
+  query PharmacyStocksByPharmacy(
+    $pharmacyId: String!
     $paginationArgs: PaginationArgs
-    $searchText: String
   ) {
-    warehouseStocks(
-      pagination: $pagination
+    pharmacyStocksByPharmacy(
+      pharmacyId: $pharmacyId
       paginationArgs: $paginationArgs
-      searchText: $searchText
     ) {
-      total
-      warehouseStocks {
-        SKU {
-          id
-          sku
-        }
+      pharmacyStocks {
         createdAt
         finalQty
         id
         item {
+          id
+          name
+        }
+        pharmacy {
           id
           name
         }
@@ -32,6 +29,7 @@ export const GetWarehouseStocks = gql`
           name
         }
       }
+      total
     }
   }
 `;

@@ -1,13 +1,24 @@
 import { gql } from "@apollo/client";
 
 export const PharmacyStocksList = gql`
-  query PharmacyStocks {
-    PharmacyStocks {
+  query PharmacyStocks(
+    $pagination: Boolean
+    $paginationArgs: PaginationArgs
+    $searchText: String
+  ) {
+    PharmacyStocks(
+      pagination: $pagination
+      paginationArgs: $paginationArgs
+      searchText: $searchText
+    ) {
       pharmacyStocks {
         createdAt
         finalQty
         id
-        itemId
+        item {
+          id
+          name
+        }
         pharmacy {
           id
           name

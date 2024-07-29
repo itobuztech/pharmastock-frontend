@@ -7,12 +7,15 @@ import { UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
 import { LoadingOverlay } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
+import Search from "Components/Search";
 
 export default function UserList() {
   const [userList, setUserList] = useState<Users>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
 
+  /* ====== User List Query ====== */
   const [fetchUserList, { refetch, loading }] = useLazyQuery<UserData>(
     GetUsersList,
     {
@@ -32,22 +35,44 @@ export default function UserList() {
     }
   );
 
+  /* ====== User Pagination Variable ====== */
   useEffect(() => {
     fetchUserList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [fetchUserList, activePage, refetch]);
+  }, [fetchUserList, activePage, refetch, searchInput]);
 
-  console.log({ userList });
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchUserList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Users" showCreateButton={false} />
+
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
 
       {/* ==== Loading State ==== */}
       {loading && (
