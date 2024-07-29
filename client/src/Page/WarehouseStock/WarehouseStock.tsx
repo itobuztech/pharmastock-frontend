@@ -14,6 +14,7 @@ import ConfirmationModal from "Components/ConfirmationModal";
 import { CreateWarehouseStockInput } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
+import Search from "Components/Search";
 
 export default function WarehouseStock() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -21,6 +22,7 @@ export default function WarehouseStock() {
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
+  const [searchInput, setSearchInput] = useState("");
 
   const selectOrganizationItem = useOrganizationList();
   const selectWarehouseItem = useWarehouseItems();
@@ -33,6 +35,7 @@ export default function WarehouseStock() {
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
 
+  /* ====== Warehouse Stocks List Query ====== */
   const [
     fetchWarehouseStocksList,
     { refetch: refetchWarehouseStockList, loading },
@@ -51,17 +54,26 @@ export default function WarehouseStock() {
     },
   });
 
+  /* ====== Warehouse Stocks Pagination Variable ====== */
   useEffect(() => {
     fetchWarehouseStocksList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchWarehouseStocksList, refetchWarehouseStockList]);
+  }, [
+    activePage,
+    fetchWarehouseStocksList,
+    refetchWarehouseStockList,
+    searchInput,
+  ]);
 
+  /* ====== New Warehouse Stocks Add In The List ====== */
   useEffect(() => {
     if (newWarehouseStockList) {
       refetchWarehouseStockList().then(({ data }) => {
@@ -114,6 +126,20 @@ export default function WarehouseStock() {
     });
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchWarehouseStocksList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   console.log({ warehouseStocksList });
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -124,6 +150,14 @@ export default function WarehouseStock() {
         buttonText="Add Warehouse Stock"
       />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -132,6 +166,7 @@ export default function WarehouseStock() {
         />
       )}
 
+      {/* ==== WarehouseStocks List Empty List and List ==== */}
       {!warehouseStocksList?.warehouseStocks.length ? (
         <EmptyList />
       ) : (
@@ -143,6 +178,7 @@ export default function WarehouseStock() {
         />
       )}
 
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Warehouse"
         modalOpen={deleteModalOpened}
@@ -150,6 +186,7 @@ export default function WarehouseStock() {
         deleteItem={() => getDeleteWarehouse()}
       />
 
+      {/* ==== Create WarehouseStock Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}

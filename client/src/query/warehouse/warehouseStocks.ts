@@ -1,8 +1,16 @@
 import { gql } from "@apollo/client";
 
 export const GetWarehouseStocks = gql`
-  query WarehouseStocks($paginationArgs: PaginationArgs) {
-    warehouseStocks(paginationArgs: $paginationArgs) {
+  query WarehouseStocks(
+    $pagination: Boolean
+    $paginationArgs: PaginationArgs
+    $searchText: String
+  ) {
+    warehouseStocks(
+      pagination: $pagination
+      paginationArgs: $paginationArgs
+      searchText: $searchText
+    ) {
       total
       warehouseStocks {
         SKU {

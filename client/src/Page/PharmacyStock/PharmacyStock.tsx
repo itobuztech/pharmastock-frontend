@@ -10,6 +10,7 @@ import { LoadingOverlay, Modal } from "@mantine/core";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import EmptyList from "Components/EmptyList";
 import { CreatePharmacyStockInput } from "gql/graphql";
+import Search from "Components/Search";
 
 export default function PharmacyStock() {
   const [pharmacyStocksList, setPharmacyStocksList] =
@@ -19,8 +20,9 @@ export default function PharmacyStock() {
   const [opened, { open, close }] = useDisclosure(false);
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
+  const [searchInput, setSearchInput] = useState("");
 
-  // Pharmacy list query
+  /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
     useLazyQuery<PharmacyStocksLists>(PharmacyStocksList, {
       onError: (err) => {
@@ -38,18 +40,21 @@ export default function PharmacyStock() {
       },
     });
 
+  /* ====== Pharmacy Stocks Pagination Variable ====== */
   useEffect(() => {
     fetchPharmaciesStockList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchPharmaciesStockList, refetch]);
+  }, [activePage, fetchPharmaciesStockList, refetch, searchInput]);
 
-  // Update new pharmacy in list
+  /* ====== New Pharmacy Stocks Add In The List ====== */
   useEffect(() => {
     if (newPharmacyStockList) {
       refetch().then(({ data }) => {
@@ -64,7 +69,19 @@ export default function PharmacyStock() {
     }
   }, [newPharmacyStockList, refetch]);
 
-  console.log({ pharmacyStocksList });
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchPharmaciesStockList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -76,6 +93,14 @@ export default function PharmacyStock() {
         onClick={open}
       />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -84,6 +109,7 @@ export default function PharmacyStock() {
         />
       )}
 
+      {/* ==== PharmacyStocks List Empty List and List ==== */}
       {!pharmacyStocksList?.pharmacyStocks.length ? (
         <EmptyList />
       ) : (
@@ -95,6 +121,7 @@ export default function PharmacyStock() {
         />
       )}
 
+      {/* ==== Create PharmacyStock Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}
