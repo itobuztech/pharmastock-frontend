@@ -4,7 +4,7 @@ import { LoadingOverlay, Modal } from "@mantine/core";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { Pharmacies } from "interfaces/interfaces";
 import { GetPharmacyList } from "query/pharmacy/pharmacyList";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { CreatePharmacyInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import ConfirmationModal from "Components/ConfirmationModal";
@@ -116,7 +116,7 @@ export default function Pharmacy() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchPharmacyList({
       variables: {
         pagination: true,
@@ -127,7 +127,12 @@ export default function Pharmacy() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -139,11 +144,7 @@ export default function Pharmacy() {
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (

@@ -1,7 +1,7 @@
 import { LoadingOverlay, Modal } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
 import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -127,7 +127,7 @@ export default function WarehouseStock() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchWarehouseStocksList({
       variables: {
         pagination: true,
@@ -138,9 +138,13 @@ export default function WarehouseStock() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
 
-  console.log({ warehouseStocksList });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -151,11 +155,7 @@ export default function WarehouseStock() {
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
