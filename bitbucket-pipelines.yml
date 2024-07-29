@@ -36,7 +36,7 @@ pipelines:
 
     dev:
       - stage:
-          name: jobbora-frontend-dev pipeline
+          name: pharmastock-frontend-dev pipeline
           deployment: dev
           steps:
             - step:
@@ -44,7 +44,7 @@ pipelines:
 
     main:
       - stage:
-          name: jobbora-frontend-prod pipeline
+          name: pharmastock-frontend-prod pipeline
           deployment: prod
           steps:
             - step:
