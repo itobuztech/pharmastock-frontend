@@ -200,7 +200,7 @@ export interface CategoryItem {
   id: string;
   name: string;
   updatedAt: string;
-  Item?: Item;
+  Item?: Item[];
 }
 
 // export interface Item {

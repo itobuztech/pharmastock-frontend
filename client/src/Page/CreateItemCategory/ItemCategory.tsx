@@ -12,6 +12,7 @@ import { CategoryItemDelete } from "query/category/categoryDelete";
 import ItemCategoryTable from "./components/ItemCategoryTable";
 import ItemCategoryForm from "./components/ItemCategoryForm";
 import EmptyList from "Components/EmptyList";
+import Search from "Components/Search";
 
 export default function ItemCategory() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -22,13 +23,13 @@ export default function ItemCategory() {
     useState<CreateItemCategoryInput>();
   const [deletedId, setDeletedId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
-
+  const [searchInput, setSearchInput] = useState("");
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
 
-  // Category list query
+  /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
     useLazyQuery<CreateItemCategories>(GetItemCategoryList, {
       onError: (err) => {
@@ -46,7 +47,7 @@ export default function ItemCategory() {
       },
     });
 
-  // Category delete query
+  /* ====== Category Delete Query ====== */
   const [deleteCategory] = useMutation(CategoryItemDelete, {
     onError: (err) => {
       toast.error(err.message);
@@ -66,17 +67,21 @@ export default function ItemCategory() {
     },
   });
 
+  /* ====== Category Pagination Variable ====== */
   useEffect(() => {
     fetchItemCategoryList({
       variables: {
+        pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
           take: 10,
         },
+        searchText: "",
       },
     });
-  }, [activePage, fetchItemCategoryList, refetch]);
+  }, [activePage, fetchItemCategoryList, refetch, searchInput]);
 
+  /* ====== New Category Add In The List ====== */
   useEffect(() => {
     if (newCategoryList) {
       refetch().then(({ data }) => {
@@ -92,7 +97,7 @@ export default function ItemCategory() {
     }
   }, [newCategoryList, refetch]);
 
-  // Category delete function
+  /* ====== Handle Category Delete Function ====== */
   function handleDelete(catId: string) {
     const deleteItem = itemCategoryList?.itemCategories.find(
       (x) => x.id === catId
@@ -107,6 +112,20 @@ export default function ItemCategory() {
     });
   }
 
+  /* ====== Handle Search Function ====== */
+  function handleSearch() {
+    fetchItemCategoryList({
+      variables: {
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: searchInput,
+      },
+    });
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -116,6 +135,14 @@ export default function ItemCategory() {
         buttonText="Add Category"
       />
 
+      {/* ==== Search ==== */}
+      <Search
+        onSubmit={handleSearch}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
+
+      {/* ==== Loading State ==== */}
       {loading && (
         <LoadingOverlay
           visible={true}
@@ -124,6 +151,7 @@ export default function ItemCategory() {
         />
       )}
 
+      {/* ==== Item Category Empty List and List ==== */}
       {itemCategoryList?.itemCategories.length === 0 ? (
         <EmptyList />
       ) : (
@@ -136,6 +164,7 @@ export default function ItemCategory() {
         />
       )}
 
+      {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal
         title="Category"
         modalOpen={deleteModalOpened}
@@ -143,6 +172,7 @@ export default function ItemCategory() {
         deleteItem={() => getDeleteCategory()}
       />
 
+      {/* ==== Create Item Category Modal ==== */}
       <Modal
         opened={opened}
         onClose={close}
