@@ -6,6 +6,7 @@ export const appEnv = cleanEnv(import.meta.env, {
 
 const appConfig = {
   storage: {
+    permission:"permission",
     user: "app_user",
     store: "app_store",
     accessToken: "access_token",

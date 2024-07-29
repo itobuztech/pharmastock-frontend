@@ -1,13 +1,24 @@
+import { Permissions } from "interfaces/interfaces";
 import { User } from "./Api/Fake/Users/users.interface";
 import appConfig from "./appConfig";
 
+export interface UserAppStore {
+  currentUser : User | null;
+  permission : Permissions | {} ;
+}
+
+const defaultUserStore: UserAppStore = {
+  currentUser: null,
+  permission: {}
+};
+
 export interface AppStore {
-  user: User | null;
+  user: UserAppStore;
   privilege: any | null;
 };
 
 const defaultStore: AppStore = {
-  user: null,
+  user: defaultUserStore,
   privilege: null,
 };
 
