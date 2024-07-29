@@ -4,12 +4,12 @@ import TextFieldComponent from "../../../Components/TextField/TextFieldComponent
 import EmailIcon from "../../../Icons/Email-Icon";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../../Lib/Store/hooks";
-import { userSliceActions } from "../../../Lib/Store/User/User.Slice";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { ForgetPasswordPayload } from "../../../Lib/Api/Fake/Users/users.interface";
 import { Alert } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
+import { forgetPassword } from "Lib/Store/User/User.Slice";
 
 export default function ForgetPassWordPage() {
   const { height } = useViewportSize();
@@ -21,7 +21,7 @@ export default function ForgetPassWordPage() {
   const { register, handleSubmit } = useForm<ForgetPasswordPayload>();
 
   const onSubmit = (data: ForgetPasswordPayload) => {
-    dispatch(userSliceActions.forgetPassword(data));
+    dispatch(forgetPassword(data));
   };
 
   return (

@@ -1,31 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  ForgetPasswordPayload,
-  LoginPayload,
-  User,
-} from "../../Api/Fake/Users/users.interface";
+import { RootState } from "../Store";
 import { appStore } from "Lib/appStore";
 import { Permissions } from "interfaces/interfaces";
 import appConfig from "Lib/appConfig";
+import { ForgetPasswordPayload, LoginPayload } from "Lib/Api/Fake/Users/users.interface";
+
+export interface UserData {
+  createdAt: string;
+  email: string;
+  id: string;
+  name: string;
+  updatedAt: string;
+  username: string;
+}
 
 export interface ForgetPasswordState {
   loading: boolean;
   token: string | null;
 }
 
-export interface UserSliceState {
-  currentUser: null | User;
+export interface UserState {
   login: {
     loading: boolean;
   };
   forgetPassword: ForgetPasswordState;
-  permission: Permissions; 
+  currentUser: null | UserData;
+  permission: Permissions
 }
 
 const store = appStore.get();
 
-const initialState: UserSliceState = {
-  currentUser: store.user,
+const initialState: UserState = {
   login: {
     loading: false,
   },
@@ -33,11 +38,12 @@ const initialState: UserSliceState = {
     loading: false,
     token: null,
   },
-  permission: store.permission || {},
+  currentUser: store.user.currentUser,
+  permission: store.user.permission 
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: "newUser",
   initialState,
   reducers: {
     login: (state, { payload }: { payload: LoginPayload }) => {
@@ -58,38 +64,35 @@ export const userSlice = createSlice({
       state.forgetPassword = payload;
       console.log("updateForgetPassword initiate", state, payload);
     },
-    setUser: (state, { payload }: { payload: User }) => {
+    setUser: (state, { payload }: { payload: UserData }) => {
       state.currentUser = payload;
-      state.login.loading = payload ? false : true;
       const store = appStore.get();
-
-      if (payload) {
-        store.user = payload;
-        appStore.set(store);
-      } else {
-        store.user = null;
-        appStore.set(store);
-      }
+      store.user.currentUser = payload;
+      appStore.set(store);
     },
-    setPermissions: (state, { payload }: { payload: Permissions }) => {
+    setPermission: (state, { payload }: { payload: Permissions }) => {
       state.permission = payload;
       const store = appStore.get();
-      store.permission = payload;
+      store.user.permission = payload;
       appStore.set(store);
     },
     logout: (state) => {
       state.currentUser = null;
-      state.permission = {} as Permissions;
-      localStorage.removeItem(appConfig.storage.permission);
+      state.permission = {} ;
       const store = appStore.get();
-      store.user = null;
-      store.permission = {};
+      store.user.currentUser = null;
+      store.user.permission = {};
       appStore.set(store);
+      localStorage.removeItem(appConfig.storage.store);
+      localStorage.removeItem(appConfig.storage.accessToken);
+      // localStorage.removeItem("userData")
     },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const userSliceActions = userSlice.actions;
+export const { setUser, setPermission, logout, login, forgetPassword, updateForgetPassword } = userSlice.actions;
+
+// Other code such as selectors can use the imported `RootState` type
+export const selectCount = (state: RootState) => state.user.currentUser;
 
 export default userSlice.reducer;
