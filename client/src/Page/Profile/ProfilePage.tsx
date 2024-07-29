@@ -1,15 +1,35 @@
 import { useLazyQuery } from "@apollo/client";
 import { LoadingOverlay, TextInput } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
-import { AdminProfile } from "interfaces/interfaces";
+import { AdminProfile, Permissions } from "interfaces/interfaces";
 import React, { useEffect, useState } from "react";
 import { GetUser } from "query/profile/getUserAccount";
 import { toast } from "react-toastify";
 import ChangePassword from "./component/ChangePassword";
 import ProfileForm from "./component/ProfileForm";
+import { useDispatch } from "react-redux";
+import { GetPermission } from "query/getPermission";
+import { setPermission } from "Lib/Store/User/User.Slice";
 
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<AdminProfile>();
+  const dispatch = useDispatch();
+
+  const [fetchPermissions, {  data:permissionsData }] = useLazyQuery<{ getpermissions: Permissions }>(
+    GetPermission,
+    {
+      fetchPolicy: "network-only", 
+      onCompleted: (d) => {
+        dispatch(setPermission(d.getpermissions));
+      },
+    }
+  );
+  
+useEffect(() => {
+    if (permissionsData) {
+      console.log("Permissions data:", permissionsData);
+    }
+  }, [ permissionsData]);
 
   const [getCurrentUser, { loading, refetch }] = useLazyQuery(GetUser, {
     onError: (err) => {
@@ -36,7 +56,8 @@ export default function ProfilePage() {
   useEffect(() => {
     getCurrentUser();
     refetch();
-  }, [getCurrentUser, refetch]);
+    fetchPermissions()
+  }, [getCurrentUser, refetch, fetchPermissions]);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">

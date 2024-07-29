@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { PasswordInput, TextInput } from "@mantine/core";
 import { LOGIN_MUTATION } from "query/loginMutation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUser } from "Lib/Store/User/User";
+import { setPermission, setUser } from "Lib/Store/User/User.Slice";
+import { GetPermission } from "query/getPermission";
+import { Permissions } from "interfaces/interfaces";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [loginUserInput, setLoginUserInput] = useState({
     email: "",
     password: "",
@@ -30,23 +31,41 @@ export default function LoginPage() {
       });
     };
 
+  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{ getpermissions: Permissions }>(
+    GetPermission,
+    {
+      fetchPolicy: "network-only", 
+      onCompleted: (d) => {
+        dispatch(setPermission(d.getpermissions));
+      },
+    }
+  );
+  
+useEffect(() => {
+    if (permissionsData) {
+      console.log("Permissions data:", permissionsData);
+    }
+  }, [ permissionsData]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       const { data } = await login({
         variables: { loginUserInput },
       });
-
       dispatch(setUser(data.login.user));
+      await fetchPermissions(); 
       localStorage.setItem("userData", JSON.stringify(data.login));
-
+  
       if (data?.login.access_token) {
         navigate(`${routes.dashboard.profile.path}`);
       }
     } catch (error: any) {
+      console.error("Error during login:", error.message);
       toast.error(error.message);
     }
   };
+  
 
   return (
     <div

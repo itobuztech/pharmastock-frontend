@@ -22,6 +22,7 @@ const documents = {
     "\n  mutation UpdateItemCategory(\n    $updateItemCategoryInput: UpdateItemCategoryInput!\n  ) {\n    updateItemCategory(updateItemCategoryInput: $updateItemCategoryInput) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.UpdateItemCategoryDocument,
     "\n  mutation ForgotPassword($forgotPasswordInput: ForgotPasswordInput!) {\n    forgotPassword(forgotPasswordInput: $forgotPasswordInput) {\n      token\n    }\n  }\n": types.ForgotPasswordDocument,
     "\n  mutation ValidateForgotPassword(\n    $forgotPasswordInput: ForgotPasswordConfirmationInput!\n  ) {\n    validateForgotPassword(forgotPasswordInput: $forgotPasswordInput) {\n      message\n    }\n  }\n": types.ValidateForgotPasswordDocument,
+    "\n  query getPermissions {\n    getpermissions \n  }\n": types.GetPermissionsDocument,
     "\n  mutation CreateItem($createItemInput: CreateItemInput!) {\n    createItem(createItemInput: $createItemInput) {\n      Category {\n        createdAt\n        id\n        name\n        updatedAt\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.CreateItemDocument,
     "\n  mutation ItemDelete($deleteItemInput: DeleteItemInput!) {\n    deleteItem(deleteItemInput: $deleteItemInput) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.ItemDeleteDocument,
     "\n  query Item($itemId: String!) {\n    item(id: $itemId) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.ItemDocument,
@@ -111,6 +112,10 @@ export function graphql(source: "\n  mutation ForgotPassword($forgotPasswordInpu
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ValidateForgotPassword(\n    $forgotPasswordInput: ForgotPasswordConfirmationInput!\n  ) {\n    validateForgotPassword(forgotPasswordInput: $forgotPasswordInput) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation ValidateForgotPassword(\n    $forgotPasswordInput: ForgotPasswordConfirmationInput!\n  ) {\n    validateForgotPassword(forgotPasswordInput: $forgotPasswordInput) {\n      message\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getPermissions {\n    getpermissions \n  }\n"): (typeof documents)["\n  query getPermissions {\n    getpermissions \n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
