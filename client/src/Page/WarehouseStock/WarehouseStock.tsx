@@ -177,6 +177,7 @@ export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildC
           setActivePage={setActivePage}
           totalCount={totalCount}
           warehouseStocksList={warehouseStocksList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

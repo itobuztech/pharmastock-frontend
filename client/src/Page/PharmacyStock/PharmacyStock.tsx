@@ -120,6 +120,7 @@ export default function PharmacyStock({ handleUserPermissions }:Readonly<ChildCo
           setActivePage={setActivePage}
           totalCount={totalCount}
           pharmaciesStockList={pharmacyStocksList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 
@@ -135,6 +136,7 @@ export default function PharmacyStock({ handleUserPermissions }:Readonly<ChildCo
           setNewPharmacyStockList={setNewPharmacyStockList}
           close={close}
           refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

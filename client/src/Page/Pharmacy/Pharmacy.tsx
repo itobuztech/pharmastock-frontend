@@ -166,6 +166,7 @@ export default function Pharmacy({ handleUserPermissions }:Readonly<ChildCompone
           pharmacyList={pharmacyList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

@@ -12,12 +12,13 @@ import PharmacyStockTable from "Page/PharmacyStock/components/PharmacyStockTable
 import { GetPharmacyStocksByPharmacy } from "query/pharmacyStock/pharmacyStocksByPharmacy";
 import { toast } from "react-toastify";
 import {
+  ChildComponentProps,
   CreatePharmacyStocksByPharmacy,
   PharmacyStocksByPharmacy,
 } from "interfaces/interfaces";
 import EmptyList from "Components/EmptyList";
 
-export default function PharmacyDetails() {
+export default function PharmacyDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
@@ -123,6 +124,7 @@ export default function PharmacyDetails() {
             setActivePage={setActivePage}
             totalCount={totalCount}
             pharmaciesStockList={pharmacyStocksList}
+            handleUserPermissions={handleUserPermissions}
           />
         )}
       </div>
@@ -140,6 +142,7 @@ export default function PharmacyDetails() {
           close={close}
           refetchItem={pharmacyRefetch}
           setNewPharmacyStockList={setNewPharmacyStockList}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

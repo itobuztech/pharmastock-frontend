@@ -5,8 +5,9 @@ import { useQuery } from "@apollo/client";
 import { GetPharmacyStockDetails } from "query/pharmacyStock/pharmacyStockDetails";
 import { useParams } from "react-router-dom";
 import { PharmacyStock } from "gql/graphql";
+import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function PharmacyStockDetails() {
+export default function PharmacyStockDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const { id } = useParams();
 
   const { data: pharmacyStockDetails, refetch } = useQuery<{
@@ -32,6 +33,7 @@ export default function PharmacyStockDetails() {
           pharmacyStockDetails={pharmacyStockDetails?.PharmacyStock}
           id={id}
           refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
     </section>

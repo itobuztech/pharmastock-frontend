@@ -182,6 +182,7 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserModal={handleUserModal}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

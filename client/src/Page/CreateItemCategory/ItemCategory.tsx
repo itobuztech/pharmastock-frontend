@@ -170,6 +170,7 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
           itemCategoryList={itemCategoryList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

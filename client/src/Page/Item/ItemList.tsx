@@ -153,6 +153,7 @@ export default function ItemList({ handleUserPermissions }:Readonly<ChildCompone
           handleDelete={handleDelete}
           totalCount={totalCount}
           setActivePage={setActivePage}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

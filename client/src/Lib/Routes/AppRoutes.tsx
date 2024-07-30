@@ -94,7 +94,7 @@ export default function AppRoutes() {
                 <Route index element={<OrganizationsPage handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                   path={routes.dashboard.organizationDetails.path}
-                  element={<OrganizationDetails />}
+                  element={<OrganizationDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -111,7 +111,7 @@ export default function AppRoutes() {
                 <Route index element={<PharmacyPage handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                   path={routes.dashboard.pharmacyDetails.path}
-                  element={<PharmacyDetails />}
+                  element={<PharmacyDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -128,7 +128,7 @@ export default function AppRoutes() {
                 <Route index element={<ItemCategory handleUserPermissions={handleUserPermissions} />} />
                 <Route
                   path={routes.dashboard.createItemCategoryDetails.path}
-                  element={<ItemCategoryDetails />}
+                  element={<ItemCategoryDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -145,7 +145,7 @@ export default function AppRoutes() {
                 <Route index element={<Warehouse handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                   path={routes.dashboard.warehouseDetails.path}
-                  element={<WarehouseDetails />}
+                  element={<WarehouseDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -162,7 +162,7 @@ export default function AppRoutes() {
                 <Route index element={<ItemList handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                   path={routes.dashboard.itemDetails.path}
-                  element={<ItemDetails />}
+                  element={<ItemDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -179,7 +179,7 @@ export default function AppRoutes() {
                 <Route index element={<WarehouseStock handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                   path={routes.dashboard.warehouseStockDetails.path}
-                  element={<WarehouseStockDetails />}
+                  element={<WarehouseStockDetails handleUserPermissions={handleUserPermissions}/>}
                 />
               </Route>
             </Route>
@@ -193,7 +193,7 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<UserList/>} />
+                <Route index element={<UserList handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                 path={routes.dashboard.userDetails.path}
                 element={<UserDetails />}
@@ -213,7 +213,7 @@ export default function AppRoutes() {
                 <Route index element={<PharmacyStock handleUserPermissions={handleUserPermissions}/>} />
                 <Route
                 path={routes.dashboard.pharmacyStockDetails.path}
-                element={<PharmacyStockDetails />}
+                element={<PharmacyStockDetails handleUserPermissions={handleUserPermissions}/>}
               />
               </Route>
             </Route>

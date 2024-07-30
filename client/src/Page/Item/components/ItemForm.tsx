@@ -6,7 +6,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { Item } from "interfaces/interfaces";
+import { Item, Permissions } from "interfaces/interfaces";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import { GetItemUpdate } from "query/item/itemUpdate";
 import { useNavigate } from "react-router-dom";
 import useItemCatList from "Lib/customHooks/useItemCategoryList";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ItemForm({
   close,
@@ -27,7 +29,8 @@ export default function ItemForm({
   itemDetail,
   setNewItemList,
   refetchItem,
-}: {
+  handleUserPermissions
+}: Readonly<{
   close?: () => void;
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,10 +38,15 @@ export default function ItemForm({
   itemDetail?: { item: Item };
   setNewItemList?: React.Dispatch<React.SetStateAction<undefined>>;
   refetchItem: () => void;
-}) {
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}>) {
   const navigate = useNavigate();
   const selectItemCatList = useItemCatList();
-
+  const permission = useAppSelector(state => state.user.permission)
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -226,7 +234,7 @@ export default function ItemForm({
             >
               Cancel
             </Button>
-            {editForm ? (
+            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)? (
               <ButtonComponent type="submit" loading={updateLoading}>
                 Update
               </ButtonComponent>

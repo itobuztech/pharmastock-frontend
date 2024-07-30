@@ -164,6 +164,7 @@ export default function Warehouse({ handleUserPermissions }:Readonly<ChildCompon
           warehouseList={warehouseList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 
