@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
-import { ItemLists, Items } from "interfaces/interfaces";
+import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GetItemLists } from "query/item/itemList";
 import ConfirmationModal from "Components/ConfirmationModal";
@@ -12,8 +12,10 @@ import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemList() {
+export default function ItemList({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [itemList, setItemList] = useState<Items>();
   const [totalCount, setTotalCount] = useState(1);
@@ -26,7 +28,7 @@ export default function ItemList() {
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
-
+  const permission = useAppSelector((state) => state.user.permission);
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
     {
@@ -122,7 +124,7 @@ export default function ItemList() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Items"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Items"
       />
@@ -151,6 +153,7 @@ export default function ItemList() {
           handleDelete={handleDelete}
           totalCount={totalCount}
           setActivePage={setActivePage}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

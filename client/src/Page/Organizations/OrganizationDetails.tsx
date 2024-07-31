@@ -5,8 +5,9 @@ import { useParams } from "react-router-dom";
 import { Organization } from "gql/graphql";
 import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
+import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function OrganizationDetails() {
+export default function OrganizationDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const { orgId } = useParams();
   const [editForm, setEditForm] = useState(false);
 
@@ -33,6 +34,7 @@ export default function OrganizationDetails() {
           orgId={orgId}
           refetchItem={refetch}
           orgDetails={orgDetails}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
     </section>

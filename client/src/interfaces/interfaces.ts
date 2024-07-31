@@ -1,3 +1,5 @@
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+
 export interface SignupUserInput {
   username: string;
   name: string;
@@ -127,6 +129,14 @@ export interface CreatePharmacyResponse {
     organizationId: string;
     updatedAt: string;
   };
+}
+
+export interface ChildComponentProps {
+  handleUserPermissions: (
+    permission:Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }
 
 export interface OrganizationList {

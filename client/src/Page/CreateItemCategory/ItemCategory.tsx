@@ -6,15 +6,20 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { CreateItemCategoryInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import { GetItemCategoryList } from "query/category/categoryList";
-import { CreateItemCategories, ItemCategories } from "interfaces/interfaces";
+import { ChildComponentProps, CreateItemCategories, ItemCategories } from "interfaces/interfaces";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { CategoryItemDelete } from "query/category/categoryDelete";
 import ItemCategoryTable from "./components/ItemCategoryTable";
 import ItemCategoryForm from "./components/ItemCategoryForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemCategory() {
+export default function ItemCategory({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [activePage, setActivePage] = useState(1);
   const [itemCategoryList, setItemCategoryList] = useState<ItemCategories>();
@@ -28,6 +33,7 @@ export default function ItemCategory() {
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
+  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
@@ -46,6 +52,9 @@ export default function ItemCategory() {
         }
       },
     });
+
+    const hasPermission = handleUserPermissions( permission,USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+      USER_PERMISSION_CAPABILITIES.CREATE);
 
   /* ====== Category Delete Query ====== */
   const [deleteCategory] = useMutation(CategoryItemDelete, {
@@ -130,7 +139,7 @@ export default function ItemCategory() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Category"
-        showCreateButton={true}
+        showCreateButton={hasPermission}
         onClick={open}
         buttonText="Add Category"
       />
@@ -161,6 +170,7 @@ export default function ItemCategory() {
           itemCategoryList={itemCategoryList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

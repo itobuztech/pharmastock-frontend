@@ -14,6 +14,9 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ItemCategoryUpdate } from "query/category/categoryUpdate";
+import { Permissions } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ItemCategoryForm({
   editForm,
@@ -23,7 +26,8 @@ export default function ItemCategoryForm({
   refetchItemCategory,
   categoryItem,
   setNewCategoryList,
-}: {
+  handleUserPermissions
+}: Readonly<{
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
   catId?: string;
@@ -33,9 +37,14 @@ export default function ItemCategoryForm({
   setNewCategoryList?: React.Dispatch<
     React.SetStateAction<CreateItemCategoryInput | undefined>
   >;
-}) {
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}>) {
   const navigate = useNavigate();
-
+  const permission = useAppSelector(state => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -132,7 +141,7 @@ export default function ItemCategoryForm({
               Cancel
             </Button>
 
-            {editForm ? (
+            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)? (
               <ButtonComponent type="submit" loading={updateLoading}>
                 Update
               </ButtonComponent>

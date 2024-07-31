@@ -1,9 +1,23 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { Items } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Items, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+interface ItemTableProps {
+  activePage: number;
+  itemList: Items | undefined;
+  handleDelete: (itemId: string) => void;
+  totalCount: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function ItemTable({
   activePage,
@@ -11,13 +25,8 @@ export default function ItemTable({
   handleDelete,
   totalCount,
   setActivePage,
-}: {
-  activePage: number;
-  itemList: Items | undefined;
-  handleDelete: (itemId: string) => void;
-  totalCount: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-}) {
+  handleUserPermissions
+}: Readonly<ItemTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(itemId: string) {
@@ -40,6 +49,7 @@ export default function ItemTable({
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
           showDeleteModal={true}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>
