@@ -3,10 +3,10 @@ import PageHeader from "Components/PageHeader";
 import { useQuery } from "@apollo/client";
 import { GetItemDetails } from "query/item/itemDetails";
 import { useParams } from "react-router-dom";
-import { Item } from "interfaces/interfaces";
+import { ChildComponentProps, Item } from "interfaces/interfaces";
 import ItemForm from "./components/ItemForm";
 
-export default function ItemDetails() {
+export default function ItemDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
 
@@ -34,6 +34,7 @@ export default function ItemDetails() {
           itemId={id}
           itemDetail={itemDetails}
           refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
     </section>

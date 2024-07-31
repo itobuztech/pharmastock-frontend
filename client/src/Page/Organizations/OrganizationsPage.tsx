@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
+  ChildComponentProps,
   createOrganizationInput,
   OrganizationList,
   SelectOrgItem,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { DeleteOrganization } from "query/organization/organizationDelete";
@@ -17,8 +18,10 @@ import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
 import UserCreateForm from "Page/User/components/UserCreateForm";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function OrganizationsPage() {
+export default function OrganizationsPage ({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
   const [newOrgList, setNewOrgList] = useState<createOrganizationInput>();
@@ -37,6 +40,7 @@ export default function OrganizationsPage() {
 
   const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
     useDisclosure(false);
+  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Delete Org Query ====== */
   const [deleteOrganization] = useMutation(DeleteOrganization, {
@@ -129,7 +133,7 @@ export default function OrganizationsPage() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     organizationList({
       variables: {
         pagination: true,
@@ -140,23 +144,24 @@ export default function OrganizationsPage() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Organization"
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
@@ -178,6 +183,7 @@ export default function OrganizationsPage() {
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserModal={handleUserModal}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

@@ -1,9 +1,23 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { Warehouses } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Permissions, Warehouses } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+interface WarehouseListTableProps {
+  activePage: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  warehouseList?: Warehouses;
+  handleDelete: (id: string) => void;
+  totalCount: number;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function WarehouseListTable({
   activePage,
@@ -11,13 +25,8 @@ export default function WarehouseListTable({
   warehouseList,
   handleDelete,
   totalCount,
-}: {
-  activePage: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  warehouseList?: Warehouses;
-  handleDelete: (id: string) => void;
-  totalCount: number;
-}) {
+  handleUserPermissions
+}: Readonly<WarehouseListTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
@@ -38,6 +47,7 @@ export default function WarehouseListTable({
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
           showDeleteModal={true}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>

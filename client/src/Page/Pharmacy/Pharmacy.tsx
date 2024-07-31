@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Pharmacies } from "interfaces/interfaces";
+import { ChildComponentProps, Pharmacies } from "interfaces/interfaces";
 import { GetPharmacyList } from "query/pharmacy/pharmacyList";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { CreatePharmacyInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import ConfirmationModal from "Components/ConfirmationModal";
@@ -13,8 +13,10 @@ import PharmacyTable from "./components/PharmacyTable";
 import PharmacyForm from "./components/PharmacyForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function Pharmacy() {
+export default function Pharmacy({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
   const [activePage, setActivePage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
@@ -27,7 +29,7 @@ export default function Pharmacy() {
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
-
+  const permission = useAppSelector((state) => state.user.permission);
   /* ====== Pharmacy List Query ====== */
   const [fetchPharmacyList, { refetch, loading }] = useLazyQuery<Pharmacies>(
     GetPharmacyList,
@@ -116,7 +118,7 @@ export default function Pharmacy() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchPharmacyList({
       variables: {
         pagination: true,
@@ -127,23 +129,24 @@ export default function Pharmacy() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy List"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Pharmacy"
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
@@ -164,6 +167,7 @@ export default function Pharmacy() {
           pharmacyList={pharmacyList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

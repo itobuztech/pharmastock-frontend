@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CreateItemCategoryInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import { GetItemCategoryList } from "query/category/categoryList";
-import { CreateItemCategories, ItemCategories } from "interfaces/interfaces";
+import { ChildComponentProps, CreateItemCategories, ItemCategories } from "interfaces/interfaces";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { CategoryItemDelete } from "query/category/categoryDelete";
 import ItemCategoryTable from "./components/ItemCategoryTable";
 import ItemCategoryForm from "./components/ItemCategoryForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemCategory() {
+export default function ItemCategory({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [activePage, setActivePage] = useState(1);
   const [itemCategoryList, setItemCategoryList] = useState<ItemCategories>();
@@ -28,6 +33,7 @@ export default function ItemCategory() {
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
+  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
@@ -46,6 +52,9 @@ export default function ItemCategory() {
         }
       },
     });
+
+    const hasPermission = handleUserPermissions( permission,USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+      USER_PERMISSION_CAPABILITIES.CREATE);
 
   /* ====== Category Delete Query ====== */
   const [deleteCategory] = useMutation(CategoryItemDelete, {
@@ -113,7 +122,7 @@ export default function ItemCategory() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchItemCategoryList({
       variables: {
         pagination: true,
@@ -124,23 +133,24 @@ export default function ItemCategory() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Category"
-        showCreateButton={true}
+        showCreateButton={hasPermission}
         onClick={open}
         buttonText="Add Category"
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
@@ -161,6 +171,7 @@ export default function ItemCategory() {
           itemCategoryList={itemCategoryList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

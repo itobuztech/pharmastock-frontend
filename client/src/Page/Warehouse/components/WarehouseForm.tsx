@@ -14,6 +14,9 @@ import { CreateWarehouse } from "query/warehouse/warehouseCreate";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { GetWarehouseUpdate } from "query/warehouse/warehouseUpdate";
+import { Permissions } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function WarehouseForm({
   close,
@@ -24,7 +27,8 @@ export default function WarehouseForm({
   refetchWarehouse,
   setNewWarehouseList,
   selectOrgItem,
-}: {
+  handleUserPermissions
+}: Readonly<{
   close?: () => void;
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,9 +42,14 @@ export default function WarehouseForm({
         label: string;
       }[]
     | undefined;
-}) {
+    handleUserPermissions: (
+      permission: Permissions,
+      field: USER_PERMISSION_FIELDS,
+      capabilities: USER_PERMISSION_CAPABILITIES
+    ) => boolean;
+}>) {
   const navigate = useNavigate();
-
+  const permission = useAppSelector(state => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -183,7 +192,7 @@ export default function WarehouseForm({
               Cancel
             </Button>
 
-            {editForm ? (
+            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)?  (
               <ButtonComponent type="submit" loading={updateLoading}>
                 Update
               </ButtonComponent>

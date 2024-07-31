@@ -1,22 +1,31 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import { format, parseISO } from "date-fns";
-import { PharmacyStocks } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Permissions, PharmacyStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+interface PharmacyStockTableProps {
+  activePage: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  pharmaciesStockList?: PharmacyStocks;
+  totalCount: number;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function PharmacyStockTable({
   activePage,
   setActivePage,
   pharmaciesStockList,
   totalCount,
-}: {
-  activePage: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  pharmaciesStockList?: PharmacyStocks;
-  totalCount: number;
-}) {
+  handleUserPermissions
+}: Readonly<PharmacyStockTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
@@ -37,6 +46,7 @@ export default function PharmacyStockTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           showDeleteModal={false}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>
