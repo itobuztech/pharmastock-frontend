@@ -32,7 +32,7 @@ export default function OrganizationsPage() {
   ] = useDisclosure(false);
   const [deleteOrgId, setDeleteOrgId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
-  const [selectItem, setSelectItem] = useState<SelectOrgItem>();
+  const [selectOrgItem, setSelectOrgItem] = useState<SelectOrgItem>();
   const [searchInput, setSearchInput] = useState("");
 
   const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
@@ -121,7 +121,7 @@ export default function OrganizationsPage() {
   /* ====== Handle Add User Modal Function ====== */
   function handleUserModal(orgId: string) {
     const selectItem = organization?.organizations.find((x) => x.id === orgId);
-    setSelectItem({
+    setSelectOrgItem({
       value: selectItem?.id,
       label: selectItem?.name,
     });
@@ -201,7 +201,7 @@ export default function OrganizationsPage() {
           zIndex: 500,
         }}
       >
-        <UserCreateForm selectItem={selectItem} close={userModalClose} />
+        <UserCreateForm selectItem={selectOrgItem} close={userModalClose} />
       </Modal>
 
       {/* ==== Create Organization Modal ==== */}

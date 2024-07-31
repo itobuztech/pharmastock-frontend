@@ -39,7 +39,10 @@ export default function UserCreateForm({
     resolver: yupResolver(schema),
   });
 
-  const roleArray = Object.values(UserRole);
+  const roleArray = Object.values(UserRole).map((role) => ({
+    value: role,
+    label: role,
+  }));
 
   const [addUsers, { loading: addLoading }] = useMutation(CreateUser, {
     onError: (err) => {
@@ -94,6 +97,7 @@ export default function UserCreateForm({
                 onChange={(value) => field.onChange(value)}
                 value={field.value}
                 error={errors.role && "This field is required"}
+                comboboxProps={{ zIndex: 700 }}
               />
             )}
           />
@@ -105,7 +109,6 @@ export default function UserCreateForm({
             label="User Name"
             placeholder="User Name"
             {...register("username")}
-            // disabled={!editForm}
             error={errors.username && "This field is required"}
           />
         </div>
@@ -114,7 +117,6 @@ export default function UserCreateForm({
             label="Name"
             placeholder="Name"
             {...register("name")}
-            // disabled={!editForm}
             error={errors.name && "This field is required"}
           />
         </div>
@@ -126,7 +128,6 @@ export default function UserCreateForm({
             label="Email"
             placeholder="Email"
             {...register("email")}
-            // disabled={!editForm}
             error={errors.email && "This field is required"}
           />
         </div>
@@ -135,7 +136,6 @@ export default function UserCreateForm({
             label="Password"
             placeholder="Password"
             {...register("password")}
-            // disabled={!editForm}
             error={errors.password && "This field is required"}
           />
         </div>
