@@ -1,9 +1,24 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
-import { OrganizationList } from "interfaces/interfaces";
+import { OrganizationList, Permissions } from "interfaces/interfaces";
 import React from "react";
 import ActionPopover from "Components/ActionPopover";
 import { useNavigate } from "react-router-dom";
 import routes from "Lib/Routes/Routes";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+
+interface OrganizationTableProps {
+  activePage: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  organizationList?: OrganizationList["organizations"];
+  handleDelete: (id: string) => void;
+  handleUserModal(id: string): void;
+  totalCount: number;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function OrganizationTable({
   activePage,
@@ -12,14 +27,8 @@ export default function OrganizationTable({
   handleDelete,
   handleUserModal,
   totalCount,
-}: {
-  activePage: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  organizationList?: OrganizationList["organizations"];
-  handleDelete: (id: string) => void;
-  handleUserModal(id: string): void;
-  totalCount: number;
-}) {
+  handleUserPermissions
+}: Readonly<OrganizationTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
@@ -42,6 +51,7 @@ export default function OrganizationTable({
           handleUserModal={() => handleUserModal(org.id)}
           showUserModal={true}
           showDeleteModal={true}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>

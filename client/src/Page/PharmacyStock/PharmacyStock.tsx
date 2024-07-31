@@ -4,15 +4,17 @@ import PageHeader from "Components/PageHeader";
 import { useLazyQuery } from "@apollo/client";
 import { PharmacyStocksList } from "query/pharmacyStock/pharmacyStocksList";
 import { toast } from "react-toastify";
-import { PharmacyStocks, PharmacyStocksLists } from "interfaces/interfaces";
+import { ChildComponentProps, PharmacyStocks, PharmacyStocksLists } from "interfaces/interfaces";
 import { useDisclosure } from "@mantine/hooks";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import EmptyList from "Components/EmptyList";
 import { CreatePharmacyStockInput } from "gql/graphql";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function PharmacyStock() {
+export default function PharmacyStock({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [pharmacyStocksList, setPharmacyStocksList] =
     useState<PharmacyStocks>();
   const [activePage, setActivePage] = useState(1);
@@ -21,7 +23,7 @@ export default function PharmacyStock() {
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
   const [searchInput, setSearchInput] = useState("");
-
+  const permission = useAppSelector((state) => state.user.permission);
   /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
     useLazyQuery<PharmacyStocksLists>(PharmacyStocksList, {
@@ -88,7 +90,7 @@ export default function PharmacyStock() {
       <PageHeader
         title="Pharmacy Stocks"
         showBackButton={true}
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         buttonText="Add Pharmacy Stock"
         onClick={open}
       />
@@ -118,6 +120,7 @@ export default function PharmacyStock() {
           setActivePage={setActivePage}
           totalCount={totalCount}
           pharmaciesStockList={pharmacyStocksList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 
@@ -133,6 +136,7 @@ export default function PharmacyStock() {
           setNewPharmacyStockList={setNewPharmacyStockList}
           close={close}
           refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

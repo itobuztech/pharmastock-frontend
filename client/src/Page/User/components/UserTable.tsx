@@ -1,21 +1,30 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { Users } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Permissions, Users } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+interface UserTableProps {
+  activePage: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  userList?: Users;
+  totalCount: number;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function UserTable({
   activePage,
   setActivePage,
   userList,
   totalCount,
-}: {
-  activePage: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  userList?: Users;
-  totalCount: number;
-}) {
+  handleUserPermissions
+}: Readonly<UserTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
@@ -36,6 +45,7 @@ export default function UserTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => console.log(item.id)}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>

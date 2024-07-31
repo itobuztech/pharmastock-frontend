@@ -3,13 +3,13 @@ import PageHeader from "Components/PageHeader";
 import { useLazyQuery } from "@apollo/client";
 import { GetUsersList } from "query/user/usersList";
 import { toast } from "react-toastify";
-import { UserData, Users } from "interfaces/interfaces";
+import { ChildComponentProps, UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
 import { LoadingOverlay } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 
-export default function UserList() {
+export default function UserList({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [userList, setUserList] = useState<Users>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
@@ -92,6 +92,7 @@ export default function UserList() {
           setActivePage={setActivePage}
           totalCount={totalCount}
           userList={userList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
     </section>

@@ -1,22 +1,31 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import { format, parseISO } from "date-fns";
-import { WarehouseStocks } from "interfaces/interfaces";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Permissions, WarehouseStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+interface WarehouseStockTableProps {
+  activePage: number;
+  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  warehouseStocksList?: WarehouseStocks;
+  totalCount: number;
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
 
 export default function WarehouseStockTable({
   activePage,
   setActivePage,
   warehouseStocksList,
   totalCount,
-}: {
-  activePage: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-  warehouseStocksList?: WarehouseStocks;
-  totalCount: number;
-}) {
+  handleUserPermissions
+}: Readonly<WarehouseStockTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
@@ -39,6 +48,7 @@ export default function WarehouseStockTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           showDeleteModal={false}
+          handleUserPermissions={handleUserPermissions}
         />
       </Table.Td>
     </Table.Tr>
