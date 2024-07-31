@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { PasswordInput, TextInput } from "@mantine/core";
+import { PasswordInput, TextInput, Text, Flex } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import { UserById } from "interfaces/interfaces";
 import { GetUserDetails } from "query/user/userDetails";
@@ -26,63 +26,65 @@ export default function UserDetails() {
         showCreateButton={false}
       />
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
-        <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex-1">
-            <div className="flex-1">
-              <TextInput
-                label="Organization"
-                placeholder="Organization"
-                disabled
-                value={userDetails?.userById.organization?.name}
-              />
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex-1">
-              <TextInput
-                label="Role"
-                placeholder="Role"
-                disabled
-                value={userDetails?.userById.role.userType}
-              />
-            </div>
-          </div>
+        <div className="mb-4">
+          <Flex
+            gap="md"
+            justify="flex-start"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <Text fw={700}>Organization: </Text>
+            <Text>{userDetails?.userById.organization?.name}</Text>
+          </Flex>
         </div>
-        <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex-1">
-            <TextInput
-              label="User Name"
-              placeholder="User Name"
-              value={userDetails?.userById.username}
-              disabled
-            />
-          </div>
-          <div className="flex-1">
-            <TextInput
-              label="Name"
-              placeholder="Name"
-              value={userDetails?.userById.name}
-              disabled
-            />
-          </div>
+        <div className="mb-4">
+          <Flex
+            gap="md"
+            justify="flex-start"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <Text fw={700}>Role: </Text>
+            <Text>{userDetails?.userById.role.userType}</Text>
+          </Flex>
         </div>
-        <div className="flex flex-wrap gap-4 mb-4">
-          <div className="flex-1">
-            <TextInput
-              label="Email"
-              placeholder="Email"
-              value={userDetails?.userById.email}
-              disabled
-            />
-          </div>
-          <div className="flex-1">
-            <PasswordInput
-              label="Password"
-              placeholder="Password"
-              value="********"
-              disabled
-            />
-          </div>
+        <div className="mb-4">
+          <Flex
+            gap="md"
+            justify="flex-start"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <Text fw={700}>User Name:</Text>
+            <Text>{userDetails?.userById.username}</Text>
+          </Flex>
+        </div>
+        <div className="mb-4">
+          <Flex
+            gap="md"
+            justify="flex-start"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <Text fw={700}>Name:</Text>
+            <Text>{userDetails?.userById.name}</Text>
+          </Flex>
+        </div>
+        <div className="mb-4">
+          <Flex
+            gap="md"
+            justify="flex-start"
+            align="flex-start"
+            direction="row"
+            wrap="wrap"
+          >
+            <Text fw={700}>Email:</Text>
+            <Text>{userDetails?.userById.email}</Text>
+          </Flex>
         </div>
       </div>
     </section>

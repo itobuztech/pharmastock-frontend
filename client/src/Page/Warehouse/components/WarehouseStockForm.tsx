@@ -7,6 +7,7 @@ import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   CreateWarehouses,
+  Permissions,
   Warehouses,
   WarehouseStock,
 } from "interfaces/interfaces";
@@ -18,19 +19,13 @@ import DatePicker from "react-datepicker";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useItemList from "Lib/customHooks/useItemList";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function WarehouseStockForm({
-  close,
-  warehouseDetails,
-  selectOrgItem,
-  id,
-  selectWarehouseItem,
-  warehouseStockDetails,
-  refetchItem,
-  setNewWarehouseStockList,
-  warehouseStockId,
-  list,
-}: {
+interface WarehouseStockFormProps {
   close?: () => void;
   warehouseDetails?: { warehouse: Warehouse };
   selectOrgItem?:
@@ -53,7 +48,26 @@ export default function WarehouseStockForm({
   >;
   warehouseStockId?: string;
   list?: boolean;
-}) {
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}
+
+export default function WarehouseStockForm({
+  close,
+  warehouseDetails,
+  selectOrgItem,
+  id,
+  selectWarehouseItem,
+  warehouseStockDetails,
+  refetchItem,
+  setNewWarehouseStockList,
+  warehouseStockId,
+  list,
+  handleUserPermissions,
+}: Readonly<WarehouseStockFormProps>) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [sku, setSku] = useState<string>();
@@ -61,6 +75,7 @@ export default function WarehouseStockForm({
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const selectOrgItems = useOrganizationList();
   const selectItem = useItemList();
+  const permission = useAppSelector((state) => state.user.permission);
 
   const schema = yup
     .object({
@@ -364,11 +379,17 @@ export default function WarehouseStockForm({
         </div>
       </div>
 
-      <div className="text-right mt-6">
-        <ButtonComponent type="submit">
-          {warehouseStockId ? "Update" : "Create"}
-        </ButtonComponent>
-      </div>
+      {handleUserPermissions(
+        permission,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT,
+        USER_PERMISSION_CAPABILITIES.EDIT
+      ) && (
+        <div className="text-right mt-6">
+          <ButtonComponent type="submit">
+            {warehouseStockId ? "Update" : "Create"}
+          </ButtonComponent>
+        </div>
+      )}
     </form>
   );
 }

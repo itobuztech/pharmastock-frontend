@@ -1,6 +1,7 @@
 import React from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { useForm } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "../../../Lib/Store/hooks";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { TextInput } from "@mantine/core";
@@ -12,6 +13,7 @@ import { ForgotPasswordInput } from "gql/graphql";
 import { useMutation } from "@apollo/client";
 import { ForgotPassword } from "query/forgotPassword/forgotPassword";
 import { toast } from "react-toastify";
+import { forgetPassword } from "Lib/Store/User/User.Slice";
 
 export default function ForgetPassWord() {
   const { height } = useViewportSize();

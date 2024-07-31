@@ -3,7 +3,7 @@ import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
-import { WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
+import { ChildComponentProps, WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
@@ -15,15 +15,17 @@ import { CreateWarehouseStockInput } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function WarehouseStock() {
+export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
-
+  const permission = useAppSelector((state) => state.user.permission);
   const selectOrganizationItem = useOrganizationList();
   const selectWarehouseItem = useWarehouseItems();
 
@@ -149,7 +151,7 @@ export default function WarehouseStock() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse Stocks"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Warehouse Stock"
       />
@@ -175,6 +177,7 @@ export default function WarehouseStock() {
           setActivePage={setActivePage}
           totalCount={totalCount}
           warehouseStocksList={warehouseStocksList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

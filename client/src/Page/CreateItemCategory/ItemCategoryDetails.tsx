@@ -5,8 +5,9 @@ import { useQuery } from "@apollo/client";
 import { GetCategoryItem } from "query/category/categoryItem";
 import { ItemCategory } from "gql/graphql";
 import ItemCategoryForm from "./components/ItemCategoryForm";
+import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function ItemCategoryDetails() {
+export default function ItemCategoryDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
 
@@ -33,6 +34,7 @@ export default function ItemCategoryDetails() {
           catId={id}
           refetchItemCategory={refetch}
           categoryItem={categoryItem}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
     </section>

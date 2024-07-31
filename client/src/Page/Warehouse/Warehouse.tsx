@@ -5,7 +5,7 @@ import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
+import { ChildComponentProps, CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import { DeleteWarehouse } from "query/warehouse/warehouseDelete";
 import ConfirmationModal from "Components/ConfirmationModal";
 import WarehouseListTable from "./components/WarehouseListTable";
@@ -13,8 +13,10 @@ import WarehouseForm from "./components/WarehouseForm";
 import EmptyList from "Components/EmptyList";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function Warehouse() {
+export default function Warehouse({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const [totalCount, setTotalCount] = useState(1);
@@ -26,7 +28,7 @@ export default function Warehouse() {
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const selectOrganizationItem = useOrganizationList();
-
+  const permission = useAppSelector((state) => state.user.permission);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
 
@@ -136,7 +138,7 @@ export default function Warehouse() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Warehouse"
       />
@@ -163,6 +165,7 @@ export default function Warehouse() {
           warehouseList={warehouseList}
           handleDelete={handleDelete}
           totalCount={totalCount}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

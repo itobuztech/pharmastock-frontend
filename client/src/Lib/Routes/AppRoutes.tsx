@@ -5,6 +5,9 @@ import routes from "./Routes";
 import { AuthRoutes } from "Page/Auth/AuthRoutes";
 import OrganizationDetails from "Page/Organizations/OrganizationDetails";
 import PharmacyDetails from "Page/Pharmacy/PharmacyDetails";
+import PermissionGuard from "Lib/Guards/PermissionGuard";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { Permissions } from "interfaces/interfaces";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
@@ -50,6 +53,14 @@ const PharmacyStockDetails = React.lazy(
 const UserList = React.lazy(() => import("Page/User/UserList"));
 const UserDetails = React.lazy(() => import("Page/User/UserDetails"));
 
+const handleUserPermissions = (
+  permission:Permissions,
+  field: USER_PERMISSION_FIELDS,
+  capabilities : USER_PERMISSION_CAPABILITIES
+): boolean => {
+  return permission[field]?.CAPABILITIES?.[capabilities] !== null;
+};
+
 export default function AppRoutes() {
   return (
     <div>
@@ -71,113 +82,140 @@ export default function AppRoutes() {
               />
             </Route>
 
-            <Route
-              path={routes.dashboard.organizations.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.organizations.path}
-                element={<OrganizationsPage />}
-              />
-              <Route
-                path={routes.dashboard.organizationDetails.path}
-                element={<OrganizationDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<OrganizationsPage handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  path={routes.dashboard.organizationDetails.path}
+                  element={<OrganizationDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.pharmacies.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.pharmacies.path}
-                element={<PharmacyPage />}
-              />
-              <Route
-                path={routes.dashboard.pharmacyDetails.path}
-                element={<PharmacyDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<PharmacyPage handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  path={routes.dashboard.pharmacyDetails.path}
+                  element={<PharmacyDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.createItemCategory.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.createItemCategory.path}
-                element={<ItemCategory />}
-              />
-              <Route
-                path={routes.dashboard.createItemCategoryDetails.path}
-                element={<ItemCategoryDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<ItemCategory handleUserPermissions={handleUserPermissions} />} />
+                <Route
+                  path={routes.dashboard.createItemCategoryDetails.path}
+                  element={<ItemCategoryDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.warehouseList.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.warehouseList.path}
-                element={<Warehouse />}
-              />
-              <Route
-                path={routes.dashboard.warehouseDetails.path}
-                element={<WarehouseDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<Warehouse handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  path={routes.dashboard.warehouseDetails.path}
+                  element={<WarehouseDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.itemList.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.itemList.path}
-                element={<ItemList />}
-              />
-              <Route
-                path={routes.dashboard.itemDetails.path}
-                element={<ItemDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.ITEM_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<ItemList handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  path={routes.dashboard.itemDetails.path}
+                  element={<ItemDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.warehouseStock.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.warehouseStock.path}
-                element={<WarehouseStock />}
-              />
-              <Route
-                path={routes.dashboard.warehouseStockDetails.path}
-                element={<WarehouseStockDetails />}
-              />
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.STOCK_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<WarehouseStock handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  path={routes.dashboard.warehouseStockDetails.path}
+                  element={<WarehouseStockDetails handleUserPermissions={handleUserPermissions}/>}
+                />
+              </Route>
             </Route>
 
-            <Route path={routes.dashboard.users.path} element={<AuthGuard />}>
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.users.path}
-                element={<UserList />}
-              />
-              <Route
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.USER_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<UserList handleUserPermissions={handleUserPermissions}/>} />
+                <Route
                 path={routes.dashboard.userDetails.path}
                 element={<UserDetails />}
               />
+              </Route>
             </Route>
 
-            <Route
-              path={routes.dashboard.pharmaciesStock.path}
-              element={<AuthGuard />}
-            >
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
                 path={routes.dashboard.pharmaciesStock.path}
-                element={<PharmacyStock />}
-              />
-              <Route
+                element={
+                  <PermissionGuard
+                    field={USER_PERMISSION_FIELDS.STOCK_MANAGEMENT}
+                  />
+                }
+              >
+                <Route index element={<PharmacyStock handleUserPermissions={handleUserPermissions}/>} />
+                <Route
                 path={routes.dashboard.pharmacyStockDetails.path}
-                element={<PharmacyStockDetails />}
+                element={<PharmacyStockDetails handleUserPermissions={handleUserPermissions}/>}
               />
+              </Route>
             </Route>
 
             <Route path="*" element={<NotFound />} />

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  ChildComponentProps,
   createOrganizationInput,
   OrganizationList,
   SelectOrgItem,
@@ -17,8 +18,10 @@ import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
 import UserCreateForm from "Page/User/components/UserCreateForm";
 import Search from "Components/Search";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function OrganizationsPage() {
+export default function OrganizationsPage ({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
   const [newOrgList, setNewOrgList] = useState<createOrganizationInput>();
@@ -37,6 +40,7 @@ export default function OrganizationsPage() {
 
   const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
     useDisclosure(false);
+  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Delete Org Query ====== */
   const [deleteOrganization] = useMutation(DeleteOrganization, {
@@ -151,7 +155,7 @@ export default function OrganizationsPage() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Organization"
       />
@@ -179,6 +183,7 @@ export default function OrganizationsPage() {
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserModal={handleUserModal}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 

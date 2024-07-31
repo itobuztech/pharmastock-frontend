@@ -10,6 +10,7 @@ import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import {
+  ChildComponentProps,
   CreateWarehouseStocksByWarehouse,
   WarehouseStocksByWarehouse,
 } from "interfaces/interfaces";
@@ -17,8 +18,10 @@ import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksBy
 import { toast } from "react-toastify";
 import EmptyList from "Components/EmptyList";
 import WarehouseStockTable from "Page/WarehouseStock/components/WarehouseStockTable";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function WarehouseDetails() {
+export default function WarehouseDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
@@ -29,7 +32,7 @@ export default function WarehouseDetails() {
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
-
+  const permission = useAppSelector(state => state.user.permission)
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
   }>(GetWarehouseDetails, {
@@ -90,7 +93,7 @@ export default function WarehouseDetails() {
       <PageHeader
         title="Warehouse Details"
         showBackButton={true}
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
         onClick={open}
         buttonText="Add Warehouse Stock"
       />
@@ -103,6 +106,7 @@ export default function WarehouseDetails() {
           refetchWarehouse={refetch}
           warehouseDetails={warehouseDetails}
           selectOrgItem={selectOrganizationItem}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
 
@@ -123,6 +127,7 @@ export default function WarehouseDetails() {
             setActivePage={setActivePage}
             totalCount={totalCount}
             warehouseStocksList={warehouseStocksList}
+            handleUserPermissions={handleUserPermissions}
             // handleDelete={handleDelete}
           />
         )}
@@ -142,6 +147,7 @@ export default function WarehouseDetails() {
           close={close}
           refetchItem={refetchWarehouseStock}
           setNewWarehouseStockList={setNewWarehouseStockList}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

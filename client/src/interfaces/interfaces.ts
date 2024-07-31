@@ -1,3 +1,5 @@
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+
 export interface SignupUserInput {
   username: string;
   name: string;
@@ -34,6 +36,34 @@ export interface LoginResponseWithToken {
     };
   };
 }
+
+interface Capabilities {
+  VIEW: number | null;
+  CREATE?: number | null;
+  EDIT?: number | null;
+  DELETE?: number | null;
+}
+
+interface PermissionItem {
+  LABEL: string;
+  ORDER: number;
+  CAPABILITIES: Capabilities;
+}
+
+export interface Permissions {
+  PROFILE?: PermissionItem;
+  USER_MANAGEMENT?: PermissionItem;
+  USER_PERMISSION?: PermissionItem;
+  ORGANIZATION_MANAGEMENT?: PermissionItem;
+  WAREHOUSE_MANAGEMENT?: PermissionItem;
+  ITEM_CATEGORIES_MANAGEMENT?: PermissionItem;
+  ITEM_MANAGEMENT?: PermissionItem;
+  STOCK_MANAGEMENT?: PermissionItem;
+  PHARMACY_MANAGEMENT?: PermissionItem;
+  STAFF_MANAGEMENT?: PermissionItem;
+}
+
+
 
 export interface PaginationArgsInput {
   skip: number;
@@ -99,6 +129,14 @@ export interface CreatePharmacyResponse {
     organizationId: string;
     updatedAt: string;
   };
+}
+
+export interface ChildComponentProps {
+  handleUserPermissions: (
+    permission:Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }
 
 export interface OrganizationList {
