@@ -20716,6 +20716,7 @@ __metadata:
     react-dom: ^18.2.0
     react-hook-form: ^7.32.1
     react-icons: ^4.10.1
+    react-range: ^1.9.2
     react-redux: ^8.0.2
     react-router-dom: ^6.17.0
     react-select-country-list: ^2.2.3
@@ -21187,6 +21188,16 @@ __metadata:
     react: ^15.5.x || ^16.x || ^17.x || ^18.x
     react-dom: ^15.5.x || ^16.x || ^17.x || ^18.x
   checksum: 6c5727bfcd6e0ecc1fd83ac865a23382b7784aa54e3d0cb67520a53f9d02a1d312b9493d150fb8fa2f912b6cf4b23b228809c2513096ef6e53c7553162c048c7
+  languageName: node
+  linkType: hard
+
+"react-range@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "react-range@npm:1.9.2"
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 8cd6f2160f597b6ce75a4b0cbb4bdba5ce11a481e2d482da308fc9723a876323e01759d8f8c5d6066b812e579bebd82f4bab62a2e049eb48ed3e9ceefc0e8ecc
   languageName: node
   linkType: hard
 

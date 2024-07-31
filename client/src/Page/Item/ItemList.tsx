@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { LoadingOverlay, Modal, Select, Slider, Text } from "@mantine/core";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -12,6 +12,7 @@ import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import { BaseUnit } from "gql/graphql";
 
 export default function ItemList() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -26,6 +27,11 @@ export default function ItemList() {
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
+  const [wholeSaleRange, setWholeSaleRange] = useState<number>(0);
+
+  const [value, setValue] = useState(50);
+  const [endValue, setEndValue] = useState(50);
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -48,6 +54,11 @@ export default function ItemList() {
   useEffect(() => {
     fetchItemList({
       variables: {
+        filterArgs: {
+          baseUnit: selectedUnit,
+          mrpBaseUnit: null,
+          wholeSalePrice: null,
+        },
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
@@ -56,7 +67,7 @@ export default function ItemList() {
         searchText: "",
       },
     });
-  }, [activePage, fetchItemList, refetch, searchInput]);
+  }, [activePage, fetchItemList, refetch, searchInput, selectedUnit]);
 
   useEffect(() => {
     if (newItemList) {
@@ -108,6 +119,11 @@ export default function ItemList() {
   function handleSearch() {
     fetchItemList({
       variables: {
+        filterArgs: {
+          baseUnit: selectedUnit,
+          mrpBaseUnit: null,
+          wholeSalePrice: null,
+        },
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
@@ -117,6 +133,56 @@ export default function ItemList() {
       },
     });
   }
+
+  const baseUnitArray = Object.values(BaseUnit);
+
+  const handleUnitChange = (unit: string | null) => {
+    setSelectedUnit(unit);
+    fetchItemList({
+      variables: {
+        filterArgs: {
+          baseUnit: selectedUnit,
+          mrpBaseUnit: null,
+          wholeSalePrice: null,
+        },
+        pagination: true,
+        paginationArgs: {
+          skip: activePage * 10 - 10,
+          take: 10,
+        },
+        searchText: "",
+      },
+    });
+  };
+
+  const changeRange = useDebouncedCallback(
+    async ({ price }: { price: number }) => {
+      setWholeSaleRange(price);
+      fetchItemList({
+        variables: {
+          filterArgs: {
+            baseUnit: selectedUnit,
+            mrpBaseUnit: null,
+            wholeSalePrice:
+              wholeSaleRange !== undefined ? wholeSaleRange : null,
+          },
+          pagination: true,
+          paginationArgs: {
+            skip: activePage * 10 - 10,
+            take: 10,
+          },
+          searchText: "",
+        },
+      });
+    },
+    500
+  );
+
+  const maxWholesalePrice = itemList?.items.reduce((maxPrice, item) => {
+    return item.wholesalePrice > maxPrice ? item.wholesalePrice : maxPrice;
+  }, 0);
+
+  console.log({ maxWholesalePrice });
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -133,6 +199,75 @@ export default function ItemList() {
         searchInput={searchInput}
         setSearchInput={setSearchInput}
       />
+
+      <Select
+        label="Unit"
+        placeholder="Unit"
+        data={baseUnitArray}
+        onChange={handleUnitChange}
+        value={selectedUnit}
+        disabled={!editForm}
+      />
+
+      <Slider
+        value={value}
+        max={maxWholesalePrice}
+        onChange={setValue}
+        onChangeEnd={(val) => changeRange({ price: val })}
+      />
+
+      {/* <Slider
+        value={wholeSaleRange}
+        min={0}
+        max={maxWholesalePrice}
+        onChange={(val) => changeRange({ price: val })}
+      /> */}
+
+      {/* <Range
+        step={0.1}
+        min={0}
+        max={100}
+        values={wholeSaleRange}
+        onChange={(val) => changeRange({ price: val })}
+        renderTrack={({ props, children }) => (
+          <div
+            {...props}
+            style={{
+              ...props.style,
+              height: "6px",
+              width: "100%",
+              backgroundColor: "#ccc",
+            }}
+          >
+            {children}
+          </div>
+        )}
+        renderThumb={({ props }) => (
+          <div
+            {...props}
+            key={props.key}
+            style={{
+              ...props.style,
+              height: "42px",
+              width: "42px",
+              backgroundColor: "#999",
+            }}
+          />
+        )}
+      /> */}
+
+      {/* <Checkbox.Group
+        label="Select your favorite frameworks/libraries"
+        description="This is anonymous"
+        // value={selectedUnit}
+        // onChange={handleUnitChange}
+      >
+        <Group mt="xs">
+          {baseUnitArray.map((item) => (
+            <Checkbox value={item} label={item} />
+          ))}
+        </Group>
+      </Checkbox.Group> */}
 
       {loading && (
         <LoadingOverlay
