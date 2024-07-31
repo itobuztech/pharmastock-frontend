@@ -7,7 +7,7 @@ import {
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { DeleteOrganization } from "query/organization/organizationDelete";
@@ -133,7 +133,7 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     organizationList({
       variables: {
         pagination: true,
@@ -144,7 +144,12 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -156,11 +161,7 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (

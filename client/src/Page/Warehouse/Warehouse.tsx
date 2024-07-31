@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
 import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
@@ -116,7 +116,7 @@ export default function Warehouse({ handleUserPermissions }:Readonly<ChildCompon
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchWarehouseList({
       variables: {
         pagination: true,
@@ -127,7 +127,12 @@ export default function Warehouse({ handleUserPermissions }:Readonly<ChildCompon
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -139,11 +144,7 @@ export default function Warehouse({ handleUserPermissions }:Readonly<ChildCompon
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (

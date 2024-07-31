@@ -210,15 +210,16 @@ export default function OrganizationForm({
             >
               Cancel
             </Button>
-            {editForm && handleUserPermissions(permission , USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)? (
+            {editForm && handleUserPermissions(permission , USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT) && (<>
               <ButtonComponent type="submit" loading={updateOrgLoading}>
                 Update
               </ButtonComponent>
-            ) : (
+            
               <Button type="button" onClick={() => setEditForm(true)}>
                 Edit
               </Button>
-            )}
+            </>)
+            }
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addOrgLoading}>

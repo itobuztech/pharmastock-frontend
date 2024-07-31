@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CreateItemCategoryInput } from "gql/graphql";
@@ -122,7 +122,7 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchItemCategoryList({
       variables: {
         pagination: true,
@@ -133,7 +133,12 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -145,11 +150,7 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
