@@ -29,6 +29,13 @@ export const messagesData = {
       required: "Organization is a required field",
     },
   },
+  forgotPassword: {
+    email: {
+      required: "Email is a required field",
+      matches: "Email must be a valid email",
+      email: "Email must be a valid email",
+    },
+  },
 };
 
 export default messagesData;
