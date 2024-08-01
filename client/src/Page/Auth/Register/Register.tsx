@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
@@ -56,7 +56,8 @@ export default function Register() {
     handleSubmit,
     control,
     reset,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -87,6 +88,13 @@ export default function Register() {
     toast.success(response.data.signup.success);
     reset();
   };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      setValue("orgId", "");
+      setValue("role", "");
+    }
+  }, [isSubmitSuccessful, setValue]);
 
   return (
     <div
