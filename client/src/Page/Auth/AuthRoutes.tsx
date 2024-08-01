@@ -7,7 +7,7 @@ const ForgetPassword = React.lazy(
   () => import("../../Page/Auth/ForgetPassword/ForgetPassword")
 );
 const RegisterPage = React.lazy(
-  () => import("../../Page/Auth/Register/RegisterPage")
+  () => import("../../Page/Auth/Register/Register")
 );
 const LogoutPage = React.lazy(() => import("../../Page/Auth/LogoutPage"));
 const VerifyUser = React.lazy(() => import("./VerifyUser/VerifyUser"));
