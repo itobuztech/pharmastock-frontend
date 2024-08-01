@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Select, TextInput } from "@mantine/core";
+import { Button, Select, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import {
   CreatePharmacyInput,
@@ -8,6 +8,8 @@ import {
   Pharmacy,
 } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import messagesData from "Lib/messages";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import { PharmacyCreate } from "query/pharmacy/pharmacyCreate";
 import { GetUpdatePharmacy } from "query/pharmacy/pharmacyUpdate";
 import React, { useEffect } from "react";
@@ -40,13 +42,33 @@ export default function PharmacyForm({
 
   const schema = yup
     .object({
-      name: yup.string().required(),
-      location: yup.string().required(),
+      name: yup
+        .string()
+        .required(messagesData.pharmacy.name.required)
+        .max(100, messagesData.pharmacy.name.max)
+        .trim(messagesData.pharmacy.name.trim)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.pharmacy.name.matches),
+      location: yup
+        .string()
+        .required(messagesData.pharmacy.location.required)
+        .trim(messagesData.pharmacy.location.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.pharmacy.location.matches),
       contactInfo: yup
         .string()
-        .matches(/^\d+$/, "Contact info must be a number")
-        .required("Contact info is required"),
-      organizationId: yup.string().required(),
+        .test("contactInfo", messagesData.pharmacy.contact.matches, (value) => {
+          if (!value) {
+            return true;
+          }
+          return isValidPhoneNumber(value, {
+            defaultCountry: "IN",
+            defaultCallingCode: "+91",
+          });
+        })
+        .required(messagesData.pharmacy.contact.required),
+      organizationId: yup
+        .string()
+        .required(messagesData.pharmacy.organization.required)
+        .trim(messagesData.pharmacy.organization.required),
     })
     .required();
 
@@ -126,27 +148,36 @@ export default function PharmacyForm({
           label="Name"
           placeholder="Name"
           {...register("name")}
-          error={errors.name && "This field is required"}
           disabled={!editForm}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.name?.message}
+        </Text>
       </div>
       <div className="mb-4">
         <TextInput
           label="Contact Info"
           placeholder="Contact Info"
           {...register("contactInfo")}
-          error={errors.contactInfo && "This field is required"}
+          withAsterisk
           disabled={!editForm}
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.contactInfo?.message}
+        </Text>
       </div>
       <div className="mb-4">
         <TextInput
           label="Location"
           placeholder="Location"
           {...register("location")}
-          error={errors.location && "This field is required"}
+          withAsterisk
           disabled={!editForm}
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.location?.message}
+        </Text>
       </div>
       <div className="mb-4">
         <Controller
@@ -159,20 +190,19 @@ export default function PharmacyForm({
               placeholder="Select Organization"
               data={selectOrganizationItem}
               maxDropdownHeight={300}
-              // value={field.value}
-              // onChange={(value) => field.onChange(value)}
-              // value={values ? field.value : null}
-              // onChange={(_value, option) => setValues(option)}
               onChange={(value) => {
                 field.onChange(value);
                 setValue("organizationId", value!);
               }}
               value={field.value}
-              error={errors.organizationId && "This field is required"}
+              withAsterisk
               disabled={!editForm}
             />
           )}
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.organizationId?.message}
+        </Text>
       </div>
       <div className="text-right">
         {id ? (
