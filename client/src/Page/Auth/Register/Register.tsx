@@ -19,18 +19,21 @@ import useOrganizationList from "Lib/customHooks/useOrganizationList";
 export default function Register() {
   const { height } = useViewportSize();
   const selectOrgItem = useOrganizationList();
+  // const [value, setValue] = useState<string | null>("");
 
   const schema = yup
     .object({
       username: yup
         .string()
         .required(messagesData.register.userName.required)
+        .min(3, messagesData.register.userName.min)
         .max(100, messagesData.register.userName.max)
         .trim(messagesData.register.userName.trim)
         .matches(/^[a-zA-Z0-9]*$/, messagesData.register.userName.matches),
       name: yup
         .string()
         .required(messagesData.register.name.required)
+        .min(3, messagesData.register.name.min)
         .max(100, messagesData.register.name.max)
         .trim(messagesData.register.name.trim)
         .matches(/^[a-zA-Z0-9]*$/, messagesData.register.name.matches),
@@ -57,7 +60,7 @@ export default function Register() {
     control,
     reset,
     setValue,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -82,19 +85,13 @@ export default function Register() {
   });
 
   const onSubmit = async (data: CreateUserInput) => {
-    const response = await signUp({
-      variables: { signupUserInput: data },
-    });
-    toast.success(response.data.signup.success);
+    console.log({ data });
+    // const response = await signUp({
+    //   variables: { signupUserInput: data },
+    // });
+    // toast.success(response.data.signup.success);
     reset();
   };
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      setValue("orgId", "");
-      setValue("role", "");
-    }
-  }, [isSubmitSuccessful, setValue]);
 
   return (
     <div
@@ -141,23 +138,18 @@ export default function Register() {
             </div>
 
             <div className="mb-4">
-              <Controller
-                name="orgId"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label="Select Organization"
-                    placeholder="Select Organization"
-                    data={selectOrgItem}
-                    maxDropdownHeight={250}
-                    withAsterisk
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
-                    value={field.value}
-                  />
-                )}
+              <Select
+                label="Select Organization"
+                {...register("orgId")}
+                placeholder="Select Organization"
+                data={selectOrgItem}
+                maxDropdownHeight={250}
+                withAsterisk
+                onChange={(value) => {
+                  if (value) {
+                    setValue("orgId", value);
+                  }
+                }}
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.orgId?.message}
@@ -165,19 +157,17 @@ export default function Register() {
             </div>
 
             <div className="mb-4">
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    label="Select Role"
-                    placeholder="Select Role"
-                    data={roleArray}
-                    onChange={(value) => field.onChange(value)}
-                    value={field.value}
-                    withAsterisk
-                  />
-                )}
+              <Select
+                label="Select Role"
+                placeholder="Select Role"
+                data={roleArray}
+                {...register("role")}
+                onChange={(value) => {
+                  if (value) {
+                    setValue("role", value);
+                  }
+                }}
+                withAsterisk
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.role?.message}
