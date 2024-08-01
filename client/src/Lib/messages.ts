@@ -104,6 +104,7 @@ export const messagesData = {
       required: "Name is a required field",
       max: "Name must be at most 100 characters",
       trim: "Name is a required field",
+      min: "Name must be at least 3 characters",
       matches: "Name not contain any special character",
     },
     baseUnit: {
