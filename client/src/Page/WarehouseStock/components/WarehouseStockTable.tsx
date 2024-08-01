@@ -1,7 +1,10 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import { format, parseISO } from "date-fns";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { Permissions, WarehouseStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
@@ -13,7 +16,7 @@ interface WarehouseStockTableProps {
   warehouseStocksList?: WarehouseStocks;
   totalCount: number;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -24,7 +27,7 @@ export default function WarehouseStockTable({
   setActivePage,
   warehouseStocksList,
   totalCount,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<WarehouseStockTableProps>) {
   const navigate = useNavigate();
 
