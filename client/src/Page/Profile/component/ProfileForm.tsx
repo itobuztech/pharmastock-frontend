@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Space, TextInput } from "@mantine/core";
+import { Button, Space, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,18 +9,36 @@ import { GetProfileUpdate } from "query/profile/profileUpdate";
 import { toast } from "react-toastify";
 import { UpdateProfileInput } from "gql/graphql";
 import { AdminProfile } from "interfaces/interfaces";
+import messagesData from "Lib/messages";
 
 export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
   const [editForm, setEditForm] = useState(false);
 
   const schema = yup
     .object({
-      name: yup.string().required(),
-      username: yup.string().required(),
+      name: yup
+        .string()
+        .required(messagesData.profile.name.required)
+        .min(3, messagesData.profile.name.min)
+        .max(100, messagesData.profile.name.max)
+        .trim(messagesData.profile.name.trim)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.profile.name.matches),
+      username: yup
+        .string()
+        .required(messagesData.profile.userName.required)
+        .min(3, messagesData.profile.userName.min)
+        .max(100, messagesData.profile.userName.max)
+        .trim(messagesData.profile.userName.trim),
     })
     .required();
 
-  const { register, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -55,21 +73,44 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
       <Space h="md" />
       <h2 className="m-0 mb-4">Personal info</h2>
       <div className="mb-4">
-        <TextInput label="Name" {...register("name")} disabled={!editForm} />
+        <TextInput
+          label="Name"
+          {...register("name")}
+          disabled={!editForm}
+          withAsterisk
+        />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.name?.message}
+        </Text>
       </div>
       <div className="mb-4">
         <TextInput
           label="Username"
           {...register("username")}
           disabled={!editForm}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.username?.message}
+        </Text>
       </div>
 
       <div className="text-right">
         {editForm ? (
-          <ButtonComponent type="submit" loading={updateProfileLoader}>
-            Update
-          </ButtonComponent>
+          <div className="flex flex-wrap gap-4 justify-end">
+            <Button
+              type="button"
+              onClick={() => {
+                setEditForm(false);
+              }}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            <ButtonComponent type="submit" loading={updateProfileLoader}>
+              Update
+            </ButtonComponent>
+          </div>
         ) : (
           <Button type="button" onClick={() => setEditForm(true)}>
             Edit

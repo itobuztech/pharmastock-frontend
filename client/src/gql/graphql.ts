@@ -33,6 +33,23 @@ export enum BaseUnit {
   Vial = 'VIAL'
 }
 
+export type ClearancePharmacyStock = {
+  __typename?: 'ClearancePharmacyStock';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['String']['output'];
+  item?: Maybe<Item>;
+  pharmacyStock?: Maybe<PharmacyStock>;
+  qty: Scalars['Int']['output'];
+  status: Scalars['Boolean']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ClearancePharmacyStockInput = {
+  itemId: Scalars['String']['input'];
+  pharmacyId: Scalars['String']['input'];
+  qty: Scalars['Float']['input'];
+};
+
 export type CreateItemCategoryInput = {
   name: Scalars['String']['input'];
   parentCategoryId?: InputMaybe<Scalars['String']['input']>;
@@ -62,7 +79,6 @@ export type CreatePharmacyInput = {
   contactInfo?: InputMaybe<Scalars['String']['input']>;
   location: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreatePharmacyStockInput = {
@@ -82,6 +98,7 @@ export type CreateStockMovementInput = {
   batchName?: InputMaybe<Scalars['String']['input']>;
   expiry?: InputMaybe<Scalars['DateTime']['input']>;
   itemId: Scalars['String']['input'];
+  pharmacyStockClearanceId?: InputMaybe<Scalars['String']['input']>;
   pharmacyStockId?: InputMaybe<Scalars['String']['input']>;
   qty: Scalars['Float']['input'];
   warehouseStockId?: InputMaybe<Scalars['String']['input']>;
@@ -91,7 +108,7 @@ export type CreateUserInput = {
   confirmationToken?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
-  orgId?: InputMaybe<Scalars['String']['input']>;
+  orgId: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role: UserRole;
   username: Scalars['String']['input'];
@@ -102,14 +119,12 @@ export type CreateWarehouseInput = {
   area: Scalars['String']['input'];
   location: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateWarehouseStockInput = {
   batchName: Scalars['String']['input'];
   expiry: Scalars['DateTime']['input'];
   itemId: Scalars['String']['input'];
-  organizationId: Scalars['String']['input'];
   qty: Scalars['Float']['input'];
   sku: Scalars['String']['input'];
   stockLevel?: InputMaybe<Scalars['String']['input']>;
@@ -120,10 +135,6 @@ export type CreateWarehouseStockInput = {
 };
 
 export type DeleteItemCategoryInput = {
-  id: Scalars['String']['input'];
-};
-
-export type DeleteItemCategoryRelationInput = {
   id: Scalars['String']['input'];
 };
 
@@ -155,6 +166,24 @@ export type DeleteWarehouseStockInput = {
   id: Scalars['String']['input'];
 };
 
+export type FilterItemInputs = {
+  baseUnit?: InputMaybe<BaseUnit>;
+  mrpBaseUnit?: InputMaybe<Scalars['Int']['input']>;
+  wholeSalePrice?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type FilterPharmacyStockInputs = {
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  qty?: InputMaybe<Scalars['Int']['input']>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type FilterWarehouseStockInputs = {
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  qty?: InputMaybe<Scalars['Int']['input']>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
 export type ForgotPasswordConfirmationInput = {
   confirmationToken: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
@@ -184,6 +213,7 @@ export type Item = {
   instructions: Scalars['String']['output'];
   mrpBaseUnit?: Maybe<Scalars['Float']['output']>;
   name: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   wholesalePrice?: Maybe<Scalars['Float']['output']>;
 };
@@ -195,6 +225,7 @@ export type ItemCategory = {
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
   parentCategory?: Maybe<ItemParentCategory>;
+  status: Scalars['Boolean']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -203,15 +234,6 @@ export type ItemCategoryRel = {
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type ItemCategoryRelation = {
-  __typename?: 'ItemCategoryRelation';
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['String']['output'];
-  itemCategoryId: Scalars['String']['output'];
-  itemId: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -237,6 +259,7 @@ export type LoginUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  clearancePharmacyStock: Array<ClearancePharmacyStock>;
   create: User;
   createItem: Item;
   createItemCategory: ItemCategory;
@@ -248,7 +271,6 @@ export type Mutation = {
   createWarehouseStock: WarehouseStock;
   deleteItem: Item;
   deleteItemCategory: ItemCategory;
-  deleteItemCategoryRelation: ItemCategoryRelation;
   deleteOrganization: Organization;
   deletePharmacy: Pharmacy;
   deletePharmacyStock: PharmacyStock;
@@ -268,6 +290,11 @@ export type Mutation = {
   updateWarehouse: Warehouse;
   updateprofile: Scalars['Boolean']['output'];
   validateForgotPassword: ValidateForgotPasswordResponse;
+};
+
+
+export type MutationClearancePharmacyStockArgs = {
+  clearancePharmacyStockInput: Array<ClearancePharmacyStockInput>;
 };
 
 
@@ -323,11 +350,6 @@ export type MutationDeleteItemArgs = {
 
 export type MutationDeleteItemCategoryArgs = {
   deleteItemCategoryInput: DeleteItemCategoryInput;
-};
-
-
-export type MutationDeleteItemCategoryRelationArgs = {
-  deleteItemCategoryRelationInput: DeleteItemCategoryRelationInput;
 };
 
 
@@ -436,6 +458,7 @@ export type Organization = {
   description: Scalars['String']['output'];
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -500,6 +523,7 @@ export type Pharmacy = {
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
   organization?: Maybe<Organization>;
+  status: Scalars['Boolean']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -552,6 +576,7 @@ export type QueryPharmacyStockArgs = {
 
 
 export type QueryPharmacyStocksArgs = {
+  filterArgs?: InputMaybe<FilterPharmacyStockInputs>;
   pagination?: InputMaybe<Scalars['Boolean']['input']>;
   paginationArgs?: InputMaybe<PaginationArgs>;
   searchText?: InputMaybe<Scalars['String']['input']>;
@@ -576,6 +601,7 @@ export type QueryItemCategoryArgs = {
 
 
 export type QueryItemsArgs = {
+  filterArgs?: InputMaybe<FilterItemInputs>;
   pagination?: InputMaybe<Scalars['Boolean']['input']>;
   paginationArgs?: InputMaybe<PaginationArgs>;
   searchText?: InputMaybe<Scalars['String']['input']>;
@@ -662,6 +688,7 @@ export type QueryWarehouseStockArgs = {
 
 
 export type QueryWarehouseStocksArgs = {
+  filterArgs?: InputMaybe<FilterWarehouseStockInputs>;
   pagination?: InputMaybe<Scalars['Boolean']['input']>;
   paginationArgs?: InputMaybe<PaginationArgs>;
   searchText?: InputMaybe<Scalars['String']['input']>;
@@ -669,7 +696,10 @@ export type QueryWarehouseStocksArgs = {
 
 
 export type QueryWarehouseStocksByWarehouseArgs = {
+  filterArgs?: InputMaybe<FilterWarehouseStockInputs>;
+  pagination?: InputMaybe<Scalars['Boolean']['input']>;
   paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
   warehouseId: Scalars['String']['input'];
 };
 
@@ -681,6 +711,7 @@ export type QueryWarehousesArgs = {
 };
 
 export type ResetPasswordInput = {
+  confirmPassword: Scalars['String']['input'];
   newPassword: Scalars['String']['input'];
   oldPassword: Scalars['String']['input'];
 };
@@ -703,6 +734,7 @@ export type Sku = {
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['String']['output'];
   sku: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
   stockLevel: Scalars['String']['output'];
   stockStatus?: Maybe<Scalars['String']['output']>;
   stocklevelMax?: Maybe<Scalars['String']['output']>;
@@ -760,7 +792,6 @@ export type UpdatePharmacyInput = {
   id: Scalars['String']['input'];
   location?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProfileInput = {
@@ -774,7 +805,6 @@ export type UpdateWarehouseInput = {
   id: Scalars['String']['input'];
   location?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type User = {
@@ -812,6 +842,7 @@ export type Warehouse = {
   location: Scalars['String']['output'];
   name: Scalars['String']['output'];
   organization?: Maybe<Organization>;
+  status: Scalars['Boolean']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -822,6 +853,7 @@ export type WarehouseStock = {
   finalQty: Scalars['Float']['output'];
   id: Scalars['String']['output'];
   item: Item;
+  status: Scalars['Boolean']['output'];
   totalMrpBaseUnit?: Maybe<Scalars['Float']['output']>;
   totalWholesalePrice?: Maybe<Scalars['Float']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;

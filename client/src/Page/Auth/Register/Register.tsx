@@ -188,7 +188,11 @@ export default function Register() {
 
             <div className="mb-8">
               <div className="relative flex-1">
-                <PasswordStrength control={control} name="password" />
+                <PasswordStrength
+                  control={control}
+                  name="password"
+                  label="Password"
+                />
               </div>
               <Text size="sm" mt={5} c="red.6">
                 {errors.password?.message}

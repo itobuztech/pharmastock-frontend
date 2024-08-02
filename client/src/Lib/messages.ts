@@ -126,6 +126,26 @@ export const messagesData = {
       required: "Category is a required field",
     },
   },
+  profile: {
+    name: {
+      required: "Name is a required field",
+      max: "Name must be at most 100 characters",
+      trim: "Name is a required field",
+      min: "Name must be at least 3 characters",
+      matches: "Name not contain any special character",
+    },
+    userName: {
+      required: "Name is a required field",
+      max: "Name must be at most 100 characters",
+      trim: "Name is a required field",
+      min: "Name must be at least 3 characters",
+    },
+    password: {
+      required: "Password is a required field",
+      newPassword: "New Password is a required field",
+      oldPassword: "Old Password is a required field",
+    },
+  },
 };
 
 export default messagesData;
