@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useViewportSize } from "@mantine/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import PasswordStrength from "./components/PasswordStrength";
 import { UserRole } from "interfaces/interfaces";
 import messagesData from "Lib/messages";
@@ -19,7 +19,6 @@ import useOrganizationList from "Lib/customHooks/useOrganizationList";
 export default function Register() {
   const { height } = useViewportSize();
   const selectOrgItem = useOrganizationList();
-  // const [value, setValue] = useState<string | null>("");
 
   const schema = yup
     .object({
@@ -85,11 +84,10 @@ export default function Register() {
   });
 
   const onSubmit = async (data: CreateUserInput) => {
-    console.log({ data });
-    // const response = await signUp({
-    //   variables: { signupUserInput: data },
-    // });
-    // toast.success(response.data.signup.success);
+    const response = await signUp({
+      variables: { signupUserInput: data },
+    });
+    toast.success(response.data.signup.success);
     reset();
   };
 

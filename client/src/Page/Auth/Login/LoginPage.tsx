@@ -4,13 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import { useViewportSize } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { PasswordInput, TextInput } from "@mantine/core";
+import { PasswordInput, TextInput, Text } from "@mantine/core";
 import { LOGIN_MUTATION } from "query/loginMutation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setPermission, setUser } from "Lib/Store/User/User.Slice";
 import { GetPermission } from "query/getPermission";
 import { Permissions } from "interfaces/interfaces";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import messagesData from "Lib/messages";
+import { LoginUserInput } from "gql/graphql";
 
 export default function LoginPage() {
   const { height } = useViewportSize();
@@ -21,7 +26,34 @@ export default function LoginPage() {
     password: "",
   });
 
-  const [login, { loading: loginLoader }] = useMutation(LOGIN_MUTATION);
+  const schema = yup
+    .object({
+      email: yup
+        .string()
+        .required(messagesData.login.email.required)
+        .email(messagesData.login.email.email)
+        .trim(messagesData.login.email.required)
+        .matches(
+          /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          messagesData.login.email.matches
+        ),
+      password: yup.string().required(messagesData.login.password.required),
+    })
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const [login, { loading: loginLoader }] = useMutation(LOGIN_MUTATION, {
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const handleChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,41 +63,34 @@ export default function LoginPage() {
       });
     };
 
-  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{ getpermissions: Permissions }>(
-    GetPermission,
-    {
-      fetchPolicy: "network-only", 
-      onCompleted: (d) => {
-        dispatch(setPermission(d.getpermissions));
-      },
-    }
-  );
-  
-useEffect(() => {
+  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{
+    getpermissions: Permissions;
+  }>(GetPermission, {
+    fetchPolicy: "network-only",
+    onCompleted: (d) => {
+      dispatch(setPermission(d.getpermissions));
+    },
+  });
+
+  useEffect(() => {
     if (permissionsData) {
       console.log("Permissions data:", permissionsData);
     }
-  }, [ permissionsData]);
+  }, [permissionsData]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      const { data } = await login({
-        variables: { loginUserInput },
-      });
-      dispatch(setUser(data.login.user));
-      await fetchPermissions(); 
-      localStorage.setItem("userData", JSON.stringify(data.login));
-  
-      if (data?.login.access_token) {
-        navigate(`${routes.dashboard.profile.path}`);
-      }
-    } catch (error: any) {
-      console.error("Error during login:", error.message);
-      toast.error(error.message);
+  const onSubmit = async (data: LoginUserInput) => {
+    const response = await login({
+      variables: { loginUserInput: data },
+    });
+    dispatch(setUser(response.data.login.user));
+    await fetchPermissions();
+    localStorage.setItem("userData", JSON.stringify(response.data.login));
+
+    if (response.data?.login.access_token) {
+      navigate(`${routes.dashboard.profile.path}`);
+      toast.success(messagesData.login.successMessage);
     }
   };
-  
 
   return (
     <div
@@ -78,24 +103,32 @@ useEffect(() => {
           Login to your account
         </h3>
         <div className="mt-8">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <TextInput
                 label="Email"
                 placeholder="Email"
                 value={loginUserInput.email}
+                {...register("email")}
                 onChange={handleChange("email")}
-                required
+                withAsterisk
               />
+              <Text size="sm" mt={5} c="red.6">
+                {errors.email?.message}
+              </Text>
             </div>
             <div className="mb-4">
               <PasswordInput
                 label="Password"
                 placeholder="Password"
+                {...register("password")}
                 value={loginUserInput.password}
                 onChange={handleChange("password")}
-                required
+                withAsterisk
               />
+              <Text size="sm" mt={5} c="red.6">
+                {errors.password?.message}
+              </Text>
             </div>
 
             <div className="flex items-center mb-6 mt-4">
