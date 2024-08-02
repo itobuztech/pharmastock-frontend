@@ -15,7 +15,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { GetWarehouseUpdate } from "query/warehouse/warehouseUpdate";
 import { Permissions } from "interfaces/interfaces";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
 export default function WarehouseForm({
@@ -27,7 +30,7 @@ export default function WarehouseForm({
   refetchWarehouse,
   setNewWarehouseList,
   selectOrgItem,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -42,14 +45,14 @@ export default function WarehouseForm({
         label: string;
       }[]
     | undefined;
-    handleUserPermissions: (
-      permission: Permissions,
-      field: USER_PERMISSION_FIELDS,
-      capabilities: USER_PERMISSION_CAPABILITIES
-    ) => boolean;
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }>) {
   const navigate = useNavigate();
-  const permission = useAppSelector(state => state.user.permission);
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -114,7 +117,9 @@ export default function WarehouseForm({
       const response = await createWarehouse({
         variables: { createWarehouseInput: data },
       });
-      setNewWarehouseList(response.data);
+      if (setNewWarehouseList) {
+        setNewWarehouseList(response.data);
+      }
     }
   };
 
@@ -192,14 +197,22 @@ export default function WarehouseForm({
               Cancel
             </Button>
 
-            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)?  (
-              <ButtonComponent type="submit" loading={updateLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent type="submit" loading={updateLoading}>
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (

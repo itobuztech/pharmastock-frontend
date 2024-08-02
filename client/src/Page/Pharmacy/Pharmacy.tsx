@@ -13,10 +13,15 @@ import PharmacyTable from "./components/PharmacyTable";
 import PharmacyForm from "./components/PharmacyForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function Pharmacy({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function Pharmacy({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
   const [activePage, setActivePage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
@@ -140,7 +145,11 @@ export default function Pharmacy({ handleUserPermissions }:Readonly<ChildCompone
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy List"
-        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Pharmacy"
       />
@@ -192,6 +201,7 @@ export default function Pharmacy({ handleUserPermissions }:Readonly<ChildCompone
           setNewPharmacyList={setNewPharmacyList}
           editForm={editForm}
           setEditForm={setEditForm}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

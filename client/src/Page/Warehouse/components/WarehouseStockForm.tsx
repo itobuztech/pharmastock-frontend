@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NumberInput, Select, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -24,6 +24,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import { useNavigate } from "react-router-dom";
 
 interface WarehouseStockFormProps {
   close?: () => void;
@@ -76,6 +77,7 @@ export default function WarehouseStockForm({
   const selectOrgItems = useOrganizationList();
   const selectItem = useItemList();
   const permission = useAppSelector((state) => state.user.permission);
+  const navigate = useNavigate();
 
   const schema = yup
     .object({
@@ -101,20 +103,23 @@ export default function WarehouseStockForm({
     resolver: yupResolver(schema),
   });
 
-  const [createWarehouseStock] = useMutation(WarehouseStockCreate, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: () => {
-      toast.success("Warehouse Stock Created Successfully");
-      if (close) {
-        close();
-      }
-      reset();
-      setQtyAddValue("");
-      refetchItem();
-    },
-  });
+  const [createWarehouseStock, { loading }] = useMutation(
+    WarehouseStockCreate,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: () => {
+        toast.success("Warehouse Stock Created Successfully");
+        if (close) {
+          close();
+        }
+        reset();
+        setQtyAddValue("");
+        refetchItem();
+      },
+    }
+  );
 
   const onSubmit = async (data: CreateWarehouseStockInput) => {
     console.log(data);
@@ -193,6 +198,8 @@ export default function WarehouseStockForm({
         );
     }
   }, [setValue, warehouseStockDetails?.warehouseStock]);
+
+  console.log({ permission });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -379,17 +386,32 @@ export default function WarehouseStockForm({
         </div>
       </div>
 
-      {handleUserPermissions(
-        permission,
-        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT,
-        USER_PERMISSION_CAPABILITIES.EDIT
-      ) && (
-        <div className="text-right mt-6">
-          <ButtonComponent type="submit">
-            {warehouseStockId ? "Update" : "Create"}
+      <div className="text-right">
+        {warehouseStockId ? (
+          <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
+            <Button
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <ButtonComponent type="submit" loading={loading}>
+                Update
+              </ButtonComponent>
+            )}
+          </div>
+        ) : (
+          <ButtonComponent type="submit" loading={loading}>
+            Create
           </ButtonComponent>
-        </div>
-      )}
+        )}
+      </div>
     </form>
   );
 }

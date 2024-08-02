@@ -17,8 +17,15 @@ import {
   PharmacyStocksByPharmacy,
 } from "interfaces/interfaces";
 import EmptyList from "Components/EmptyList";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function PharmacyDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function PharmacyDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
@@ -28,6 +35,7 @@ export default function PharmacyDetails({ handleUserPermissions }:Readonly<Child
     useState<PharmacyStocksByPharmacy>();
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
+  const permission = useAppSelector((state) => state.user.permission);
 
   const { data: pharmacyDetails, refetch } = useQuery<{ pharmacy: Pharmacy }>(
     GetPharmacyDetails,
@@ -91,7 +99,11 @@ export default function PharmacyDetails({ handleUserPermissions }:Readonly<Child
       <PageHeader
         title="Pharmacy Details"
         showBackButton={true}
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Pharmacy Stock"
       />
@@ -104,6 +116,7 @@ export default function PharmacyDetails({ handleUserPermissions }:Readonly<Child
           refetchPharmacyDetails={refetch}
           editForm={editForm}
           setEditForm={setEditForm}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
 

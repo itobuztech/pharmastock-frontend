@@ -7,7 +7,9 @@ import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
 import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function OrganizationDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function OrganizationDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const { orgId } = useParams();
   const [editForm, setEditForm] = useState(false);
 

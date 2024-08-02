@@ -13,7 +13,6 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n": types.SignupDocument,
     "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n": types.CreateItemCategoryDocument,
     "\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n": types.DeleteItemCategoryDocument,
@@ -28,6 +27,7 @@ const documents = {
     "\n  query Item($itemId: String!) {\n    item(id: $itemId) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.ItemDocument,
     "\n  query Items(\n    $pagination: Boolean\n    $paginationArgs: PaginationArgs\n    $searchText: String\n  ) {\n    items(\n      pagination: $pagination\n      paginationArgs: $paginationArgs\n      searchText: $searchText\n    ) {\n      items {\n        baseUnit\n        createdAt\n        hsnCode\n        id\n        instructions\n        mrpBaseUnit\n        updatedAt\n        wholesalePrice\n        name\n        Category {\n          id\n          name\n        }\n      }\n      total\n    }\n  }\n": types.ItemsDocument,
     "\n  mutation UpdateItem($updateItemInput: UpdateItemInput!) {\n    updateItem(updateItemInput: $updateItemInput) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n": types.UpdateItemDocument,
+    "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation CreateOrganization(\n    $createOrganizationInput: CreateOrganizationInput!\n  ) {\n    createOrganization(createOrganizationInput: $createOrganizationInput) {\n      active\n      address\n      city\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n      contact\n    }\n  }\n": types.CreateOrganizationDocument,
     "\n  mutation DeleteOrganization(\n    $deleteOrganizationInput: DeleteOrganizationInput!\n  ) {\n    deleteOrganization(deleteOrganizationInput: $deleteOrganizationInput) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.DeleteOrganizationDocument,
     "\n  query Query($organizationId: String!) {\n    organization(id: $organizationId) {\n      active\n      address\n      city\n      contact\n      country\n      createdAt\n      description\n      id\n      name\n      updatedAt\n    }\n  }\n": types.QueryDocument,
@@ -76,10 +76,6 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -136,6 +132,10 @@ export function graphql(source: "\n  query Items(\n    $pagination: Boolean\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateItem($updateItemInput: UpdateItemInput!) {\n    updateItem(updateItemInput: $updateItemInput) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateItem($updateItemInput: UpdateItemInput!) {\n    updateItem(updateItemInput: $updateItemInput) {\n      Category {\n        id\n        name\n      }\n      baseUnit\n      createdAt\n      hsnCode\n      id\n      instructions\n      mrpBaseUnit\n      updatedAt\n      wholesalePrice\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($loginUserInput: LoginUserInput!) {\n    login(loginUserInput: $loginUserInput) {\n      access_token\n      user {\n        createdAt\n        email\n        id\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

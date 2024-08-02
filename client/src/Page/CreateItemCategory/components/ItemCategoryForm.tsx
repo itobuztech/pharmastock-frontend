@@ -15,7 +15,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ItemCategoryUpdate } from "query/category/categoryUpdate";
 import { Permissions } from "interfaces/interfaces";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ItemCategoryForm({
@@ -26,7 +29,7 @@ export default function ItemCategoryForm({
   refetchItemCategory,
   categoryItem,
   setNewCategoryList,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<{
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,13 +41,13 @@ export default function ItemCategoryForm({
     React.SetStateAction<CreateItemCategoryInput | undefined>
   >;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
 }>) {
   const navigate = useNavigate();
-  const permission = useAppSelector(state => state.user.permission);
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -108,7 +111,9 @@ export default function ItemCategoryForm({
       const response = await createCategory({
         variables: { createItemCategoryInput: data },
       });
-      setNewCategoryList(response.data);
+      if (setNewCategoryList) {
+        setNewCategoryList(response.data);
+      }
     }
   };
 
@@ -140,15 +145,22 @@ export default function ItemCategoryForm({
             >
               Cancel
             </Button>
-
-            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)? (
-              <ButtonComponent type="submit" loading={updateLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent type="submit" loading={updateLoading}>
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (

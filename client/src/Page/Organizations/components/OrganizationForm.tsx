@@ -12,7 +12,10 @@ import ButtonComponent from "Components/Button/ButtonComponent";
 import { UpdateOrganization } from "query/organization/organizationUpdate";
 import { Organization, UpdateOrganizationInput } from "gql/graphql";
 import { useNavigate } from "react-router-dom";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
 export default function OrganizationForm({
@@ -23,7 +26,7 @@ export default function OrganizationForm({
   orgDetails,
   setNewOrgList,
   refetchItem,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -37,7 +40,7 @@ export default function OrganizationForm({
   >;
   refetchItem: () => void;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -113,7 +116,9 @@ export default function OrganizationForm({
       const response = await addOrganization({
         variables: { createOrganizationInput: data as createOrganizationInput },
       });
-      setNewOrgList(response.data);
+      if (setNewOrgList) {
+        setNewOrgList(response.data);
+      }
     }
   };
 
@@ -210,16 +215,23 @@ export default function OrganizationForm({
             >
               Cancel
             </Button>
-            {editForm && handleUserPermissions(permission , USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT) && (<>
-              <ButtonComponent type="submit" loading={updateOrgLoading}>
-                Update
-              </ButtonComponent>
-            
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
-            </>)
-            }
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent type="submit" loading={updateOrgLoading}>
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
+            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addOrgLoading}>

@@ -3,11 +3,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Select, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import {
   CreatePharmacyInput,
   UpdatePharmacyInput,
   Pharmacy,
 } from "gql/graphql";
+import { Permissions } from "interfaces/interfaces";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import { useAppSelector } from "Lib/Store/hooks";
 import { PharmacyCreate } from "query/pharmacy/pharmacyCreate";
 import { GetUpdatePharmacy } from "query/pharmacy/pharmacyUpdate";
 import React, { useEffect } from "react";
@@ -24,6 +30,7 @@ export default function PharmacyForm({
   id,
   editForm,
   setEditForm,
+  handleUserPermissions,
 }: {
   close: () => void;
   setNewPharmacyList?: React.Dispatch<
@@ -34,10 +41,15 @@ export default function PharmacyForm({
   id?: string;
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }) {
   const navigate = useNavigate();
   const selectOrganizationItem = useOrganizationList();
-
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -103,7 +115,9 @@ export default function PharmacyForm({
       const response = await pharmacyCreate({
         variables: { createPharmacyInput: data as CreatePharmacyInput },
       });
-      setNewPharmacyList(response.data);
+      if (setNewPharmacyList) {
+        setNewPharmacyList(response.data);
+      }
     }
   };
 
@@ -159,10 +173,6 @@ export default function PharmacyForm({
               placeholder="Select Organization"
               data={selectOrganizationItem}
               maxDropdownHeight={300}
-              // value={field.value}
-              // onChange={(value) => field.onChange(value)}
-              // value={values ? field.value : null}
-              // onChange={(_value, option) => setValues(option)}
               onChange={(value) => {
                 field.onChange(value);
                 setValue("organizationId", value!);
@@ -184,15 +194,25 @@ export default function PharmacyForm({
             >
               Cancel
             </Button>
-
-            {editForm ? (
-              <ButtonComponent type="submit" loading={updatePharmacyLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent
+                    type="submit"
+                    loading={updatePharmacyLoading}
+                  >
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (
