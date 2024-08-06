@@ -6,14 +6,15 @@ import { AuthRoutes } from "Page/Auth/AuthRoutes";
 import OrganizationDetails from "Page/Organizations/OrganizationDetails";
 import PharmacyDetails from "Page/Pharmacy/PharmacyDetails";
 import PermissionGuard from "Lib/Guards/PermissionGuard";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { Permissions } from "interfaces/interfaces";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
-const RegisterPage = React.lazy(
-  () => import("Page/Auth/Register/RegisterPage")
-);
+const RegisterPage = React.lazy(() => import("Page/Auth/Register/Register"));
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
 const ForgetPassword = React.lazy(
   () => import("Page/Auth/ForgetPassword/ForgetPassword")
@@ -54,9 +55,9 @@ const UserList = React.lazy(() => import("Page/User/UserList"));
 const UserDetails = React.lazy(() => import("Page/User/UserDetails"));
 
 const handleUserPermissions = (
-  permission:Permissions,
+  permission: Permissions,
   field: USER_PERMISSION_FIELDS,
-  capabilities : USER_PERMISSION_CAPABILITIES
+  capabilities: USER_PERMISSION_CAPABILITIES
 ): boolean => {
   return permission[field]?.CAPABILITIES?.[capabilities] !== null;
 };
@@ -91,10 +92,21 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<OrganizationsPage handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  index
+                  element={
+                    <OrganizationsPage
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
                 <Route
                   path={routes.dashboard.organizationDetails.path}
-                  element={<OrganizationDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <OrganizationDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -108,10 +120,21 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<PharmacyPage handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  index
+                  element={
+                    <PharmacyPage
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
                 <Route
                   path={routes.dashboard.pharmacyDetails.path}
-                  element={<PharmacyDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <PharmacyDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -125,10 +148,21 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<ItemCategory handleUserPermissions={handleUserPermissions} />} />
+                <Route
+                  index
+                  element={
+                    <ItemCategory
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
                 <Route
                   path={routes.dashboard.createItemCategoryDetails.path}
-                  element={<ItemCategoryDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <ItemCategoryDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -142,10 +176,19 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<Warehouse handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  index
+                  element={
+                    <Warehouse handleUserPermissions={handleUserPermissions} />
+                  }
+                />
                 <Route
                   path={routes.dashboard.warehouseDetails.path}
-                  element={<WarehouseDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <WarehouseDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -159,10 +202,19 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<ItemList handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  index
+                  element={
+                    <ItemList handleUserPermissions={handleUserPermissions} />
+                  }
+                />
                 <Route
                   path={routes.dashboard.itemDetails.path}
-                  element={<ItemDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <ItemDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -176,10 +228,21 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<WarehouseStock handleUserPermissions={handleUserPermissions}/>} />
+                <Route
+                  index
+                  element={
+                    <WarehouseStock
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
                 <Route
                   path={routes.dashboard.warehouseStockDetails.path}
-                  element={<WarehouseStockDetails handleUserPermissions={handleUserPermissions}/>}
+                  element={
+                    <WarehouseStockDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
                 />
               </Route>
             </Route>
@@ -193,11 +256,16 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<UserList handleUserPermissions={handleUserPermissions}/>} />
                 <Route
-                path={routes.dashboard.userDetails.path}
-                element={<UserDetails />}
-              />
+                  index
+                  element={
+                    <UserList handleUserPermissions={handleUserPermissions} />
+                  }
+                />
+                <Route
+                  path={routes.dashboard.userDetails.path}
+                  element={<UserDetails />}
+                />
               </Route>
             </Route>
 
@@ -210,11 +278,22 @@ export default function AppRoutes() {
                   />
                 }
               >
-                <Route index element={<PharmacyStock handleUserPermissions={handleUserPermissions}/>} />
                 <Route
-                path={routes.dashboard.pharmacyStockDetails.path}
-                element={<PharmacyStockDetails handleUserPermissions={handleUserPermissions}/>}
-              />
+                  index
+                  element={
+                    <PharmacyStock
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
+                <Route
+                  path={routes.dashboard.pharmacyStockDetails.path}
+                  element={
+                    <PharmacyStockDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
               </Route>
             </Route>
 

@@ -3,12 +3,14 @@ export const messagesData = {
     userName: {
       required: "Username is a required field",
       max: "Username must be at most 100 characters",
+      min: "Username must be at least 3 characters",
       trim: "Username is a required field",
       matches: "Username not contain any special character",
     },
     name: {
       required: "Name is a required field",
       max: "Name must be at most 100 characters",
+      min: "Name must be at least 3 characters",
       trim: "Name is a required field",
       matches: "Name not contain any special character",
     },
@@ -95,6 +97,33 @@ export const messagesData = {
     },
     organization: {
       required: "Organization is a required field",
+    },
+  },
+  item: {
+    name: {
+      required: "Name is a required field",
+      max: "Name must be at most 100 characters",
+      trim: "Name is a required field",
+      min: "Name must be at least 3 characters",
+      matches: "Name not contain any special character",
+    },
+    baseUnit: {
+      required: "Unit is a required field",
+    },
+    hsnCode: {
+      required: "HSN Code is a required field",
+    },
+    instructions: {
+      required: "Instruction is a required field",
+    },
+    wholesalePrice: {
+      required: "Wholesale Price must be a number",
+    },
+    mrpBaseUnit: {
+      required: "MRP Base Unit must be a number",
+    },
+    category: {
+      required: "Category is a required field",
     },
   },
 };
