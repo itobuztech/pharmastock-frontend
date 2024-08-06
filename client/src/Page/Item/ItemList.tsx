@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LoadingOverlay, Modal, Select, Slider, Text } from "@mantine/core";
+import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
@@ -12,12 +12,12 @@ import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import { BaseUnit } from "gql/graphql";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import ItemFilter from "./components/ItemFilter";
 
 export default function ItemList({
   handleUserPermissions,
@@ -34,11 +34,12 @@ export default function ItemList({
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
-  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
-  const [wholeSaleRange, setWholeSaleRange] = useState<number>(0);
+  const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
 
-  const [value, setValue] = useState(50);
-  const [endValue, setEndValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState<number>(0);
+  const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
+  // const [popOverOpened, { close: popOverClose, open: popOverOpen }] =
+  //   useDisclosure(false);
 
   const permission = useAppSelector((state) => state.user.permission);
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
@@ -63,7 +64,7 @@ export default function ItemList({
     fetchItemList({
       variables: {
         filterArgs: {
-          baseUnit: selectedUnit,
+          baseUnit: null,
           mrpBaseUnit: null,
           wholeSalePrice: null,
         },
@@ -75,7 +76,7 @@ export default function ItemList({
         searchText: "",
       },
     });
-  }, [activePage, fetchItemList, refetch, searchInput, selectedUnit]);
+  }, [activePage, fetchItemList, refetch, searchInput]);
 
   useEffect(() => {
     if (newItemList) {
@@ -128,7 +129,7 @@ export default function ItemList({
     fetchItemList({
       variables: {
         filterArgs: {
-          baseUnit: selectedUnit,
+          baseUnit: null,
           mrpBaseUnit: null,
           wholeSalePrice: null,
         },
@@ -147,55 +148,30 @@ export default function ItemList({
     handleSearch(event.currentTarget.value);
   };
 
-  const baseUnitArray = Object.values(BaseUnit);
-
-  const handleUnitChange = (unit: string | null) => {
-    setSelectedUnit(unit);
-    fetchItemList({
-      variables: {
-        filterArgs: {
-          baseUnit: selectedUnit,
-          mrpBaseUnit: null,
-          wholeSalePrice: null,
-        },
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: "",
-      },
-    });
-  };
-
-  const changeRange = useDebouncedCallback(
-    async ({ price }: { price: number }) => {
-      setWholeSaleRange(price);
-      fetchItemList({
-        variables: {
-          filterArgs: {
-            baseUnit: selectedUnit,
-            mrpBaseUnit: null,
-            wholeSalePrice:
-              wholeSaleRange !== undefined ? wholeSaleRange : null,
-          },
-          pagination: true,
-          paginationArgs: {
-            skip: activePage * 10 - 10,
-            take: 10,
-          },
-          searchText: "",
-        },
-      });
-    },
-    500
+  const maxWholesalePrice = itemList?.items.reduce(
+    (max, item) => Math.max(max, item.wholesalePrice),
+    0
   );
 
-  const maxWholesalePrice = itemList?.items.reduce((maxPrice, item) => {
-    return item.wholesalePrice > maxPrice ? item.wholesalePrice : maxPrice;
-  }, 0);
-
   console.log({ maxWholesalePrice });
+
+  // const onSubmit = () => {
+  //   fetchItemList({
+  //     variables: {
+  //       filterArgs: {
+  //         baseUnit: selectedUnit,
+  //         mrpBaseUnit: sliderValueMrp,
+  //         wholeSalePrice: sliderValue,
+  //       },
+  //       pagination: true,
+  //       paginationArgs: {
+  //         skip: activePage * 10 - 10,
+  //         take: 10,
+  //       },
+  //       searchText: searchInput,
+  //     },
+  //   });
+  // };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -210,77 +186,26 @@ export default function ItemList({
         buttonText="Add Item"
       />
 
-      {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
-
-      <Select
-        label="Unit"
-        placeholder="Unit"
-        data={baseUnitArray}
-        onChange={handleUnitChange}
-        value={selectedUnit}
-        disabled={!editForm}
-      />
-
-      <Slider
-        value={value}
-        max={maxWholesalePrice}
-        onChange={setValue}
-        onChangeEnd={(val) => changeRange({ price: val })}
-      />
-
-      {/* <Slider
-        value={wholeSaleRange}
-        min={0}
-        max={maxWholesalePrice}
-        onChange={(val) => changeRange({ price: val })}
-      /> */}
-
-      {/* <Range
-        step={0.1}
-        min={0}
-        max={100}
-        values={wholeSaleRange}
-        onChange={(val) => changeRange({ price: val })}
-        renderTrack={({ props, children }) => (
-          <div
-            {...props}
-            style={{
-              ...props.style,
-              height: "6px",
-              width: "100%",
-              backgroundColor: "#ccc",
-            }}
-          >
-            {children}
-          </div>
-        )}
-        renderThumb={({ props }) => (
-          <div
-            {...props}
-            key={props.key}
-            style={{
-              ...props.style,
-              height: "42px",
-              width: "42px",
-              backgroundColor: "#999",
-            }}
-          />
-        )}
-      /> */}
-
-      {/* <Checkbox.Group
-        label="Select your favorite frameworks/libraries"
-        description="This is anonymous"
-        // value={selectedUnit}
-        // onChange={handleUnitChange}
-      >
-        <Group mt="xs">
-          {baseUnitArray.map((item) => (
-            <Checkbox value={item} label={item} />
-          ))}
-        </Group>
-      </Checkbox.Group> */}
+      <Flex>
+        {/* ==== Search ==== */}
+        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Space w="md" />
+        {/* ==== Filter ==== */}
+        <ItemFilter
+          selectedUnit={selectedUnit}
+          sliderValue={sliderValue}
+          sliderValueMrp={sliderValueMrp}
+          setSelectedUnit={setSelectedUnit}
+          setSliderValue={setSliderValue}
+          setSliderValueMrp={setSliderValueMrp}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          fetchItemList={fetchItemList}
+          activePage={activePage}
+          // opened={popOverOpened}
+          // popOverOpen={popOverOpen}
+        />
+      </Flex>
 
       {loading && (
         <LoadingOverlay
