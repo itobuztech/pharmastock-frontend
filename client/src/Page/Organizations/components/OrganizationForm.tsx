@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { Button, Select, Textarea, TextInput } from "@mantine/core";
-import { createOrganizationInput } from "interfaces/interfaces";
+import { createOrganizationInput, Permissions } from "interfaces/interfaces";
 import { CreateOrganization } from "query/organization/organizationCreate";
 import React, { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
@@ -12,6 +12,8 @@ import ButtonComponent from "Components/Button/ButtonComponent";
 import { UpdateOrganization } from "query/organization/organizationUpdate";
 import { Organization, UpdateOrganizationInput } from "gql/graphql";
 import { useNavigate } from "react-router-dom";
+import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function OrganizationForm({
   close,
@@ -21,7 +23,8 @@ export default function OrganizationForm({
   orgDetails,
   setNewOrgList,
   refetchItem,
-}: {
+  handleUserPermissions
+}: Readonly<{
   close?: () => void;
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,10 +36,15 @@ export default function OrganizationForm({
     React.SetStateAction<createOrganizationInput | undefined>
   >;
   refetchItem: () => void;
-}) {
+  handleUserPermissions: (
+    permission :Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}>) {
   const options = useMemo(() => countryList().getData(), []);
   const navigate = useNavigate();
-
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -202,15 +210,16 @@ export default function OrganizationForm({
             >
               Cancel
             </Button>
-            {editForm ? (
+            {editForm && handleUserPermissions(permission , USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT) && (<>
               <ButtonComponent type="submit" loading={updateOrgLoading}>
                 Update
               </ButtonComponent>
-            ) : (
+            
               <Button type="button" onClick={() => setEditForm(true)}>
                 Edit
               </Button>
-            )}
+            </>)
+            }
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addOrgLoading}>

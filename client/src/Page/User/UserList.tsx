@@ -3,13 +3,14 @@ import PageHeader from "Components/PageHeader";
 import { useLazyQuery } from "@apollo/client";
 import { GetUsersList } from "query/user/usersList";
 import { toast } from "react-toastify";
-import { UserData, Users } from "interfaces/interfaces";
+import { ChildComponentProps, UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
 import { LoadingOverlay } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import { useDebouncedCallback } from "@mantine/hooks";
 
-export default function UserList() {
+export default function UserList({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [userList, setUserList] = useState<Users>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
@@ -50,7 +51,7 @@ export default function UserList() {
   }, [fetchUserList, activePage, refetch, searchInput]);
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchUserList({
       variables: {
         pagination: true,
@@ -61,18 +62,19 @@ export default function UserList() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Users" showCreateButton={false} />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       {/* ==== Loading State ==== */}
       {loading && (
@@ -92,6 +94,7 @@ export default function UserList() {
           setActivePage={setActivePage}
           totalCount={totalCount}
           userList={userList}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
     </section>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LoadingOverlay, Modal, Select, Slider, Text } from "@mantine/core";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
-import { ItemLists, Items } from "interfaces/interfaces";
+import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GetItemLists } from "query/item/itemList";
 import ConfirmationModal from "Components/ConfirmationModal";
@@ -13,8 +13,15 @@ import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import { BaseUnit } from "gql/graphql";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemList() {
+export default function ItemList({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [itemList, setItemList] = useState<Items>();
   const [totalCount, setTotalCount] = useState(1);
@@ -33,6 +40,7 @@ export default function ItemList() {
   const [value, setValue] = useState(50);
   const [endValue, setEndValue] = useState(50);
 
+  const permission = useAppSelector((state) => state.user.permission);
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
     {
@@ -116,7 +124,7 @@ export default function ItemList() {
   }
 
   /* ====== Handle Search Function ====== */
-  function handleSearch() {
+  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchItemList({
       variables: {
         filterArgs: {
@@ -132,7 +140,12 @@ export default function ItemList() {
         searchText: searchInput,
       },
     });
-  }
+  }, 500);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.currentTarget.value);
+    handleSearch(event.currentTarget.value);
+  };
 
   const baseUnitArray = Object.values(BaseUnit);
 
@@ -188,17 +201,17 @@ export default function ItemList() {
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Items"
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
-        buttonText="Add Items"
+        buttonText="Add Item"
       />
 
       {/* ==== Search ==== */}
-      <Search
-        onSubmit={handleSearch}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search handleChange={handleChange} searchInput={searchInput} />
 
       <Select
         label="Unit"
@@ -286,6 +299,7 @@ export default function ItemList() {
           handleDelete={handleDelete}
           totalCount={totalCount}
           setActivePage={setActivePage}
+          handleUserPermissions={handleUserPermissions}
         />
       )}
 
@@ -296,7 +310,13 @@ export default function ItemList() {
         deleteItem={() => getDeleteItem()}
       />
 
-      <Modal opened={opened} onClose={close} title="Item" centered size={"lg"}>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Add New Item"
+        centered
+        size={"lg"}
+      >
         <ItemForm
           close={close}
           editForm={editForm}

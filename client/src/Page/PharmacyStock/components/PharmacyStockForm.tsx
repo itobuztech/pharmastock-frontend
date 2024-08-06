@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import {
   CreateWarehouseStocksByWarehouse,
+  Permissions,
   WarehouseStocksByWarehouse,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -16,6 +17,11 @@ import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
 import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 import useItemList from "Lib/customHooks/useItemList";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function PharmacyStockForm({
   pharmacyName,
@@ -25,7 +31,8 @@ export default function PharmacyStockForm({
   id,
   setNewPharmacyStockList,
   refetchItem,
-}: {
+  handleUserPermissions,
+}: Readonly<{
   pharmacyName?: string;
   pharmacyId?: string;
   close?: () => void;
@@ -35,12 +42,17 @@ export default function PharmacyStockForm({
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
   refetchItem: () => void;
-}) {
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
+}>) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
-
+  const permission = useAppSelector((state) => state.user.permission);
   const selectWarehouseItems = useWarehouseItems();
   const selectPharmaList = usePharmacyList();
   const selectItem = useItemList();
@@ -229,11 +241,17 @@ export default function PharmacyStockForm({
         />
       </div>
 
-      <div className="text-right mt-8">
-        <ButtonComponent type="submit" loading={loading}>
-          {id ? "Update" : "Create"}
-        </ButtonComponent>
-      </div>
+      {handleUserPermissions(
+        permission,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT,
+        USER_PERMISSION_CAPABILITIES.EDIT
+      ) && (
+        <div className="text-right mt-8">
+          <ButtonComponent type="submit" loading={loading}>
+            {id ? "Update" : "Create"}
+          </ButtonComponent>
+        </div>
+      )}
     </form>
   );
 }
