@@ -135,15 +135,15 @@ export const messagesData = {
       matches: "Name not contain any special character",
     },
     userName: {
-      required: "Name is a required field",
-      max: "Name must be at most 100 characters",
-      trim: "Name is a required field",
-      min: "Name must be at least 3 characters",
+      required: "Username is a required field",
+      max: "Username must be at most 100 characters",
+      trim: "Username is a required field",
+      min: "Username must be at least 3 characters",
     },
     password: {
-      required: "Password is a required field",
+      required: "Old Password is a required field",
       newPassword: "New Password is a required field",
-      oldPassword: "Old Password is a required field",
+      confirmPassword: "Confirm Password is a required field",
     },
   },
 };

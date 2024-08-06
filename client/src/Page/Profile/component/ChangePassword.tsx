@@ -26,8 +26,8 @@ export default function ChangePassword() {
         .trim(messagesData.profile.password.newPassword),
       confirmPassword: yup
         .string()
-        .required(messagesData.profile.password.oldPassword)
-        .trim(messagesData.profile.password.oldPassword),
+        .required(messagesData.profile.password.confirmPassword)
+        .trim(messagesData.profile.password.confirmPassword),
     })
     .required();
 
