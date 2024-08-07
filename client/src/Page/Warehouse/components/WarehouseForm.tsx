@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Button, Select, TextInput } from "@mantine/core";
+import { Button, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateWarehouseInput,
   UpdateWarehouseInput,
@@ -15,8 +15,12 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { GetWarehouseUpdate } from "query/warehouse/warehouseUpdate";
 import { Permissions } from "interfaces/interfaces";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import messagesData from "Lib/messages";
 
 export default function WarehouseForm({
   close,
@@ -26,8 +30,7 @@ export default function WarehouseForm({
   warehouseDetails,
   refetchWarehouse,
   setNewWarehouseList,
-  selectOrgItem,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -36,26 +39,32 @@ export default function WarehouseForm({
   warehouseDetails?: { warehouse: Warehouse };
   refetchWarehouse: () => void;
   setNewWarehouseList?: React.Dispatch<React.SetStateAction<undefined>>;
-  selectOrgItem:
-    | {
-        value: string;
-        label: string;
-      }[]
-    | undefined;
-    handleUserPermissions: (
-      permission: Permissions,
-      field: USER_PERMISSION_FIELDS,
-      capabilities: USER_PERMISSION_CAPABILITIES
-    ) => boolean;
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }>) {
   const navigate = useNavigate();
-  const permission = useAppSelector(state => state.user.permission);
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
-      name: yup.string().required(),
-      location: yup.string().required(),
-      area: yup.string().required(),
-      organizationId: yup.string().required(),
+      name: yup
+        .string()
+        .required(messagesData.warehouse.name.required)
+        .max(100, messagesData.warehouse.name.max)
+        .trim(messagesData.warehouse.name.trim)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.name.matches),
+      location: yup
+        .string()
+        .required(messagesData.warehouse.location.required)
+        .trim(messagesData.warehouse.location.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.location.matches),
+      area: yup
+        .string()
+        .required(messagesData.warehouse.area.required)
+        .trim(messagesData.warehouse.area.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.area.matches),
     })
     .required();
 
@@ -63,7 +72,6 @@ export default function WarehouseForm({
     register,
     handleSubmit,
     reset,
-    control,
     setValue,
     formState: { errors },
   } = useForm({
@@ -114,7 +122,9 @@ export default function WarehouseForm({
       const response = await createWarehouse({
         variables: { createWarehouseInput: data },
       });
-      setNewWarehouseList(response.data);
+      if (setNewWarehouseList) {
+        setNewWarehouseList(response.data);
+      }
     }
   };
 
@@ -123,61 +133,61 @@ export default function WarehouseForm({
       setValue("name", warehouseDetails.warehouse.name);
       setValue("area", warehouseDetails.warehouse.area);
       setValue("location", warehouseDetails.warehouse.location);
-      warehouseDetails.warehouse.organization?.id &&
-        setValue("organizationId", warehouseDetails.warehouse.organization?.id);
     }
   }, [setValue, warehouseDetails?.warehouse]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
+        {id && (
+          <div className="flex-1">
+            <div className="mb-4">
+              <TextInput
+                label="Organization"
+                placeholder="Name"
+                value={warehouseDetails?.warehouse.organization?.name}
+                disabled
+              />
+            </div>
+          </div>
+        )}
         <div className="flex-1">
           <TextInput
             label="Name"
             placeholder="Name"
             {...register("name")}
             disabled={!editForm}
-            error={errors.name && "This field is required"}
+            withAsterisk
           />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.name?.message}
+          </Text>
         </div>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Location"
             placeholder="Location"
             {...register("location")}
             disabled={!editForm}
-            error={errors.location && "This field is required"}
+            withAsterisk
           />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.location?.message}
+          </Text>
         </div>
-      </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Area"
             placeholder="Area"
             {...register("area")}
             disabled={!editForm}
-            error={errors.area && "This field is required"}
+            withAsterisk
           />
-        </div>
-        <div className="flex-1">
-          <Controller
-            name="organizationId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Select Organization"
-                placeholder="Select Organization"
-                onChange={(value) => field.onChange(value)}
-                value={field.value}
-                data={selectOrgItem}
-                maxDropdownHeight={300}
-                error={errors.organizationId && "This field is required"}
-                disabled={!editForm}
-              />
-            )}
-          />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.area?.message}
+          </Text>
         </div>
       </div>
 
@@ -192,7 +202,12 @@ export default function WarehouseForm({
               Cancel
             </Button>
 
-            {editForm && handleUserPermissions(permission,USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT)?  (
+            {editForm &&
+            handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) ? (
               <ButtonComponent type="submit" loading={updateLoading}>
                 Update
               </ButtonComponent>

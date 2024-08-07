@@ -28,14 +28,14 @@ export default function Register() {
         .min(3, messagesData.register.userName.min)
         .max(100, messagesData.register.userName.max)
         .trim(messagesData.register.userName.trim)
-        .matches(/^[a-zA-Z0-9]*$/, messagesData.register.userName.matches),
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.userName.matches),
       name: yup
         .string()
         .required(messagesData.register.name.required)
         .min(3, messagesData.register.name.min)
         .max(100, messagesData.register.name.max)
         .trim(messagesData.register.name.trim)
-        .matches(/^[a-zA-Z0-9]*$/, messagesData.register.name.matches),
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.name.matches),
       role: yup.string().required(messagesData.register.role.required),
       email: yup
         .string()

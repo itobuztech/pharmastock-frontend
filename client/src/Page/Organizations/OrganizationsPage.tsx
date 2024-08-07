@@ -18,10 +18,15 @@ import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
 import UserCreateForm from "Page/User/components/UserCreateForm";
 import Search from "Components/Search";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function OrganizationsPage ({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function OrganizationsPage({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
   const [newOrgList, setNewOrgList] = useState<createOrganizationInput>();
@@ -155,7 +160,11 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
-        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Organization"
       />
@@ -214,7 +223,7 @@ export default function OrganizationsPage ({ handleUserPermissions }:Readonly<Ch
       <Modal
         opened={opened}
         onClose={close}
-        title="Organization"
+        title="Add New Organization"
         centered
         size={"lg"}
       >

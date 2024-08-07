@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
@@ -21,10 +21,6 @@ export default function LoginPage() {
   const { height } = useViewportSize();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loginUserInput, setLoginUserInput] = useState({
-    email: "",
-    password: "",
-  });
 
   const schema = yup
     .object({
@@ -32,7 +28,6 @@ export default function LoginPage() {
         .string()
         .required(messagesData.login.email.required)
         .email(messagesData.login.email.email)
-        .trim(messagesData.login.email.required)
         .matches(
           /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
           messagesData.login.email.matches
@@ -54,14 +49,6 @@ export default function LoginPage() {
       toast.error(error.message);
     },
   });
-
-  const handleChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setLoginUserInput({
-        ...loginUserInput,
-        [field]: event.target.value,
-      });
-    };
 
   const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{
     getpermissions: Permissions;
@@ -108,9 +95,7 @@ export default function LoginPage() {
               <TextInput
                 label="Email"
                 placeholder="Email"
-                value={loginUserInput.email}
                 {...register("email")}
-                onChange={handleChange("email")}
                 withAsterisk
               />
               <Text size="sm" mt={5} c="red.6">
@@ -122,8 +107,6 @@ export default function LoginPage() {
                 label="Password"
                 placeholder="Password"
                 {...register("password")}
-                value={loginUserInput.password}
-                onChange={handleChange("password")}
                 withAsterisk
               />
               <Text size="sm" mt={5} c="red.6">
