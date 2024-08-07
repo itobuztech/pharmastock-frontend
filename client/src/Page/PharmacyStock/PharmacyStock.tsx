@@ -4,17 +4,26 @@ import PageHeader from "Components/PageHeader";
 import { useLazyQuery } from "@apollo/client";
 import { PharmacyStocksList } from "query/pharmacyStock/pharmacyStocksList";
 import { toast } from "react-toastify";
-import { ChildComponentProps, PharmacyStocks, PharmacyStocksLists } from "interfaces/interfaces";
+import {
+  ChildComponentProps,
+  PharmacyStocks,
+  PharmacyStocksLists,
+} from "interfaces/interfaces";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import EmptyList from "Components/EmptyList";
 import { CreatePharmacyStockInput } from "gql/graphql";
 import Search from "Components/Search";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function PharmacyStock({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function PharmacyStock({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [pharmacyStocksList, setPharmacyStocksList] =
     useState<PharmacyStocks>();
   const [activePage, setActivePage] = useState(1);
@@ -94,8 +103,12 @@ export default function PharmacyStock({ handleUserPermissions }:Readonly<ChildCo
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy Stocks"
-        showBackButton={true}
-        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
+        showBackButton={false}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         buttonText="Add Pharmacy Stock"
         onClick={open}
       />

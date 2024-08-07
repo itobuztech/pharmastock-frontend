@@ -15,7 +15,6 @@ import ConfirmationModal from "Components/ConfirmationModal";
 import WarehouseListTable from "./components/WarehouseListTable";
 import WarehouseForm from "./components/WarehouseForm";
 import EmptyList from "Components/EmptyList";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import Search from "Components/Search";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -36,7 +35,6 @@ export default function Warehouse({
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
-  const selectOrganizationItem = useOrganizationList();
   const permission = useAppSelector((state) => state.user.permission);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
@@ -204,7 +202,7 @@ export default function Warehouse({
           refetchWarehouse={refetch}
           close={close}
           setNewWarehouseList={setNewWarehouseList}
-          selectOrgItem={selectOrganizationItem}
+          // selectOrgItem={selectOrganizationItem}
         />
       </Modal>
     </section>

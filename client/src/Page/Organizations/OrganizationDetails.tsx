@@ -7,7 +7,9 @@ import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
 import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function OrganizationDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function OrganizationDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const { orgId } = useParams();
   const [editForm, setEditForm] = useState(false);
 
@@ -22,7 +24,7 @@ export default function OrganizationDetails({ handleUserPermissions }:Readonly<C
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Details"
+        title="Organization Details"
         showBackButton={true}
         showCreateButton={false}
       />

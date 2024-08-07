@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Button, Select, TextInput, Text } from "@mantine/core";
+import { Button, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateWarehouseInput,
   UpdateWarehouseInput,
@@ -30,7 +30,6 @@ export default function WarehouseForm({
   warehouseDetails,
   refetchWarehouse,
   setNewWarehouseList,
-  selectOrgItem,
   handleUserPermissions,
 }: Readonly<{
   close?: () => void;
@@ -40,12 +39,6 @@ export default function WarehouseForm({
   warehouseDetails?: { warehouse: Warehouse };
   refetchWarehouse: () => void;
   setNewWarehouseList?: React.Dispatch<React.SetStateAction<undefined>>;
-  selectOrgItem:
-    | {
-        value: string;
-        label: string;
-      }[]
-    | undefined;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
@@ -72,10 +65,6 @@ export default function WarehouseForm({
         .required(messagesData.warehouse.area.required)
         .trim(messagesData.warehouse.area.required)
         .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.area.matches),
-      organizationId: yup
-        .string()
-        .required(messagesData.warehouse.organization.required)
-        .trim(messagesData.warehouse.organization.required),
     })
     .required();
 
@@ -83,7 +72,6 @@ export default function WarehouseForm({
     register,
     handleSubmit,
     reset,
-    control,
     setValue,
     formState: { errors },
   } = useForm({
@@ -134,7 +122,9 @@ export default function WarehouseForm({
       const response = await createWarehouse({
         variables: { createWarehouseInput: data },
       });
-      setNewWarehouseList(response.data);
+      if (setNewWarehouseList) {
+        setNewWarehouseList(response.data);
+      }
     }
   };
 
@@ -143,14 +133,24 @@ export default function WarehouseForm({
       setValue("name", warehouseDetails.warehouse.name);
       setValue("area", warehouseDetails.warehouse.area);
       setValue("location", warehouseDetails.warehouse.location);
-      warehouseDetails.warehouse.organization?.id &&
-        setValue("organizationId", warehouseDetails.warehouse.organization?.id);
     }
   }, [setValue, warehouseDetails?.warehouse]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
+        {id && (
+          <div className="flex-1">
+            <div className="mb-4">
+              <TextInput
+                label="Organization"
+                placeholder="Name"
+                value={warehouseDetails?.warehouse.organization?.name}
+                disabled
+              />
+            </div>
+          </div>
+        )}
         <div className="flex-1">
           <TextInput
             label="Name"
@@ -163,6 +163,8 @@ export default function WarehouseForm({
             {errors.name?.message}
           </Text>
         </div>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Location"
@@ -175,8 +177,6 @@ export default function WarehouseForm({
             {errors.location?.message}
           </Text>
         </div>
-      </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Area"
@@ -187,28 +187,6 @@ export default function WarehouseForm({
           />
           <Text size="sm" mt={5} c="red.6">
             {errors.area?.message}
-          </Text>
-        </div>
-        <div className="flex-1">
-          <Controller
-            name="organizationId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Select Organization"
-                placeholder="Select Organization"
-                onChange={(value) => field.onChange(value)}
-                value={field.value}
-                data={selectOrgItem}
-                maxDropdownHeight={300}
-                withAsterisk
-                disabled={!editForm}
-              />
-            )}
-          />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.organizationId?.message}
           </Text>
         </div>
       </div>
