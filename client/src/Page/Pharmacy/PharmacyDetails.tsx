@@ -129,6 +129,9 @@ export default function PharmacyDetails({
       )}
 
       <div className="mt-8">
+        <h2 className="text-blue-900 text-2xl font-bold m-0 mb-8">
+          Pharmacy Stocks
+        </h2>
         {!pharmacyStocksList?.pharmacyStocks.length ? (
           <EmptyList />
         ) : (

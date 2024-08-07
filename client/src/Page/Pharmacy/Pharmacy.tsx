@@ -71,6 +71,8 @@ export default function Pharmacy({
           setTotalCount(paginationCount);
         }
       });
+      deleteModalClose();
+      toast.success("Pharmacy Deleted Successfully");
     },
   });
 
@@ -192,7 +194,7 @@ export default function Pharmacy({
       <Modal
         opened={opened}
         onClose={close}
-        title="Pharmacy"
+        title="Add New Pharmacy"
         centered
         size={"lg"}
       >

@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import "react-datepicker/dist/react-datepicker.css";
 
 import ScrollToTop from "./Components/ScrollToTop";
@@ -10,13 +10,18 @@ import AppRoutes from "./Lib/Routes/AppRoutes";
 
 import { ApolloProvider } from "@apollo/client";
 import client from "aplloClient";
+import "@mantine/dates/styles.css";
+
+const theme = createTheme({
+  cursorType: "pointer",
+});
 
 function App() {
   return (
     <ApolloProvider client={client}>
       <div className="App">
         <ToastContainer />
-        <MantineProvider>
+        <MantineProvider theme={theme}>
           <ScrollToTop />
           <TrackRedirectLinks />
           <AppRoutes />

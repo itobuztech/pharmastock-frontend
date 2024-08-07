@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
@@ -17,6 +17,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import ItemFilter from "./components/ItemFilter";
 
 export default function ItemList({
   handleUserPermissions,
@@ -33,6 +34,13 @@ export default function ItemList({
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
+
+  const [sliderValue, setSliderValue] = useState<number>(0);
+  const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
+  // const [popOverOpened, { close: popOverClose, open: popOverOpen }] =
+  //   useDisclosure(false);
+
   const permission = useAppSelector((state) => state.user.permission);
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -55,6 +63,11 @@ export default function ItemList({
   useEffect(() => {
     fetchItemList({
       variables: {
+        filterArgs: {
+          baseUnit: null,
+          mrpBaseUnit: null,
+          wholeSalePrice: null,
+        },
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
@@ -115,6 +128,11 @@ export default function ItemList({
   const handleSearch = useDebouncedCallback(async (searchInput: string) => {
     fetchItemList({
       variables: {
+        filterArgs: {
+          baseUnit: null,
+          mrpBaseUnit: null,
+          wholeSalePrice: null,
+        },
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
@@ -130,6 +148,31 @@ export default function ItemList({
     handleSearch(event.currentTarget.value);
   };
 
+  const maxWholesalePrice = itemList?.items.reduce(
+    (max, item) => Math.max(max, item.wholesalePrice),
+    0
+  );
+
+  console.log({ maxWholesalePrice });
+
+  // const onSubmit = () => {
+  //   fetchItemList({
+  //     variables: {
+  //       filterArgs: {
+  //         baseUnit: selectedUnit,
+  //         mrpBaseUnit: sliderValueMrp,
+  //         wholeSalePrice: sliderValue,
+  //       },
+  //       pagination: true,
+  //       paginationArgs: {
+  //         skip: activePage * 10 - 10,
+  //         take: 10,
+  //       },
+  //       searchText: searchInput,
+  //     },
+  //   });
+  // };
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -143,8 +186,26 @@ export default function ItemList({
         buttonText="Add Item"
       />
 
-      {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Flex>
+        {/* ==== Search ==== */}
+        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Space w="md" />
+        {/* ==== Filter ==== */}
+        <ItemFilter
+          selectedUnit={selectedUnit}
+          sliderValue={sliderValue}
+          sliderValueMrp={sliderValueMrp}
+          setSelectedUnit={setSelectedUnit}
+          setSliderValue={setSliderValue}
+          setSliderValueMrp={setSliderValueMrp}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          fetchItemList={fetchItemList}
+          activePage={activePage}
+          // opened={popOverOpened}
+          // popOverOpen={popOverOpen}
+        />
+      </Flex>
 
       {loading && (
         <LoadingOverlay
