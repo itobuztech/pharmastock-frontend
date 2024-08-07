@@ -223,7 +223,7 @@ export default function OrganizationsPage({
       <Modal
         opened={opened}
         onClose={close}
-        title="Organization"
+        title="Add New Organization"
         centered
         size={"lg"}
       >

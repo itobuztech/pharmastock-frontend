@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Select, TextInput } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -12,12 +12,11 @@ import {
   Pharmacy,
 } from "gql/graphql";
 import { Permissions } from "interfaces/interfaces";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import { useAppSelector } from "Lib/Store/hooks";
 import { PharmacyCreate } from "query/pharmacy/pharmacyCreate";
 import { GetUpdatePharmacy } from "query/pharmacy/pharmacyUpdate";
 import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -48,8 +47,8 @@ export default function PharmacyForm({
   ) => boolean;
 }) {
   const navigate = useNavigate();
-  const selectOrganizationItem = useOrganizationList();
   const permission = useAppSelector((state) => state.user.permission);
+
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -58,7 +57,6 @@ export default function PharmacyForm({
         .string()
         .matches(/^\d+$/, "Contact info must be a number")
         .required("Contact info is required"),
-      organizationId: yup.string().required(),
     })
     .required();
 
@@ -67,7 +65,6 @@ export default function PharmacyForm({
     handleSubmit,
     reset,
     setValue,
-    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -128,13 +125,21 @@ export default function PharmacyForm({
       setValue("name", pharmacyDetails.name);
       setValue("contactInfo", pharmacyDetails.contactInfo!);
       setValue("location", pharmacyDetails.location);
-      pharmacyDetails?.organization?.id &&
-        setValue("organizationId", pharmacyDetails?.organization?.id);
     }
   }, [pharmacyDetails, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {id && (
+        <div className="mb-4">
+          <TextInput
+            label="Organization"
+            placeholder="Name"
+            value={pharmacyDetails?.organization?.name}
+            disabled
+          />
+        </div>
+      )}
       <div className="mb-4">
         <TextInput
           label="Name"
@@ -160,28 +165,6 @@ export default function PharmacyForm({
           {...register("location")}
           error={errors.location && "This field is required"}
           disabled={!editForm}
-        />
-      </div>
-      <div className="mb-4">
-        <Controller
-          name="organizationId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              label="Select Organization"
-              placeholder="Select Organization"
-              data={selectOrganizationItem}
-              maxDropdownHeight={300}
-              onChange={(value) => {
-                field.onChange(value);
-                setValue("organizationId", value!);
-              }}
-              value={field.value}
-              error={errors.organizationId && "This field is required"}
-              disabled={!editForm}
-            />
-          )}
         />
       </div>
       <div className="text-right">

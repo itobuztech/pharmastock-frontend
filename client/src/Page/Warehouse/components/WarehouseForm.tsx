@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Button, Select, TextInput } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   CreateWarehouseInput,
   UpdateWarehouseInput,
@@ -29,7 +29,6 @@ export default function WarehouseForm({
   warehouseDetails,
   refetchWarehouse,
   setNewWarehouseList,
-  selectOrgItem,
   handleUserPermissions,
 }: Readonly<{
   close?: () => void;
@@ -39,12 +38,6 @@ export default function WarehouseForm({
   warehouseDetails?: { warehouse: Warehouse };
   refetchWarehouse: () => void;
   setNewWarehouseList?: React.Dispatch<React.SetStateAction<undefined>>;
-  selectOrgItem:
-    | {
-        value: string;
-        label: string;
-      }[]
-    | undefined;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
@@ -58,7 +51,6 @@ export default function WarehouseForm({
       name: yup.string().required(),
       location: yup.string().required(),
       area: yup.string().required(),
-      organizationId: yup.string().required(),
     })
     .required();
 
@@ -66,7 +58,6 @@ export default function WarehouseForm({
     register,
     handleSubmit,
     reset,
-    control,
     setValue,
     formState: { errors },
   } = useForm({
@@ -128,14 +119,24 @@ export default function WarehouseForm({
       setValue("name", warehouseDetails.warehouse.name);
       setValue("area", warehouseDetails.warehouse.area);
       setValue("location", warehouseDetails.warehouse.location);
-      warehouseDetails.warehouse.organization?.id &&
-        setValue("organizationId", warehouseDetails.warehouse.organization?.id);
     }
   }, [setValue, warehouseDetails?.warehouse]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1">
+          {id && (
+            <div className="mb-4">
+              <TextInput
+                label="Organization"
+                placeholder="Name"
+                value={warehouseDetails?.warehouse.organization?.name}
+                disabled
+              />
+            </div>
+          )}
+        </div>
         <div className="flex-1">
           <TextInput
             label="Name"
@@ -145,6 +146,8 @@ export default function WarehouseForm({
             error={errors.name && "This field is required"}
           />
         </div>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Location"
@@ -154,8 +157,6 @@ export default function WarehouseForm({
             error={errors.location && "This field is required"}
           />
         </div>
-      </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
           <TextInput
             label="Area"
@@ -163,25 +164,6 @@ export default function WarehouseForm({
             {...register("area")}
             disabled={!editForm}
             error={errors.area && "This field is required"}
-          />
-        </div>
-        <div className="flex-1">
-          <Controller
-            name="organizationId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Select Organization"
-                placeholder="Select Organization"
-                onChange={(value) => field.onChange(value)}
-                value={field.value}
-                data={selectOrgItem}
-                maxDropdownHeight={300}
-                error={errors.organizationId && "This field is required"}
-                disabled={!editForm}
-              />
-            )}
           />
         </div>
       </div>
