@@ -126,6 +126,17 @@ export const messagesData = {
       required: "Category is a required field",
     },
   },
+  login: {
+    email: {
+      required: "Email is a required field",
+      matches: "Email must be a valid email",
+      email: "Email must be a valid email",
+    },
+    password: {
+      required: "Password is a required field",
+    },
+    successMessage: "Logged in Successfully",
+  },
   profile: {
     name: {
       required: "Name is a required field",
