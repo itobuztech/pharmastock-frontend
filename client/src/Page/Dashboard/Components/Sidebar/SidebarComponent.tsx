@@ -4,6 +4,7 @@ import MenuLink from "./MenuLink";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "Lib/Store/hooks";
 import { USER_PERMISSION_FIELDS } from "enums/enums";
+import { UserRole } from "gql/graphql";
 
 export default function SidebarComponent() {
   const permission = useAppSelector((state) => state.user.permission);
@@ -13,6 +14,8 @@ export default function SidebarComponent() {
   ): boolean => {
     return permission[field]?.CAPABILITIES?.VIEW !== null;
   };
+
+  const user = useAppSelector((state) => state.user);
 
   return (
     <div
@@ -35,15 +38,17 @@ export default function SidebarComponent() {
             link={routes.dashboard.profile.path}
           />
 
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Organizations"
-              activeMenuPaths={routes.dashboard.organizations.path}
-              link={routes.dashboard.organizations.path}
-            />
-          )}
+          {user.role === UserRole.Superadmin &&
+            handleSliderOptionsVisible(
+              USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
+            ) && (
+              <MenuLink
+                text="Organizations"
+                activeMenuPaths={routes.dashboard.organizations.path}
+                link={routes.dashboard.organizations.path}
+              />
+            )}
+
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
           ) && (

@@ -1,6 +1,9 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { ItemCategories, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
@@ -13,7 +16,7 @@ interface ItemCategoryTableProps {
   handleDelete: (id: string) => void;
   totalCount: number;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -25,7 +28,7 @@ export default function ItemCategoryTable({
   itemCategoryList,
   handleDelete,
   totalCount,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<ItemCategoryTableProps>) {
   const navigate = useNavigate();
 
@@ -40,7 +43,6 @@ export default function ItemCategoryTable({
       </Table.Td>
       <Table.Td>{item.name}</Table.Td>
       <Table.Td>{item.Item?.length}</Table.Td>
-      <Table.Td>23</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -64,7 +66,6 @@ export default function ItemCategoryTable({
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Name</Table.Th>
             <Table.Th>Items</Table.Th>
-            <Table.Th>Stock</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>

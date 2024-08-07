@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Button, Select, Textarea, TextInput } from "@mantine/core";
+import { Button, Select, Textarea, TextInput, Text } from "@mantine/core";
 import { createOrganizationInput, Permissions } from "interfaces/interfaces";
 import { CreateOrganization } from "query/organization/organizationCreate";
 import React, { useEffect, useMemo } from "react";
@@ -12,8 +12,12 @@ import ButtonComponent from "Components/Button/ButtonComponent";
 import { UpdateOrganization } from "query/organization/organizationUpdate";
 import { Organization, UpdateOrganizationInput } from "gql/graphql";
 import { useNavigate } from "react-router-dom";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import messagesData from "Lib/messages";
 
 export default function OrganizationForm({
   close,
@@ -23,7 +27,7 @@ export default function OrganizationForm({
   orgDetails,
   setNewOrgList,
   refetchItem,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -37,7 +41,7 @@ export default function OrganizationForm({
   >;
   refetchItem: () => void;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -47,15 +51,33 @@ export default function OrganizationForm({
   const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
-      name: yup.string().required(),
-      description: yup.string().required(),
-      address: yup.string().required(),
-      city: yup.string().required(),
+      name: yup
+        .string()
+        .required(messagesData.organization.name.required)
+        .max(100, messagesData.organization.name.max)
+        .trim(messagesData.organization.name.trim)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.organization.name.matches),
+      description: yup
+        .string()
+        .required(messagesData.organization.description.required)
+        .trim(messagesData.organization.description.required),
+      address: yup
+        .string()
+        .required(messagesData.organization.address.required)
+        .trim(messagesData.organization.address.required),
+      city: yup
+        .string()
+        .required(messagesData.organization.city.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.organization.city.matches)
+        .trim(messagesData.organization.city.required),
       contact: yup
         .string()
-        .matches(/^\d+$/, "Contact info must be a number")
-        .required("Contact info is required"),
-      country: yup.string().required(),
+        .matches(/^\d+$/, messagesData.organization.contact.matches)
+        .trim(messagesData.organization.contact.required)
+        .required(messagesData.organization.contact.required),
+      country: yup
+        .string()
+        .required(messagesData.organization.country.required),
     })
     .required();
 
@@ -113,7 +135,9 @@ export default function OrganizationForm({
       const response = await addOrganization({
         variables: { createOrganizationInput: data as createOrganizationInput },
       });
-      setNewOrgList(response.data);
+      if (setNewOrgList) {
+        setNewOrgList(response.data);
+      }
     }
   };
 
@@ -136,8 +160,11 @@ export default function OrganizationForm({
           placeholder="Name"
           {...register("name")}
           disabled={!editForm}
-          error={errors.name && "This field is required"}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.name?.message}
+        </Text>
       </div>
 
       <div className="mb-4">
@@ -146,8 +173,11 @@ export default function OrganizationForm({
           placeholder="Description"
           {...register("description")}
           disabled={!editForm}
-          error={errors.description && "This field is required"}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.description?.message}
+        </Text>
       </div>
 
       <div className="mb-4">
@@ -156,8 +186,11 @@ export default function OrganizationForm({
           placeholder="Address"
           {...register("address")}
           disabled={!editForm}
-          error={errors.address && "This field is required"}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.address?.message}
+        </Text>
       </div>
 
       <div className="mb-4">
@@ -166,8 +199,11 @@ export default function OrganizationForm({
           placeholder="Contact"
           {...register("contact")}
           disabled={!editForm}
-          error={errors.contact && "This field is required"}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.contact?.message}
+        </Text>
       </div>
 
       <div className="mb-4">
@@ -176,8 +212,11 @@ export default function OrganizationForm({
           placeholder="City"
           {...register("city")}
           disabled={!editForm}
-          error={errors.city && "This field is required"}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.city?.message}
+        </Text>
       </div>
 
       <div className="mb-4">
@@ -194,10 +233,13 @@ export default function OrganizationForm({
               value={field.value}
               searchable
               disabled={!editForm}
-              error={errors.country && "This field is required"}
+              withAsterisk
             />
           )}
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.country?.message}
+        </Text>
       </div>
 
       <div className="text-right">
@@ -210,16 +252,22 @@ export default function OrganizationForm({
             >
               Cancel
             </Button>
-            {editForm && handleUserPermissions(permission , USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.EDIT) && (<>
-              <ButtonComponent type="submit" loading={updateOrgLoading}>
-                Update
-              </ButtonComponent>
-            
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
-            </>)
-            }
+            {editForm &&
+              handleUserPermissions(
+                permission,
+                USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+                USER_PERMISSION_CAPABILITIES.EDIT
+              ) && (
+                <>
+                  <ButtonComponent type="submit" loading={updateOrgLoading}>
+                    Update
+                  </ButtonComponent>
+
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                </>
+              )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addOrgLoading}>

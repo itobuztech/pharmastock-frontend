@@ -9226,7 +9226,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
 "libphonenumber-js@npm:^1.11.5":
   version: 1.11.5
   resolution: "libphonenumber-js@npm:1.11.5"
@@ -9234,8 +9233,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-=======
->>>>>>> dev
 "lie@npm:3.1.1":
   version: 3.1.1
   resolution: "lie@npm:3.1.1"
@@ -10630,10 +10627,7 @@ __metadata:
     eslint-plugin-react: ^7.34.3
     graphql: ^15.5.0
     husky: ^8.0.1
-<<<<<<< HEAD
     libphonenumber-js: ^1.11.5
-=======
->>>>>>> dev
     lint-staged: ^13.0.2
     lodash: ^4.17.21
     postcss: ^8.4.31

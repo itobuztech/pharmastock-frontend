@@ -3,7 +3,11 @@ import { RootState } from "../Store";
 import { appStore } from "Lib/appStore";
 import { Permissions } from "interfaces/interfaces";
 import appConfig from "Lib/appConfig";
-import { ForgetPasswordPayload, LoginPayload } from "Lib/Api/Fake/Users/users.interface";
+import {
+  ForgetPasswordPayload,
+  LoginPayload,
+} from "Lib/Api/Fake/Users/users.interface";
+import { UserRole } from "gql/graphql";
 
 export interface UserData {
   createdAt: string;
@@ -19,13 +23,18 @@ export interface ForgetPasswordState {
   token: string | null;
 }
 
+export interface Role {
+  role: UserRole | null;
+}
+
 export interface UserState {
   login: {
     loading: boolean;
   };
   forgetPassword: ForgetPasswordState;
   currentUser: null | UserData;
-  permission: Permissions
+  permission: Permissions;
+  role: null | UserRole;
 }
 
 const store = appStore.get();
@@ -39,7 +48,8 @@ const initialState: UserState = {
     token: null,
   },
   currentUser: store.user.currentUser,
-  permission: store.user.permission 
+  permission: store.user.permission,
+  role: store.user.role,
 };
 
 export const userSlice = createSlice({
@@ -76,12 +86,20 @@ export const userSlice = createSlice({
       store.user.permission = payload;
       appStore.set(store);
     },
+    setRole: (state, { payload }: { payload: UserRole }) => {
+      state.role = payload;
+      const store = appStore.get();
+      store.user.role = payload;
+      appStore.set(store);
+    },
     logout: (state) => {
       state.currentUser = null;
-      state.permission = {} ;
+      state.permission = {};
+      state.role = null;
       const store = appStore.get();
       store.user.currentUser = null;
       store.user.permission = {};
+      store.user.role = null;
       appStore.set(store);
       localStorage.removeItem(appConfig.storage.store);
       localStorage.removeItem(appConfig.storage.accessToken);
@@ -90,7 +108,15 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, setPermission, logout, login, forgetPassword, updateForgetPassword } = userSlice.actions;
+export const {
+  setUser,
+  setPermission,
+  logout,
+  login,
+  setRole,
+  forgetPassword,
+  updateForgetPassword,
+} = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user.currentUser;
