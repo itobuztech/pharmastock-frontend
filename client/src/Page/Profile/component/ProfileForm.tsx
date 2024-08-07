@@ -102,6 +102,10 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
               type="button"
               onClick={() => {
                 setEditForm(false);
+                reset({
+                  name: admin?.account.user.name,
+                  username: admin?.account.user.username,
+                });
               }}
               variant="outline"
             >
