@@ -1,4 +1,7 @@
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 
 export interface SignupUserInput {
   username: string;
@@ -62,8 +65,6 @@ export interface Permissions {
   PHARMACY_MANAGEMENT?: PermissionItem;
   STAFF_MANAGEMENT?: PermissionItem;
 }
-
-
 
 export interface PaginationArgsInput {
   skip: number;
@@ -133,7 +134,7 @@ export interface CreatePharmacyResponse {
 
 export interface ChildComponentProps {
   handleUserPermissions: (
-    permission:Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -424,4 +425,20 @@ export interface PharmacyStock {
   totalWholesalePrice: number;
   updatedAt: string;
   warehouse: WarehouseItem;
+}
+
+export interface WarehouseStockQty {
+  maxWarehouseStockQty: MaxWarehouseStockQty;
+}
+
+export interface MaxWarehouseStockQty {
+  totalQty: number;
+}
+
+export interface PharmacyStockQty {
+  maxPharmacyStockQty: MaxPharmacyStockQty;
+}
+
+export interface MaxPharmacyStockQty {
+  totalQty: number;
 }
