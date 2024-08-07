@@ -1,4 +1,7 @@
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 
 export interface SignupUserInput {
   username: string;
@@ -63,8 +66,6 @@ export interface Permissions {
   STAFF_MANAGEMENT?: PermissionItem;
 }
 
-
-
 export interface PaginationArgsInput {
   skip: number;
   take: number;
@@ -86,12 +87,21 @@ export interface AdminProfile {
   account: {
     role: string;
     user: {
+      createdAt?: string;
       email: string;
       id: string;
       name: string;
+      organization?: Organization;
+      role?: Role;
       username: string;
     };
   };
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  userType: string;
 }
 
 export interface ResetPasswordInput {
@@ -133,7 +143,7 @@ export interface CreatePharmacyResponse {
 
 export interface ChildComponentProps {
   handleUserPermissions: (
-    permission:Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
