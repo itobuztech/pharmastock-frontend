@@ -18,7 +18,9 @@ import {
 } from "interfaces/interfaces";
 import EmptyList from "Components/EmptyList";
 
-export default function PharmacyDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function PharmacyDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
@@ -116,6 +118,9 @@ export default function PharmacyDetails({ handleUserPermissions }:Readonly<Child
       )}
 
       <div className="mt-8">
+        <h2 className="text-blue-900 text-2xl font-bold m-0 mb-8">
+          Pharmacy Stocks
+        </h2>
         {!pharmacyStocksList?.pharmacyStocks.length ? (
           <EmptyList />
         ) : (

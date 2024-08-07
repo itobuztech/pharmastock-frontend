@@ -36,7 +36,6 @@ export default function PageHeader({
       {showCreateButton && (
         <Button
           leftSection={<BsPlusLg size={18} />}
-          color="rgba(37, 99, 235, 1)"
           size="md"
           onClick={onClick}
           className=" font-extrabold"

@@ -18,10 +18,15 @@ import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksBy
 import { toast } from "react-toastify";
 import EmptyList from "Components/EmptyList";
 import WarehouseStockTable from "Page/WarehouseStock/components/WarehouseStockTable";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function WarehouseDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function WarehouseDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
   const [opened, { open, close }] = useDisclosure(false);
@@ -32,7 +37,7 @@ export default function WarehouseDetails({ handleUserPermissions }:Readonly<Chil
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
-  const permission = useAppSelector(state => state.user.permission)
+  const permission = useAppSelector((state) => state.user.permission);
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
   }>(GetWarehouseDetails, {
@@ -93,7 +98,11 @@ export default function WarehouseDetails({ handleUserPermissions }:Readonly<Chil
       <PageHeader
         title="Warehouse Details"
         showBackButton={true}
-        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Warehouse Stock"
       />
@@ -119,6 +128,9 @@ export default function WarehouseDetails({ handleUserPermissions }:Readonly<Chil
       )}
 
       <div className="mt-8">
+        <h2 className="text-blue-900 text-2xl font-bold m-0 mb-8">
+          Warehouse Stocks
+        </h2>
         {!warehouseStocksList?.warehouseStocks.length ? (
           <EmptyList />
         ) : (
