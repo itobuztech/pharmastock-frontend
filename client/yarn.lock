@@ -9248,6 +9248,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libphonenumber-js@npm:^1.11.5":
+  version: 1.11.5
+  resolution: "libphonenumber-js@npm:1.11.5"
+  checksum: 74f4b1b138ae4d0da0108cd95ad24ecb9088a4eb920a7934bfc1508bed8358c772ad80c8cbef708cadebb4f48bb8b3210e2728c3bb0009b143a35b1a680d8a19
+  languageName: node
+  linkType: hard
+
 "lie@npm:3.1.1":
   version: 3.1.1
   resolution: "lie@npm:3.1.1"
@@ -10644,6 +10651,7 @@ __metadata:
     eslint-plugin-react: ^7.34.3
     graphql: ^15.5.0
     husky: ^8.0.1
+    libphonenumber-js: ^1.11.5
     lint-staged: ^13.0.2
     lodash: ^4.17.21
     postcss: ^8.4.31
