@@ -2,11 +2,13 @@ import { gql } from "@apollo/client";
 
 export const GetItemLists = gql`
   query Items(
+    $filterArgs: FilterItemInputs
     $pagination: Boolean
     $paginationArgs: PaginationArgs
     $searchText: String
   ) {
     items(
+      filterArgs: $filterArgs
       pagination: $pagination
       paginationArgs: $paginationArgs
       searchText: $searchText
