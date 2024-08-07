@@ -144,7 +144,10 @@ export const messagesData = {
       required: "Old Password is a required field",
       newPassword: "New Password is a required field",
       confirmPassword: "Confirm Password is a required field",
+      setNewPassword: "Not same as old password",
     },
+    success: "Profile Updated Successfully",
+    passwordChangeSuccess: "Password Changed Successfully",
   },
 };
 

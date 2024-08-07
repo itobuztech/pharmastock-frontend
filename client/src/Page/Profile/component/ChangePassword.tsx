@@ -23,6 +23,13 @@ export default function ChangePassword() {
       newPassword: yup
         .string()
         .required(messagesData.profile.password.newPassword)
+        .test(
+          "not-same-as-old-password",
+          messagesData.profile.password.setNewPassword,
+          function (value) {
+            return value !== this.parent.oldPassword;
+          }
+        )
         .trim(messagesData.profile.password.newPassword),
       confirmPassword: yup
         .string()
@@ -53,7 +60,7 @@ export default function ChangePassword() {
         toast.error(err.message);
       },
       onCompleted: () => {
-        toast.success("Password Changed Successfully");
+        toast.success(messagesData.profile.passwordChangeSuccess);
         setEditPassForm(false);
         reset();
       },
@@ -78,6 +85,7 @@ export default function ChangePassword() {
           {...register("oldPassword")}
           placeholder="Old Password"
           disabled={!editPassForm}
+          withAsterisk
         />
         <Text size="sm" mt={5} c="red.6">
           {errors.oldPassword?.message}

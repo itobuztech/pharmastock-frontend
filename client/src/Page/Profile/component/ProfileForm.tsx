@@ -49,7 +49,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
         toast.error(err.message);
       },
       onCompleted: () => {
-        toast.success("Profile Updated Successfully");
+        toast.success(messagesData.profile.success);
         setEditForm(false);
       },
     }
