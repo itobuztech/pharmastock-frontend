@@ -17,6 +17,11 @@ import {
   PharmacyStocksByPharmacy,
 } from "interfaces/interfaces";
 import EmptyList from "Components/EmptyList";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function PharmacyDetails({
   handleUserPermissions,
@@ -30,6 +35,7 @@ export default function PharmacyDetails({
     useState<PharmacyStocksByPharmacy>();
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
+  const permission = useAppSelector((state) => state.user.permission);
 
   const { data: pharmacyDetails, refetch } = useQuery<{ pharmacy: Pharmacy }>(
     GetPharmacyDetails,
@@ -93,7 +99,11 @@ export default function PharmacyDetails({
       <PageHeader
         title="Pharmacy Details"
         showBackButton={true}
-        showCreateButton={true}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Pharmacy Stock"
       />
@@ -106,6 +116,7 @@ export default function PharmacyDetails({
           refetchPharmacyDetails={refetch}
           editForm={editForm}
           setEditForm={setEditForm}
+          handleUserPermissions={handleUserPermissions}
         />
       </div>
 

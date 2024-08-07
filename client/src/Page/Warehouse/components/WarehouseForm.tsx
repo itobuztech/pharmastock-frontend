@@ -202,19 +202,22 @@ export default function WarehouseForm({
               Cancel
             </Button>
 
-            {editForm &&
-            handleUserPermissions(
+            {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.EDIT
-            ) ? (
-              <ButtonComponent type="submit" loading={updateLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent type="submit" loading={updateLoading}>
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (
