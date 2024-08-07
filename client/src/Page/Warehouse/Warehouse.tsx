@@ -192,7 +192,7 @@ export default function Warehouse({
       <Modal
         opened={opened}
         onClose={close}
-        title="Warehouse"
+        title="Add New Warehouse"
         centered
         size={"lg"}
       >

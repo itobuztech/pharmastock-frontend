@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, TextInput } from "@mantine/core";
+import { Button, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -20,6 +20,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import messagesData from "Lib/messages";
 
 export default function WarehouseForm({
   close,
@@ -48,9 +49,22 @@ export default function WarehouseForm({
   const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
-      name: yup.string().required(),
-      location: yup.string().required(),
-      area: yup.string().required(),
+      name: yup
+        .string()
+        .required(messagesData.warehouse.name.required)
+        .max(100, messagesData.warehouse.name.max)
+        .trim(messagesData.warehouse.name.trim)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.name.matches),
+      location: yup
+        .string()
+        .required(messagesData.warehouse.location.required)
+        .trim(messagesData.warehouse.location.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.location.matches),
+      area: yup
+        .string()
+        .required(messagesData.warehouse.area.required)
+        .trim(messagesData.warehouse.area.required)
+        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.warehouse.area.matches),
     })
     .required();
 
@@ -108,7 +122,9 @@ export default function WarehouseForm({
       const response = await createWarehouse({
         variables: { createWarehouseInput: data },
       });
-      setNewWarehouseList(response.data);
+      if (setNewWarehouseList) {
+        setNewWarehouseList(response.data);
+      }
     }
   };
 
@@ -123,8 +139,8 @@ export default function WarehouseForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
-        <div className="flex-1">
-          {id && (
+        {id && (
+          <div className="flex-1">
             <div className="mb-4">
               <TextInput
                 label="Organization"
@@ -133,16 +149,19 @@ export default function WarehouseForm({
                 disabled
               />
             </div>
-          )}
-        </div>
+          </div>
+        )}
         <div className="flex-1">
           <TextInput
             label="Name"
             placeholder="Name"
             {...register("name")}
             disabled={!editForm}
-            error={errors.name && "This field is required"}
+            withAsterisk
           />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.name?.message}
+          </Text>
         </div>
       </div>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
@@ -152,8 +171,11 @@ export default function WarehouseForm({
             placeholder="Location"
             {...register("location")}
             disabled={!editForm}
-            error={errors.location && "This field is required"}
+            withAsterisk
           />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.location?.message}
+          </Text>
         </div>
         <div className="flex-1">
           <TextInput
@@ -161,8 +183,11 @@ export default function WarehouseForm({
             placeholder="Area"
             {...register("area")}
             disabled={!editForm}
-            error={errors.area && "This field is required"}
+            withAsterisk
           />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.area?.message}
+          </Text>
         </div>
       </div>
 
