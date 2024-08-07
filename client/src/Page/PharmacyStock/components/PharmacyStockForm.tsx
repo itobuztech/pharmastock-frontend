@@ -232,18 +232,24 @@ export default function PharmacyStockForm({
         </div>
       )}
 
-      <div className="mb-4">
-        <NumberInput
-          label="Add Quantity"
-          placeholder="Qty"
-          {...register("qty")}
-          value={qtyAddValue}
-          onChange={setQtyAddValue}
-          min={0}
-          max={1000000}
-          error={errors.qty && "This field is required"}
-        />
-      </div>
+      {handleUserPermissions(
+        permission,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+        USER_PERMISSION_CAPABILITIES.EDIT
+      ) && (
+        <div className="mb-4">
+          <NumberInput
+            label="Add Quantity"
+            placeholder="Qty"
+            {...register("qty")}
+            value={qtyAddValue}
+            onChange={setQtyAddValue}
+            min={0}
+            max={1000000}
+            error={errors.qty && "This field is required"}
+          />
+        </div>
+      )}
 
       <div className="text-right">
         {id ? (

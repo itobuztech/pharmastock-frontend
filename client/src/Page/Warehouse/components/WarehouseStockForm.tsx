@@ -315,18 +315,26 @@ export default function WarehouseStockForm({
         )}
 
         {id || warehouseStockId || list ? (
-          <div className="flex-1">
-            <NumberInput
-              label="Add Quantity"
-              placeholder="Qty"
-              {...register("qty")}
-              value={qtyAddValue}
-              onChange={setQtyAddValue}
-              min={0}
-              max={10000}
-              error={errors.qty && "This field is required"}
-            />
-          </div>
+          <>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <div className="flex-1">
+                <NumberInput
+                  label="Add Quantity"
+                  placeholder="Qty"
+                  {...register("qty")}
+                  value={qtyAddValue}
+                  onChange={setQtyAddValue}
+                  min={0}
+                  max={10000}
+                  error={errors.qty && "This field is required"}
+                />
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex-1">
             <TextInput
@@ -348,43 +356,53 @@ export default function WarehouseStockForm({
           </div>
         )}
       </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
-        {!list && (
-          <div className="flex-1">
-            <TextInput
-              label="Batch Name"
-              placeholder="Batch Name"
-              {...register("batchName")}
-              error={errors.batchName && "This field is required"}
-            />
-          </div>
-        )}
-        <div className="flex-1 datePicker">
-          <span className="block text-sm font-medium leading-[23px]">
-            Expiry Date
-          </span>
-          <Controller
-            name="expiry"
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => {
-                  setStartDate(date);
-                  field.onChange(date);
-                }}
-                minDate={new Date()}
-                dateFormat="MMMM d, yyyy"
-                placeholderText="Select expiry date"
-                className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+
+      {handleUserPermissions(
+        permission,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+        USER_PERMISSION_CAPABILITIES.EDIT
+      ) && (
+        <div className="flex flex-wrap gap-4 justify-between mb-6">
+          {!list && (
+            <div className="flex-1">
+              <TextInput
+                label="Batch Name"
+                placeholder="Batch Name"
+                {...register("batchName")}
+                error={errors.batchName && "This field is required"}
               />
-            )}
-          />
-          {errors.expiry && (
-            <span className="text-xs text-red-500">This field is required</span>
+            </div>
           )}
+
+          <div className="flex-1 datePicker">
+            <span className="block text-sm font-medium leading-[23px]">
+              Expiry Date
+            </span>
+            <Controller
+              name="expiry"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    field.onChange(date);
+                  }}
+                  minDate={new Date()}
+                  dateFormat="MMMM d, yyyy"
+                  placeholderText="Select expiry date"
+                  className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+                />
+              )}
+            />
+            {errors.expiry && (
+              <span className="text-xs text-red-500">
+                This field is required
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="text-right">
         {warehouseStockId ? (
