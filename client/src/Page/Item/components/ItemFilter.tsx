@@ -3,8 +3,13 @@ import { Button, Checkbox, Group, Popover, Slider, Text } from "@mantine/core";
 import { BaseUnit } from "gql/graphql";
 import { Controller, useForm } from "react-hook-form";
 import { BiFilter } from "react-icons/bi";
-import { LazyQueryExecFunction, OperationVariables } from "@apollo/client";
-import { ItemLists } from "interfaces/interfaces";
+import {
+  LazyQueryExecFunction,
+  OperationVariables,
+  useQuery,
+} from "@apollo/client";
+import { ItemLists, MaxPriceData } from "interfaces/interfaces";
+import { GetItemMaxPrice } from "query/item/itemMaxPrice";
 
 const baseUnitArray = Object.values(BaseUnit);
 
@@ -19,9 +24,7 @@ export default function ItemFilter({
   activePage,
   searchInput,
   setSearchInput,
-}: // opened,
-// popOverOpen,
-{
+}: {
   selectedUnit: string[];
   sliderValue: number;
   sliderValueMrp: number;
@@ -32,11 +35,10 @@ export default function ItemFilter({
   activePage: number;
   searchInput: string;
   setSearchInput: React.Dispatch<React.SetStateAction<string>>;
-  // opened: boolean;
-  // popOverOpen: () => void;
 }) {
   const { handleSubmit, control, reset } = useForm();
   const [opened, setOpened] = useState(false);
+  const [filterValue, setFilterValue] = useState(false);
 
   const handleSliderChange = (value: number) => {
     setSliderValue(value);
@@ -68,6 +70,7 @@ export default function ItemFilter({
       },
     });
     setOpened(false);
+    setFilterValue(true);
   };
 
   const handleClearFilters = () => {
@@ -98,15 +101,30 @@ export default function ItemFilter({
     setOpened(false);
   };
 
+  const { data: maxPrice } = useQuery<MaxPriceData>(GetItemMaxPrice);
+
+  const handlePopoverClose = () => {
+    if (!filterValue) {
+      setSelectedUnit([]);
+      setSliderValue(0);
+      setSliderValueMrp(0);
+      reset({
+        endDate: null,
+        qty: null,
+        startDate: null,
+      });
+    }
+  };
+
   return (
     <Popover
       width={300}
-      trapFocus
       position="bottom-start"
       withArrow
       shadow="md"
       opened={opened}
       onChange={setOpened}
+      onClose={handlePopoverClose}
     >
       <Popover.Target>
         <Button
@@ -152,7 +170,7 @@ export default function ItemFilter({
                 <Slider
                   value={sliderValueMrp}
                   min={0}
-                  max={100}
+                  max={maxPrice?.maxPrice.mrpBaseUnit}
                   step={1}
                   onChange={handleMrpSliderChange}
                   onChangeEnd={(val) => field.onChange(val)}
@@ -172,7 +190,7 @@ export default function ItemFilter({
                 <Slider
                   value={sliderValue}
                   min={0}
-                  max={1000}
+                  max={maxPrice?.maxPrice.wholesalePrice}
                   step={1}
                   onChange={handleSliderChange}
                   onChangeEnd={(val) => field.onChange(val)}

@@ -435,3 +435,12 @@ export interface PharmacyStock {
   updatedAt: string;
   warehouse: WarehouseItem;
 }
+
+export interface MaxPriceData {
+  maxPrice: MaxPrice;
+}
+
+export interface MaxPrice {
+  mrpBaseUnit: number;
+  wholesalePrice: number;
+}
