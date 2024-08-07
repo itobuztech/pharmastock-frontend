@@ -4,6 +4,7 @@ import MenuLink from "./MenuLink";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "Lib/Store/hooks";
 import { USER_PERMISSION_FIELDS } from "enums/enums";
+import { UserRole } from "gql/graphql";
 
 export default function SidebarComponent() {
   const permission = useAppSelector((state) => state.user.permission);
@@ -14,6 +15,8 @@ export default function SidebarComponent() {
     return permission[field]?.CAPABILITIES?.VIEW !== null;
   };
 
+  const user = useAppSelector((state) => state.user);
+
   return (
     <div
       className="flex flex-col sm:flex-row sm:justify-around"
@@ -22,7 +25,7 @@ export default function SidebarComponent() {
       <div className="w-72 h-screen">
         <Link
           className="flex items-center justify-start mx-6 mt-10 no-underline"
-          to={`/${routes.dashboard}`}
+          to={routes.dashboard.profile.path}
         >
           <span className="text-black  ml-4 text-2xl font-bold">
             Pharma Stock
@@ -35,15 +38,17 @@ export default function SidebarComponent() {
             link={routes.dashboard.profile.path}
           />
 
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Organizations"
-              activeMenuPaths={routes.dashboard.organizations.path}
-              link={routes.dashboard.organizations.path}
-            />
-          )}
+          {user.role === UserRole.Superadmin &&
+            handleSliderOptionsVisible(
+              USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT
+            ) && (
+              <MenuLink
+                text="Organizations"
+                activeMenuPaths={routes.dashboard.organizations.path}
+                link={routes.dashboard.organizations.path}
+              />
+            )}
+
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
           ) && (
