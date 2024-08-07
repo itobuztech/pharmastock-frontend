@@ -87,12 +87,21 @@ export interface AdminProfile {
   account: {
     role: string;
     user: {
+      createdAt?: string;
       email: string;
       id: string;
       name: string;
+      organization?: Organization;
+      role?: Role;
       username: string;
     };
   };
+}
+
+export interface Role {
+  id: string;
+  name: string;
+  userType: string;
 }
 
 export interface ResetPasswordInput {
