@@ -64,10 +64,14 @@ export default function PasswordStrength({
   name,
   control,
   errors,
+  disabled,
+  label,
 }: {
   name: string;
   control: Control<any>;
   errors?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
+  disabled?: boolean;
+  label: string;
 }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const {
@@ -106,11 +110,12 @@ export default function PasswordStrength({
             render={({ field }) => (
               <PasswordInput
                 withAsterisk
-                label="Password"
-                placeholder="Password"
+                label={label}
+                placeholder={label}
                 value={field.value}
                 onChange={(event) => onChange(event.currentTarget.value)}
                 error={errors && "This field is required"}
+                disabled={disabled}
               />
             )}
           />

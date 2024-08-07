@@ -6,21 +6,51 @@ import { useMutation } from "@apollo/client";
 import { GetResetPassword } from "query/profile/resetPassword";
 import { toast } from "react-toastify";
 import { ResetPasswordInput } from "gql/graphql";
-import { Button, PasswordInput, Space } from "@mantine/core";
+import { Button, PasswordInput, Space, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
+import messagesData from "Lib/messages";
+import PasswordStrength from "Page/Auth/Register/components/PasswordStrength";
 
 export default function ChangePassword() {
   const [editPassForm, setEditPassForm] = useState(false);
 
   const passwordSchema = yup
     .object({
-      oldPassword: yup.string().required(),
-      newPassword: yup.string().required(),
+      oldPassword: yup
+        .string()
+        .required(messagesData.profile.password.required)
+        .trim(messagesData.profile.password.required),
+      newPassword: yup
+        .string()
+        .required(messagesData.profile.password.newPassword)
+        .test(
+          "not-same-as-old-password",
+          messagesData.profile.password.setNewPassword,
+          function (value) {
+            return value !== this.parent.oldPassword;
+          }
+        )
+        .trim(messagesData.profile.password.newPassword),
+      confirmPassword: yup
+        .string()
+        .required(messagesData.profile.password.confirmPassword)
+        .trim(messagesData.profile.password.confirmPassword),
     })
     .required();
 
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(passwordSchema),
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
   });
 
   const [resetPassword, { loading: resetPassLoader }] = useMutation(
@@ -30,7 +60,7 @@ export default function ChangePassword() {
         toast.error(err.message);
       },
       onCompleted: () => {
-        toast.success("Password Changed Successfully");
+        toast.success(messagesData.profile.passwordChangeSuccess);
         setEditPassForm(false);
         reset();
       },
@@ -53,23 +83,57 @@ export default function ChangePassword() {
         <PasswordInput
           label="Old Password"
           {...register("oldPassword")}
-          placeholder="********"
+          placeholder="Old Password"
           disabled={!editPassForm}
+          withAsterisk
         />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.oldPassword?.message}
+        </Text>
       </div>
       <div className="mb-4">
-        <PasswordInput
-          label="New Password"
-          {...register("newPassword")}
-          placeholder="********"
-          disabled={!editPassForm}
-        />
+        <div className="relative">
+          <PasswordStrength
+            control={control}
+            name="newPassword"
+            disabled={!editPassForm}
+            label="New Password"
+          />
+        </div>
+        <Text size="sm" mt={5} c="red.6">
+          {errors.newPassword?.message}
+        </Text>
+      </div>
+      <div className="mb-4">
+        <div className="relative">
+          <PasswordStrength
+            control={control}
+            name="confirmPassword"
+            disabled={!editPassForm}
+            label="Confirm Password"
+          />
+        </div>
+        <Text size="sm" mt={5} c="red.6">
+          {errors.confirmPassword?.message}
+        </Text>
       </div>
       <div className="text-right">
         {editPassForm ? (
-          <ButtonComponent type="submit" loading={resetPassLoader}>
-            Update
-          </ButtonComponent>
+          <div className="flex flex-wrap gap-4 justify-end">
+            <Button
+              type="button"
+              onClick={() => {
+                setEditPassForm(false);
+                reset();
+              }}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            <ButtonComponent type="submit" loading={resetPassLoader}>
+              Update
+            </ButtonComponent>
+          </div>
         ) : (
           <Button type="button" onClick={() => setEditPassForm(true)}>
             Edit
