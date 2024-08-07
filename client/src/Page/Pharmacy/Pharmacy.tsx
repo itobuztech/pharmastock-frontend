@@ -203,6 +203,7 @@ export default function Pharmacy({
           setNewPharmacyList={setNewPharmacyList}
           editForm={editForm}
           setEditForm={setEditForm}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

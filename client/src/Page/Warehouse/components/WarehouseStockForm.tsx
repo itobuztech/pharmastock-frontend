@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NumberInput, Select, TextInput } from "@mantine/core";
+import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -24,6 +24,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import { useNavigate } from "react-router-dom";
 
 interface WarehouseStockFormProps {
   close?: () => void;
@@ -76,6 +77,7 @@ export default function WarehouseStockForm({
   const selectOrgItems = useOrganizationList();
   const selectItem = useItemList();
   const permission = useAppSelector((state) => state.user.permission);
+  const navigate = useNavigate();
 
   const schema = yup
     .object({
@@ -101,20 +103,23 @@ export default function WarehouseStockForm({
     resolver: yupResolver(schema),
   });
 
-  const [createWarehouseStock] = useMutation(WarehouseStockCreate, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: () => {
-      toast.success("Warehouse Stock Created Successfully");
-      if (close) {
-        close();
-      }
-      reset();
-      setQtyAddValue("");
-      refetchItem();
-    },
-  });
+  const [createWarehouseStock, { loading }] = useMutation(
+    WarehouseStockCreate,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: () => {
+        toast.success("Warehouse Stock Created Successfully");
+        if (close) {
+          close();
+        }
+        reset();
+        setQtyAddValue("");
+        refetchItem();
+      },
+    }
+  );
 
   const onSubmit = async (data: CreateWarehouseStockInput) => {
     console.log(data);
@@ -193,6 +198,8 @@ export default function WarehouseStockForm({
         );
     }
   }, [setValue, warehouseStockDetails?.warehouseStock]);
+
+  console.log({ permission });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -308,18 +315,26 @@ export default function WarehouseStockForm({
         )}
 
         {id || warehouseStockId || list ? (
-          <div className="flex-1">
-            <NumberInput
-              label="Add Quantity"
-              placeholder="Qty"
-              {...register("qty")}
-              value={qtyAddValue}
-              onChange={setQtyAddValue}
-              min={0}
-              max={10000}
-              error={errors.qty && "This field is required"}
-            />
-          </div>
+          <>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <div className="flex-1">
+                <NumberInput
+                  label="Add Quantity"
+                  placeholder="Qty"
+                  {...register("qty")}
+                  value={qtyAddValue}
+                  onChange={setQtyAddValue}
+                  min={0}
+                  max={10000}
+                  error={errors.qty && "This field is required"}
+                />
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex-1">
             <TextInput
@@ -341,55 +356,80 @@ export default function WarehouseStockForm({
           </div>
         )}
       </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
-        {!list && (
-          <div className="flex-1">
-            <TextInput
-              label="Batch Name"
-              placeholder="Batch Name"
-              {...register("batchName")}
-              error={errors.batchName && "This field is required"}
-            />
-          </div>
-        )}
-        <div className="flex-1 datePicker">
-          <span className="block text-sm font-medium leading-[23px]">
-            Expiry Date
-          </span>
-          <Controller
-            name="expiry"
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => {
-                  setStartDate(date);
-                  field.onChange(date);
-                }}
-                minDate={new Date()}
-                dateFormat="MMMM d, yyyy"
-                placeholderText="Select expiry date"
-                className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
-              />
-            )}
-          />
-          {errors.expiry && (
-            <span className="text-xs text-red-500">This field is required</span>
-          )}
-        </div>
-      </div>
 
       {handleUserPermissions(
         permission,
-        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
         USER_PERMISSION_CAPABILITIES.EDIT
       ) && (
-        <div className="text-right mt-6">
-          <ButtonComponent type="submit">
-            {warehouseStockId ? "Update" : "Create"}
-          </ButtonComponent>
+        <div className="flex flex-wrap gap-4 justify-between mb-6">
+          {!list && (
+            <div className="flex-1">
+              <TextInput
+                label="Batch Name"
+                placeholder="Batch Name"
+                {...register("batchName")}
+                error={errors.batchName && "This field is required"}
+              />
+            </div>
+          )}
+
+          <div className="flex-1 datePicker">
+            <span className="block text-sm font-medium leading-[23px]">
+              Expiry Date
+            </span>
+            <Controller
+              name="expiry"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    field.onChange(date);
+                  }}
+                  minDate={new Date()}
+                  dateFormat="MMMM d, yyyy"
+                  placeholderText="Select expiry date"
+                  className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+                />
+              )}
+            />
+            {errors.expiry && (
+              <span className="text-xs text-red-500">
+                This field is required
+              </span>
+            )}
+          </div>
         </div>
       )}
+
+      <div className="text-right">
+        {warehouseStockId ? (
+          <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
+            <Button
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <ButtonComponent type="submit" loading={loading}>
+                Update
+              </ButtonComponent>
+            )}
+          </div>
+        ) : (
+          <ButtonComponent type="submit" loading={loading}>
+            Create
+          </ButtonComponent>
+        )}
+      </div>
     </form>
   );
 }

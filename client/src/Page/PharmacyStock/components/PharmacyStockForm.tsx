@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NumberInput, Select } from "@mantine/core";
+import { Button, NumberInput, Select } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -22,6 +22,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import { useNavigate } from "react-router-dom";
 
 export default function PharmacyStockForm({
   pharmacyName,
@@ -56,6 +57,7 @@ export default function PharmacyStockForm({
   const selectWarehouseItems = useWarehouseItems();
   const selectPharmaList = usePharmacyList();
   const selectItem = useItemList();
+  const navigate = useNavigate();
 
   const schema = yup
     .object({
@@ -99,7 +101,9 @@ export default function PharmacyStockForm({
         createPharmacyStockInput: data,
       },
     });
-    setNewPharmacyStockList(response.data);
+    if (setNewPharmacyStockList) {
+      setNewPharmacyStockList(response.data);
+    }
   };
 
   const [fetchWarehouseStocksByWarehouse] =
@@ -228,30 +232,51 @@ export default function PharmacyStockForm({
         </div>
       )}
 
-      <div className="mb-4">
-        <NumberInput
-          label="Add Quantity"
-          placeholder="Qty"
-          {...register("qty")}
-          value={qtyAddValue}
-          onChange={setQtyAddValue}
-          min={0}
-          max={1000000}
-          error={errors.qty && "This field is required"}
-        />
-      </div>
-
       {handleUserPermissions(
         permission,
-        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT,
+        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
         USER_PERMISSION_CAPABILITIES.EDIT
       ) && (
-        <div className="text-right mt-8">
-          <ButtonComponent type="submit" loading={loading}>
-            {id ? "Update" : "Create"}
-          </ButtonComponent>
+        <div className="mb-4">
+          <NumberInput
+            label="Add Quantity"
+            placeholder="Qty"
+            {...register("qty")}
+            value={qtyAddValue}
+            onChange={setQtyAddValue}
+            min={0}
+            max={1000000}
+            error={errors.qty && "This field is required"}
+          />
         </div>
       )}
+
+      <div className="text-right">
+        {id ? (
+          <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
+            <Button
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <ButtonComponent type="submit" loading={loading}>
+                Update
+              </ButtonComponent>
+            )}
+          </div>
+        ) : (
+          <ButtonComponent type="submit" loading={loading}>
+            Create
+          </ButtonComponent>
+        )}
+      </div>
     </form>
   );
 }

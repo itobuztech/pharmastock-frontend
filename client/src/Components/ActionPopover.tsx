@@ -56,7 +56,7 @@ export default function ActionPopover({
         {showUserModal &&
           handleUserPermissions(
             permission,
-            USER_PERMISSION_FIELDS.USER_MANAGEMENT,
+            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
             USER_PERMISSION_CAPABILITIES.CREATE
           ) && (
             <Button

@@ -233,6 +233,7 @@ export default function OrganizationsPage({
           setEditForm={setEditForm}
           refetchItem={refetch}
           setNewOrgList={setNewOrgList}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

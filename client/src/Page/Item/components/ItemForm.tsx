@@ -119,7 +119,9 @@ export default function ItemForm({
       const response = await itemCreate({
         variables: { createItemInput: data },
       });
-      setNewItemList(response.data);
+      if (setNewItemList) {
+        setNewItemList(response.data);
+      }
     }
   };
 
@@ -265,19 +267,22 @@ export default function ItemForm({
             >
               Cancel
             </Button>
-            {editForm &&
-            handleUserPermissions(
+            {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.EDIT
-            ) ? (
-              <ButtonComponent type="submit" loading={updateLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent type="submit" loading={updateLoading}>
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (

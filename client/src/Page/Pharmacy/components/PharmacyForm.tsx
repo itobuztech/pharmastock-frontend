@@ -3,10 +3,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, TextInput, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import {
   CreatePharmacyInput,
   UpdatePharmacyInput,
   Pharmacy,
 } from "gql/graphql";
+import { Permissions } from "interfaces/interfaces";
+import { useAppSelector } from "Lib/Store/hooks";
 import messagesData from "Lib/messages";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import { PharmacyCreate } from "query/pharmacy/pharmacyCreate";
@@ -25,6 +31,7 @@ export default function PharmacyForm({
   id,
   editForm,
   setEditForm,
+  handleUserPermissions,
 }: {
   close: () => void;
   setNewPharmacyList?: React.Dispatch<
@@ -35,8 +42,14 @@ export default function PharmacyForm({
   id?: string;
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleUserPermissions: (
+    permission: Permissions,
+    field: USER_PERMISSION_FIELDS,
+    capabilities: USER_PERMISSION_CAPABILITIES
+  ) => boolean;
 }) {
   const navigate = useNavigate();
+  const permission = useAppSelector((state) => state.user.permission);
 
   const schema = yup
     .object({
@@ -195,15 +208,25 @@ export default function PharmacyForm({
             >
               Cancel
             </Button>
-
-            {editForm ? (
-              <ButtonComponent type="submit" loading={updatePharmacyLoading}>
-                Update
-              </ButtonComponent>
-            ) : (
-              <Button type="button" onClick={() => setEditForm(true)}>
-                Edit
-              </Button>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <>
+                {editForm ? (
+                  <ButtonComponent
+                    type="submit"
+                    loading={updatePharmacyLoading}
+                  >
+                    Update
+                  </ButtonComponent>
+                ) : (
+                  <Button type="button" onClick={() => setEditForm(true)}>
+                    Edit
+                  </Button>
+                )}
+              </>
             )}
           </div>
         ) : (
