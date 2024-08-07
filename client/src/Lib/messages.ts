@@ -137,6 +137,29 @@ export const messagesData = {
     },
     successMessage: "Logged in Successfully",
   },
+  profile: {
+    name: {
+      required: "Name is a required field",
+      max: "Name must be at most 100 characters",
+      trim: "Name is a required field",
+      min: "Name must be at least 3 characters",
+      matches: "Name not contain any special character",
+    },
+    userName: {
+      required: "Username is a required field",
+      max: "Username must be at most 100 characters",
+      trim: "Username is a required field",
+      min: "Username must be at least 3 characters",
+    },
+    password: {
+      required: "Old Password is a required field",
+      newPassword: "New Password is a required field",
+      confirmPassword: "Confirm Password is a required field",
+      setNewPassword: "Not same as old password",
+    },
+    success: "Profile Updated Successfully",
+    passwordChangeSuccess: "Password Changed Successfully",
+  },
 };
 
 export default messagesData;
