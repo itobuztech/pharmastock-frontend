@@ -444,3 +444,18 @@ export interface MaxPrice {
   mrpBaseUnit: number;
   wholesalePrice: number;
 }
+export interface WarehouseStockQty {
+  maxWarehouseStockQty: MaxWarehouseStockQty;
+}
+
+export interface MaxWarehouseStockQty {
+  totalQty: number;
+}
+
+export interface PharmacyStockQty {
+  maxPharmacyStockQty: MaxPharmacyStockQty;
+}
+
+export interface MaxPharmacyStockQty {
+  totalQty: number;
+}

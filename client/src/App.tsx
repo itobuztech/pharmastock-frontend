@@ -10,6 +10,7 @@ import AppRoutes from "./Lib/Routes/AppRoutes";
 
 import { ApolloProvider } from "@apollo/client";
 import client from "aplloClient";
+import "@mantine/dates/styles.css";
 
 const theme = createTheme({
   cursorType: "pointer",

@@ -10,7 +10,7 @@ import {
   PharmacyStocksLists,
 } from "interfaces/interfaces";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import EmptyList from "Components/EmptyList";
 import { CreatePharmacyStockInput } from "gql/graphql";
@@ -20,6 +20,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import StockFilter from "./components/StockFilter";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -33,6 +34,8 @@ export default function PharmacyStock({
     useState<CreatePharmacyStockInput>();
   const [searchInput, setSearchInput] = useState("");
   const permission = useAppSelector((state) => state.user.permission);
+  const [sliderValue, setSliderValue] = useState<number>(0);
+
   /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
     useLazyQuery<PharmacyStocksLists>(PharmacyStocksList, {
@@ -113,8 +116,21 @@ export default function PharmacyStock({
         onClick={open}
       />
 
-      {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Flex>
+        {/* ==== Search ==== */}
+        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Space w="md" />
+
+        {/* ==== Filter ==== */}
+        <StockFilter
+          sliderValue={sliderValue}
+          setSliderValue={setSliderValue}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          fetchStockList={fetchPharmaciesStockList}
+          activePage={activePage}
+        />
+      </Flex>
 
       {/* ==== Loading State ==== */}
       {loading && (

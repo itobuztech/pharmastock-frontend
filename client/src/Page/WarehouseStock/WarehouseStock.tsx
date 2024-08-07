@@ -1,9 +1,13 @@
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
-import { ChildComponentProps, WarehouseStocks, WarehouseStocksData } from "interfaces/interfaces";
+import {
+  ChildComponentProps,
+  WarehouseStocks,
+  WarehouseStocksData,
+} from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
@@ -15,10 +19,17 @@ import { CreateWarehouseStockInput } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import Search from "Components/Search";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import StockFilter from "Page/PharmacyStock/components/StockFilter";
+// import StockFilter from "./components/StockFilter";
 
-export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function WarehouseStock({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocks>();
@@ -28,6 +39,7 @@ export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildC
   const permission = useAppSelector((state) => state.user.permission);
   const selectOrganizationItem = useOrganizationList();
   const selectWarehouseItem = useWarehouseItems();
+  const [sliderValue, setSliderValue] = useState<number>(0);
 
   const [
     deleteModalOpened,
@@ -60,6 +72,11 @@ export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildC
   useEffect(() => {
     fetchWarehouseStocksList({
       variables: {
+        filterArgs: {
+          endDate: null,
+          qty: null,
+          startDate: null,
+        },
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
@@ -151,13 +168,31 @@ export default function WarehouseStock({ handleUserPermissions }:Readonly<ChildC
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse Stocks"
-        showCreateButton={handleUserPermissions(permission,USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,USER_PERMISSION_CAPABILITIES.CREATE)}
+        showCreateButton={handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        )}
         onClick={open}
         buttonText="Add Warehouse Stock"
       />
 
-      {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Flex>
+        {/* ==== Search ==== */}
+        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Space w="md" />
+
+        {/* ==== Filter ==== */}
+        <StockFilter
+          sliderValue={sliderValue}
+          setSliderValue={setSliderValue}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          fetchStockList={fetchWarehouseStocksList}
+          activePage={activePage}
+          warehouseList={true}
+        />
+      </Flex>
 
       {/* ==== Loading State ==== */}
       {loading && (
