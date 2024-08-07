@@ -31,21 +31,20 @@ export default function LoginPage() {
       });
     };
 
-  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{ getpermissions: Permissions }>(
-    GetPermission,
-    {
-      fetchPolicy: "network-only", 
-      onCompleted: (d) => {
-        dispatch(setPermission(d.getpermissions));
-      },
-    }
-  );
-  
-useEffect(() => {
+  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{
+    getpermissions: Permissions;
+  }>(GetPermission, {
+    fetchPolicy: "network-only",
+    onCompleted: (d) => {
+      dispatch(setPermission(d.getpermissions));
+    },
+  });
+
+  useEffect(() => {
     if (permissionsData) {
       console.log("Permissions data:", permissionsData);
     }
-  }, [ permissionsData]);
+  }, [permissionsData]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -54,9 +53,9 @@ useEffect(() => {
         variables: { loginUserInput },
       });
       dispatch(setUser(data.login.user));
-      await fetchPermissions(); 
+      await fetchPermissions();
       localStorage.setItem("userData", JSON.stringify(data.login));
-  
+
       if (data?.login.access_token) {
         navigate(`${routes.dashboard.profile.path}`);
       }
@@ -65,7 +64,6 @@ useEffect(() => {
       toast.error(error.message);
     }
   };
-  
 
   return (
     <div

@@ -1,5 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
-import { LoadingOverlay, TextInput } from "@mantine/core";
+import { LoadingOverlay, Space, TextInput } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import { AdminProfile, Permissions } from "interfaces/interfaces";
 import React, { useEffect, useState } from "react";
@@ -9,27 +9,29 @@ import ChangePassword from "./component/ChangePassword";
 import ProfileForm from "./component/ProfileForm";
 import { useDispatch } from "react-redux";
 import { GetPermission } from "query/getPermission";
-import { setPermission } from "Lib/Store/User/User.Slice";
+import { setPermission, setRole } from "Lib/Store/User/User.Slice";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<AdminProfile>();
   const dispatch = useDispatch();
 
-  const [fetchPermissions, {  data:permissionsData }] = useLazyQuery<{ getpermissions: Permissions }>(
-    GetPermission,
-    {
-      fetchPolicy: "network-only", 
-      onCompleted: (d) => {
-        dispatch(setPermission(d.getpermissions));
-      },
-    }
-  );
-  
-useEffect(() => {
+  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{
+    getpermissions: Permissions;
+  }>(GetPermission, {
+    fetchPolicy: "network-only",
+    onCompleted: (d) => {
+      dispatch(setPermission(d.getpermissions));
+    },
+  });
+
+  useEffect(() => {
     if (permissionsData) {
       console.log("Permissions data:", permissionsData);
     }
-  }, [ permissionsData]);
+  }, [permissionsData]);
+
+  const user = useAppSelector((state) => state.user);
 
   const [getCurrentUser, { loading, refetch }] = useLazyQuery(GetUser, {
     onError: (err) => {
@@ -45,10 +47,15 @@ useEffect(() => {
               id: d.account.user.id,
               name: d.account.user.name,
               username: d.account.user.username,
+              organization: {
+                name: d.account.user.organization?.name,
+                id: d.account.user.organization?.id,
+              },
             },
           },
         };
         setAdmin(profile);
+        dispatch(setRole(d.account.role));
       }
     },
   });
@@ -56,8 +63,8 @@ useEffect(() => {
   useEffect(() => {
     getCurrentUser();
     refetch();
-    fetchPermissions()
-  }, [getCurrentUser, refetch, fetchPermissions]);
+    fetchPermissions();
+  }, [getCurrentUser, refetch, fetchPermissions, user]);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -75,7 +82,19 @@ useEffect(() => {
 
       <div className="w-full lg:w-4/6 xl:w-1/2 bg-white rounded-md py-6 px-6">
         <h2 className="m-0 mb-4">Account</h2>
-        <TextInput label="Email" disabled value={admin?.account.user.email} />
+        <div className="mb-4">
+          <TextInput label="Email" disabled value={admin?.account.user.email} />
+        </div>
+        {admin?.account.user.organization?.name && (
+          <div>
+            <TextInput
+              label="Organization"
+              disabled
+              value={admin?.account.user.organization?.name}
+            />
+            <Space h="md" />
+          </div>
+        )}
 
         <ProfileForm admin={admin} />
 

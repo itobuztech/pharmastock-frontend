@@ -11,6 +11,15 @@ export const GetUser = gql`
         id
         isEmailConfirmed
         name
+        organization {
+          id
+          name
+        }
+        role {
+          id
+          name
+          userType
+        }
         updatedAt
         username
       }
