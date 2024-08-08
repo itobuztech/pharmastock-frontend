@@ -1,6 +1,9 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { Permissions, Warehouses } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
@@ -13,10 +16,11 @@ interface WarehouseListTableProps {
   handleDelete: (id: string) => void;
   totalCount: number;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  showDeleteButton: boolean;
 }
 
 export default function WarehouseListTable({
@@ -25,7 +29,8 @@ export default function WarehouseListTable({
   warehouseList,
   handleDelete,
   totalCount,
-  handleUserPermissions
+  handleUserPermissions,
+  showDeleteButton,
 }: Readonly<WarehouseListTableProps>) {
   const navigate = useNavigate();
 
@@ -48,6 +53,7 @@ export default function WarehouseListTable({
           handleDelete={() => handleDelete(item.id)}
           showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={showDeleteButton}
         />
       </Table.Td>
     </Table.Tr>

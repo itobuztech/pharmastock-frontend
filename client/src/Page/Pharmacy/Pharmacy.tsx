@@ -149,7 +149,7 @@ export default function Pharmacy({
         title="Pharmacy List"
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}
@@ -179,6 +179,11 @@ export default function Pharmacy({
           handleDelete={handleDelete}
           totalCount={totalCount}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 

@@ -20,6 +20,7 @@ interface ItemCategoryTableProps {
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  showDeleteButton?: boolean;
 }
 
 export default function ItemCategoryTable({
@@ -29,6 +30,7 @@ export default function ItemCategoryTable({
   handleDelete,
   totalCount,
   handleUserPermissions,
+  showDeleteButton,
 }: Readonly<ItemCategoryTableProps>) {
   const navigate = useNavigate();
 
@@ -49,6 +51,7 @@ export default function ItemCategoryTable({
           handleDelete={() => handleDelete(item.id)}
           showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={showDeleteButton}
         />
       </Table.Td>
     </Table.Tr>

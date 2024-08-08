@@ -147,7 +147,7 @@ export default function Warehouse({
         title="Warehouse"
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}
@@ -177,6 +177,11 @@ export default function Warehouse({
           handleDelete={handleDelete}
           totalCount={totalCount}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 
@@ -203,6 +208,7 @@ export default function Warehouse({
           close={close}
           setNewWarehouseList={setNewWarehouseList}
           // selectOrgItem={selectOrganizationItem}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

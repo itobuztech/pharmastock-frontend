@@ -21,6 +21,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
+import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -35,6 +36,14 @@ export default function PharmacyStock({
   const [searchInput, setSearchInput] = useState("");
   const permission = useAppSelector((state) => state.user.permission);
   const [sliderValue, setSliderValue] = useState<number>(0);
+  const [
+    StockSoldModalOpened,
+    { open: StockSoldModalOpen, close: StockSoldModalClose },
+  ] = useDisclosure(false);
+  const [pharmacyName, setPharmacyName] = useState<string | undefined>("");
+  const [pharmacyId, setPharmacyId] = useState<string | undefined>("");
+  const [itemName, setItemName] = useState<string | undefined>("");
+  const [itemId, setItemId] = useState<string | undefined>("");
 
   /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
@@ -102,6 +111,18 @@ export default function PharmacyStock({
     handleSearch(event.currentTarget.value);
   };
 
+  /* ====== Handle Add User Modal Function ====== */
+  function handleStockOutModal(pharmacyId: string) {
+    const selectItem = pharmacyStocksList?.pharmacyStocks?.find(
+      (x) => x.pharmacy.id === pharmacyId
+    );
+    setPharmacyName(selectItem?.pharmacy.name);
+    setPharmacyId(selectItem?.pharmacy.id);
+    setItemName(selectItem?.item.name);
+    setItemId(selectItem?.item.id);
+    StockSoldModalOpen();
+  }
+
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -109,7 +130,7 @@ export default function PharmacyStock({
         showBackButton={false}
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         buttonText="Add Pharmacy Stock"
@@ -151,6 +172,7 @@ export default function PharmacyStock({
           totalCount={totalCount}
           pharmaciesStockList={pharmacyStocksList}
           handleUserPermissions={handleUserPermissions}
+          handleStockOutModal={handleStockOutModal}
         />
       )}
 
@@ -169,6 +191,18 @@ export default function PharmacyStock({
           handleUserPermissions={handleUserPermissions}
         />
       </Modal>
+
+      {/* ==== Create PharmacyStock Sold Out Modal ==== */}
+      <PharmacyStockSoldForm
+        StockSoldModalOpened={StockSoldModalOpened}
+        StockSoldModalClose={StockSoldModalClose}
+        pharmacyName={pharmacyName}
+        pharmacyId={pharmacyId}
+        itemName={itemName}
+        itemId={itemId}
+        refetchItem={refetch}
+        setNewPharmacyStockList={setNewPharmacyStockList}
+      />
     </section>
   );
 }

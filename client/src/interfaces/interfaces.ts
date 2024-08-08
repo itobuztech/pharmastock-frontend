@@ -64,6 +64,8 @@ export interface Permissions {
   STOCK_MANAGEMENT?: PermissionItem;
   PHARMACY_MANAGEMENT?: PermissionItem;
   STAFF_MANAGEMENT?: PermissionItem;
+  STOCK_MANAGEMENT_ADMIN?: PermissionItem;
+  STOCK_MANAGEMENT_STAFF?: PermissionItem;
 }
 
 export interface PaginationArgsInput {

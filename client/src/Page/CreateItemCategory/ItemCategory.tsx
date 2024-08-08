@@ -6,7 +6,11 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { CreateItemCategoryInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import { GetItemCategoryList } from "query/category/categoryList";
-import { ChildComponentProps, CreateItemCategories, ItemCategories } from "interfaces/interfaces";
+import {
+  ChildComponentProps,
+  CreateItemCategories,
+  ItemCategories,
+} from "interfaces/interfaces";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { CategoryItemDelete } from "query/category/categoryDelete";
 import ItemCategoryTable from "./components/ItemCategoryTable";
@@ -19,7 +23,9 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemCategory({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function ItemCategory({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
   const [activePage, setActivePage] = useState(1);
   const [itemCategoryList, setItemCategoryList] = useState<ItemCategories>();
@@ -53,8 +59,11 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
       },
     });
 
-    const hasPermission = handleUserPermissions( permission,USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
-      USER_PERMISSION_CAPABILITIES.CREATE);
+  const hasPermission = handleUserPermissions(
+    permission,
+    USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+    USER_PERMISSION_CAPABILITIES.CREATE
+  );
 
   /* ====== Category Delete Query ====== */
   const [deleteCategory] = useMutation(CategoryItemDelete, {
@@ -172,6 +181,11 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
           handleDelete={handleDelete}
           totalCount={totalCount}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 
@@ -197,6 +211,7 @@ export default function ItemCategory({ handleUserPermissions }:Readonly<ChildCom
           close={close}
           refetchItemCategory={refetch}
           setNewCategoryList={setNewCategoryList}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

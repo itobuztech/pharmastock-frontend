@@ -35,13 +35,10 @@ export default function ItemList({
   const [editForm, setEditForm] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
-
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
-  // const [popOverOpened, { close: popOverClose, open: popOverOpen }] =
-  //   useDisclosure(false);
-
   const permission = useAppSelector((state) => state.user.permission);
+
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
     {
@@ -179,7 +176,7 @@ export default function ItemList({
         title="Items"
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}
@@ -225,6 +222,11 @@ export default function ItemList({
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 
@@ -248,6 +250,7 @@ export default function ItemList({
           setEditForm={setEditForm}
           setNewItemList={setNewItemList}
           refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>
