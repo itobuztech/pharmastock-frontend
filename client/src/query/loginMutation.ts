@@ -11,6 +11,10 @@ export const LOGIN_MUTATION = gql`
         name
         updatedAt
         username
+        organization {
+          id
+          name
+        }
       }
     }
   }

@@ -16,6 +16,10 @@ export interface UserData {
   name: string;
   updatedAt: string;
   username: string;
+  organization: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface ForgetPasswordState {

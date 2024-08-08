@@ -145,7 +145,7 @@ export default function WarehouseForm({
               <TextInput
                 label="Organization"
                 placeholder="Name"
-                value={warehouseDetails?.warehouse.organization?.name}
+                defaultValue={warehouseDetails?.warehouse.organization?.name}
                 disabled
               />
             </div>
