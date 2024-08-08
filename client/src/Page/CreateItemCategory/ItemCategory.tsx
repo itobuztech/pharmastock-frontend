@@ -181,6 +181,11 @@ export default function ItemCategory({
           handleDelete={handleDelete}
           totalCount={totalCount}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 

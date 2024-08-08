@@ -193,6 +193,11 @@ export default function OrganizationsPage({
           setActivePage={setActivePage}
           handleUserModal={handleUserModal}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.DELETE
+          )}
         />
       )}
 

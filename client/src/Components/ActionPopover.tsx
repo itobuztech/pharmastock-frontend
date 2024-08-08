@@ -15,6 +15,7 @@ interface ActionPopoverProps {
   handleStockOutModal?: () => void;
   showUserModal?: boolean;
   showDeleteModal?: boolean;
+  showDeleteButton?: boolean;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
@@ -29,6 +30,7 @@ export default function ActionPopover({
   handleStockOutModal,
   showUserModal,
   showDeleteModal,
+  showDeleteButton,
   handleUserPermissions,
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
@@ -72,21 +74,16 @@ export default function ActionPopover({
             </Button>
           )}
 
-        {showDeleteModal &&
-          handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.DELETE
-          ) && (
-            <Button
-              variant="transparent"
-              fullWidth
-              onClick={handleDelete}
-              className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
-            >
-              Delete
-            </Button>
-          )}
+        {showDeleteModal && showDeleteButton && (
+          <Button
+            variant="transparent"
+            fullWidth
+            onClick={handleDelete}
+            className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
+          >
+            Delete
+          </Button>
+        )}
 
         {handleUserPermissions(
           permission,

@@ -21,6 +21,7 @@ interface OrganizationTableProps {
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  showDeleteButton?: boolean;
 }
 
 export default function OrganizationTable({
@@ -31,6 +32,7 @@ export default function OrganizationTable({
   handleUserModal,
   totalCount,
   handleUserPermissions,
+  showDeleteButton,
 }: Readonly<OrganizationTableProps>) {
   const navigate = useNavigate();
 
@@ -55,6 +57,7 @@ export default function OrganizationTable({
           showUserModal={true}
           showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={showDeleteButton}
         />
       </Table.Td>
     </Table.Tr>
