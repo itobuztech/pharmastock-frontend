@@ -179,7 +179,7 @@ export default function ItemList({
         title="Items"
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}

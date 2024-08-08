@@ -58,9 +58,12 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmacies.path}
             />
           )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT
-          ) && (
+          {(handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
+          ) ||
+            handleSliderOptionsVisible(
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF
+            )) && (
             <MenuLink
               text="Pharmacy Stocks"
               activeMenuPaths={routes.dashboard.pharmaciesStock.path}
@@ -95,7 +98,7 @@ export default function SidebarComponent() {
             />
           )}
           {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
           ) && (
             <MenuLink
               text="Warehouse Stocks"

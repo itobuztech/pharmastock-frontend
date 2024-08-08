@@ -224,7 +224,7 @@ export default function AppRoutes() {
                 path={routes.dashboard.warehouseStock.path}
                 element={
                   <PermissionGuard
-                    field={USER_PERMISSION_FIELDS.STOCK_MANAGEMENT}
+                    field={USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN}
                   />
                 }
               >
@@ -274,7 +274,10 @@ export default function AppRoutes() {
                 path={routes.dashboard.pharmaciesStock.path}
                 element={
                   <PermissionGuard
-                    field={USER_PERMISSION_FIELDS.STOCK_MANAGEMENT}
+                    field={
+                      (USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+                      USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF)
+                    }
                   />
                 }
               >

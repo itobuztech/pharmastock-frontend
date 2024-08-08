@@ -12,6 +12,7 @@ interface ActionPopoverProps {
   handleView: () => void;
   handleDelete?: () => void;
   handleUserModal?: () => void;
+  handleStockOutModal?: () => void;
   showUserModal?: boolean;
   showDeleteModal?: boolean;
   handleUserPermissions: (
@@ -25,11 +26,13 @@ export default function ActionPopover({
   handleView,
   handleDelete,
   handleUserModal,
+  handleStockOutModal,
   showUserModal,
   showDeleteModal,
   handleUserPermissions,
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
+
   return (
     <Popover width={200} position="bottom-end" withArrow shadow="md">
       <Popover.Target>
@@ -68,6 +71,7 @@ export default function ActionPopover({
               Add User
             </Button>
           )}
+
         {showDeleteModal &&
           handleUserPermissions(
             permission,
@@ -83,6 +87,21 @@ export default function ActionPopover({
               Delete
             </Button>
           )}
+
+        {handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        ) && (
+          <Button
+            variant="transparent"
+            fullWidth
+            onClick={handleStockOutModal}
+            className="hover:bg-blue-100 transition-colors text-black"
+          >
+            Stock Sold Out
+          </Button>
+        )}
       </Popover.Dropdown>
     </Popover>
   );

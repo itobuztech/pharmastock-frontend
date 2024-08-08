@@ -4,7 +4,10 @@ import React from "react";
 import ActionPopover from "Components/ActionPopover";
 import { useNavigate } from "react-router-dom";
 import routes from "Lib/Routes/Routes";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 
 interface OrganizationTableProps {
   activePage: number;
@@ -14,7 +17,7 @@ interface OrganizationTableProps {
   handleUserModal(id: string): void;
   totalCount: number;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
@@ -27,7 +30,7 @@ export default function OrganizationTable({
   handleDelete,
   handleUserModal,
   totalCount,
-  handleUserPermissions
+  handleUserPermissions,
 }: Readonly<OrganizationTableProps>) {
   const navigate = useNavigate();
 

@@ -170,7 +170,7 @@ export default function WarehouseStock({
         title="Warehouse Stocks"
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}
@@ -239,6 +239,7 @@ export default function WarehouseStock({
           refetchItem={refetchWarehouseStockList}
           setNewWarehouseStockList={setNewWarehouseStockList}
           list={true}
+          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>
