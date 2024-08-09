@@ -140,7 +140,7 @@ export default function ItemForm({
       itemDetail?.item.Category &&
         setValue(
           "category",
-          itemDetail?.item.Category.map((cat) => cat.name)
+          itemDetail?.item.Category.map((cat) => cat.id)
         );
     }
   }, [itemDetail?.item, setValue]);
