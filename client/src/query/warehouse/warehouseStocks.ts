@@ -32,6 +32,10 @@ export const GetWarehouseStocks = gql`
         warehouse {
           id
           name
+          organization {
+            id
+            name
+          }
         }
       }
     }

@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
+// import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useItemList from "Lib/customHooks/useItemList";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -74,15 +74,16 @@ export default function WarehouseStockForm({
   const [sku, setSku] = useState<string>();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
-  const selectOrgItems = useOrganizationList();
+  // const selectOrgItems = useOrganizationList();
   const selectItem = useItemList();
   const permission = useAppSelector((state) => state.user.permission);
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.currentUser);
 
   const schema = yup
     .object({
       warehouseId: yup.string().required(),
-      organizationId: yup.string().required(),
+      // organizationId: yup.string().required(),
       itemId: yup.string().required(),
       batchName: yup.string().required(),
       qty: yup.number().required(),
@@ -177,8 +178,6 @@ export default function WarehouseStockForm({
   useEffect(() => {
     if (warehouseDetails?.warehouse) {
       setValue("warehouseId", warehouseDetails.warehouse.name);
-      warehouseDetails.warehouse.organization?.id &&
-        setValue("organizationId", warehouseDetails.warehouse.organization?.id);
     }
   }, [setValue, warehouseDetails?.warehouse]);
 
@@ -191,36 +190,20 @@ export default function WarehouseStockForm({
       setValue("itemId", warehouseStockDetails.warehouseStock.item.id);
       setValue("sku", warehouseStockDetails.warehouseStock.SKU.sku);
       setQtyValue(warehouseStockDetails.warehouseStock.finalQty);
-      warehouseStockDetails?.warehouseStock.warehouse.organization?.id &&
-        setValue(
-          "organizationId",
-          warehouseStockDetails?.warehouseStock.warehouse.organization?.id
-        );
     }
   }, [setValue, warehouseStockDetails?.warehouseStock]);
 
-  console.log({ permission });
+  console.log(user);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-wrap gap-4 justify-between mb-6">
         <div className="flex-1">
-          <Controller
-            name="organizationId"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                label="Select Organization"
-                placeholder="Select Organization"
-                onChange={(value) => field.onChange(value)}
-                value={field.value}
-                data={warehouseStockId ? selectOrgItems : selectOrgItem}
-                maxDropdownHeight={300}
-                error={errors.organizationId && "This field is required"}
-                disabled={id || warehouseStockId ? true : false}
-              />
-            )}
+          <TextInput
+            label="Organization"
+            placeholder="Name"
+            defaultValue={user?.organization.name}
+            disabled
           />
         </div>
         <div className="flex-1">
@@ -264,11 +247,13 @@ export default function WarehouseStockForm({
                 label="Select Item"
                 placeholder="Select Item"
                 onChange={async (value) => {
-                  const { warehouseId, organizationId } = getValues();
+                  const { warehouseId } = getValues();
                   const res = await fetchSku({
                     variables: {
                       generateSkuNameInput: {
-                        organizationId: organizationId,
+                        organizationId:
+                          warehouseDetails?.warehouse.organization?.id ||
+                          user?.organization.id,
                         warehouseId: id ? id : warehouseId,
                         itemId: value,
                       },
