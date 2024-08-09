@@ -10,7 +10,7 @@ export default function Search({
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
-    <div className="w-full lg:w-1/2 xl:w-1/4 rounded-md mb-8">
+    <div className="w-7/12 lg:w-1/2 xl:w-1/4 rounded-md mb-8">
       <TextInput
         leftSectionPointerEvents="none"
         leftSection={<BiSearch size={20} />}
