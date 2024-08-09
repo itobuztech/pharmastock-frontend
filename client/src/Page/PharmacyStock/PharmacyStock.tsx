@@ -137,7 +137,7 @@ export default function PharmacyStock({
         onClick={open}
       />
 
-      <Flex wrap="wrap" justify="space-between">
+      <Flex wrap="wrap">
         {/* ==== Search ==== */}
         <Search handleChange={handleChange} searchInput={searchInput} />
         <Space w="md" />
