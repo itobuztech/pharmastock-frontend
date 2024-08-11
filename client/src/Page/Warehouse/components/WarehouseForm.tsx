@@ -130,7 +130,7 @@ export default function WarehouseForm({
 
   useEffect(() => {
     if (warehouseDetails?.warehouse) {
-      setValue("name", warehouseDetails.warehouse.name);
+      setValue("name", warehouseDetails.warehouse?.name);
       setValue("area", warehouseDetails.warehouse.area);
       setValue("location", warehouseDetails.warehouse.location);
     }

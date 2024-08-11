@@ -183,7 +183,7 @@ export default function ItemList({
         buttonText="Add Item"
       />
 
-      <Flex>
+      <Flex wrap="wrap">
         {/* ==== Search ==== */}
         <Search handleChange={handleChange} searchInput={searchInput} />
         <Space w="md" />

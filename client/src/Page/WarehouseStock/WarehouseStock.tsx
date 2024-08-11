@@ -177,7 +177,7 @@ export default function WarehouseStock({
         buttonText="Add Warehouse Stock"
       />
 
-      <Flex>
+      <Flex wrap="wrap">
         {/* ==== Search ==== */}
         <Search handleChange={handleChange} searchInput={searchInput} />
         <Space w="md" />
