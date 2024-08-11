@@ -82,8 +82,15 @@ export default function LoginPage() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex justify-center items-center"
+      className="flex flex-col justify-center items-center gap-7"
     >
+      <div
+          className="flex items-center justify-start mx-6 mt-10 no-underline"
+        >
+          <span className="text-black  ml-4 text-2xl font-bold">
+            Pharma Stock
+          </span>
+        </div>
       <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
         <h1 className="self-center font-light text-black m-0">Welcome</h1>
         <h3 className="self-center font-light text-black m-0">
