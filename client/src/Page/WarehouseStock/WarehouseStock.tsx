@@ -179,7 +179,11 @@ export default function WarehouseStock({
 
       <Flex wrap="wrap">
         {/* ==== Search ==== */}
-        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Search
+          handleChange={handleChange}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
         <Space w="md" />
 
         {/* ==== Filter ==== */}

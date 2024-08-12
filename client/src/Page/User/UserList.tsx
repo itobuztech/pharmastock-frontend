@@ -10,7 +10,9 @@ import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import { useDebouncedCallback } from "@mantine/hooks";
 
-export default function UserList({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function UserList({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const [userList, setUserList] = useState<Users>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
@@ -74,7 +76,11 @@ export default function UserList({ handleUserPermissions }:Readonly<ChildCompone
       <PageHeader title="Users" showCreateButton={false} />
 
       {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Search
+        handleChange={handleChange}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
 
       {/* ==== Loading State ==== */}
       {loading && (
