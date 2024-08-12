@@ -27,8 +27,7 @@ export default function Register() {
         .required(messagesData.register.userName.required)
         .min(3, messagesData.register.userName.min)
         .max(100, messagesData.register.userName.max)
-        .trim(messagesData.register.userName.trim)
-        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.userName.matches),
+        .trim(messagesData.register.userName.trim),
       name: yup
         .string()
         .required(messagesData.register.name.required)
@@ -72,10 +71,10 @@ export default function Register() {
     },
   });
 
-  const roleArray = Object.values(UserRole).map((role) => ({
-    value: role,
-    label: role,
-  }));
+  const roleArray = Object.entries(UserRole).map((role) => {return {
+    value: role[1],
+    label: role[0]
+  }});
 
   const [signUp, { loading: signUpLoading }] = useMutation(SIGNUP_MUTATION, {
     onError: (error) => {
@@ -94,8 +93,15 @@ export default function Register() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex justify-center items-center"
+      className="flex flex-col justify-center items-center gap-7"
     >
+        <div
+          className="flex items-center justify-start mx-6 mt-10 no-underline"
+        >
+          <span className="text-black  ml-4 text-2xl font-bold">
+            Pharma Stock
+          </span>
+        </div>
       <div className="m-auto flex flex-col w-full mx-4 md:w-[500px] md:mx-0 px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-6 lg:px-8">
         <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl">
           Create a new account

@@ -62,6 +62,7 @@ export default function VerifyUser() {
 
   useEffect(() => {
     getTokenConfirm();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   return (
