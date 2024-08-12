@@ -27,8 +27,7 @@ export default function Register() {
         .required(messagesData.register.userName.required)
         .min(3, messagesData.register.userName.min)
         .max(100, messagesData.register.userName.max)
-        .trim(messagesData.register.userName.trim)
-        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.userName.matches),
+        .trim(messagesData.register.userName.trim),
       name: yup
         .string()
         .required(messagesData.register.name.required)

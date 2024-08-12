@@ -185,7 +185,11 @@ export default function ItemList({
 
       <Flex wrap="wrap">
         {/* ==== Search ==== */}
-        <Search handleChange={handleChange} searchInput={searchInput} />
+        <Search
+          handleChange={handleChange}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
         <Space w="md" />
         {/* ==== Filter ==== */}
         <ItemFilter
