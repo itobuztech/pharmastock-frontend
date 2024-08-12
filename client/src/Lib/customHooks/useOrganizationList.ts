@@ -8,7 +8,7 @@ const useOrganizationList = () => {
   const [organization, setOrganization] =
     useState<OrganizationList["organizations"]>();
 
-  const [fetchOrganizationList] = useLazyQuery<OrganizationList>(
+  const [fetchOrganizationList, { refetch }] = useLazyQuery<OrganizationList>(
     ORGANIZATIONS_LIST_QUERY,
     {
       onError: (error) => {
@@ -25,7 +25,11 @@ const useOrganizationList = () => {
 
   useEffect(() => {
     fetchOrganizationList();
-  }, [fetchOrganizationList]);
+  }, [fetchOrganizationList, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const selectOrganization = organization?.organizations?.map((item) => ({
     value: item.id,

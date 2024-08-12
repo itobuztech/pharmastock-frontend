@@ -3,11 +3,13 @@ import { ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetItemLists } from "query/item/itemList";
+import { useParams } from "react-router-dom";
 
 const useItemList = () => {
+  const { id } = useParams();
   const [itemList, setItemList] = useState<Items>();
 
-  const [fetchItemList] = useLazyQuery<ItemLists>(GetItemLists, {
+  const [fetchItemList, { refetch }] = useLazyQuery<ItemLists>(GetItemLists, {
     onError: (err) => {
       toast.error(err.message);
     },
@@ -21,7 +23,11 @@ const useItemList = () => {
 
   useEffect(() => {
     fetchItemList();
-  }, [fetchItemList]);
+  }, [fetchItemList, id, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const selectItems = itemList?.items?.map((item) => ({
     value: item.id,

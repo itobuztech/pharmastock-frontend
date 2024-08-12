@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const useWarehouseItems = () => {
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
 
-  const [fetchWarehouseList] = useLazyQuery<CreateWarehouses>(
+  const [fetchWarehouseList, { refetch }] = useLazyQuery<CreateWarehouses>(
     GetWarehouseList,
     {
       onError: (err) => {
@@ -24,7 +24,11 @@ const useWarehouseItems = () => {
 
   useEffect(() => {
     fetchWarehouseList();
-  }, [fetchWarehouseList]);
+  }, [fetchWarehouseList, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const selectWarehouseItems = warehouseList?.warehouses?.map((item) => ({
     value: item.id,

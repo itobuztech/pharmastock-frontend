@@ -7,21 +7,28 @@ import { GetPharmacyList } from "query/pharmacy/pharmacyList";
 const usePharmacyList = () => {
   const [pharmacyList, setPharmacyList] = useState<Pharmacies["pharmacies"]>();
 
-  const [fetchPharmacyList] = useLazyQuery<Pharmacies>(GetPharmacyList, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: (d) => {
-      if (d) {
-        const pharmaList = d.pharmacies;
-        setPharmacyList(pharmaList);
-      }
-    },
-  });
+  const [fetchPharmacyList, { refetch }] = useLazyQuery<Pharmacies>(
+    GetPharmacyList,
+    {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: (d) => {
+        if (d) {
+          const pharmaList = d.pharmacies;
+          setPharmacyList(pharmaList);
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     fetchPharmacyList();
-  }, [fetchPharmacyList]);
+  }, [fetchPharmacyList, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const selectPharmacyList = pharmacyList?.pharmacies?.map((item) => ({
     value: item.id,

@@ -8,13 +8,11 @@ import {
   WarehouseStocks,
   WarehouseStocksData,
 } from "interfaces/interfaces";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
-import { WarehouseStockDelete } from "query/warehouse/warehouseStockDelete";
-import ConfirmationModal from "Components/ConfirmationModal";
 import { CreateWarehouseStockInput } from "gql/graphql";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
@@ -41,11 +39,6 @@ export default function WarehouseStock({
   const selectWarehouseItem = useWarehouseItems();
   const [sliderValue, setSliderValue] = useState<number>(0);
 
-  const [
-    deleteModalOpened,
-    { open: deleteModalOpen, close: deleteModalClose },
-  ] = useDisclosure(false);
-  const [deletedId, setDeletedId] = useState<string>();
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
 
@@ -110,40 +103,6 @@ export default function WarehouseStock({
   useEffect(() => {
     refetchWarehouseStockList();
   }, [refetchWarehouseStockList]);
-
-  const [deleteWarehouseStock] = useMutation(WarehouseStockDelete, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: () => {
-      refetchWarehouseStockList().then(({ data }) => {
-        if (data) {
-          const items = data.warehouseStocks;
-          const total = data.warehouseStocks.total;
-          const paginationCount = Math.ceil(total / 10);
-
-          setWarehouseStocksList(items);
-          setTotalCount(paginationCount);
-        }
-      });
-      deleteModalClose();
-      toast.success("Warehouse Deleted Successfully");
-    },
-  });
-
-  function handleDelete(itemId: string) {
-    const deleteItem = warehouseStocksList?.warehouseStocks.find(
-      (x) => x.id === itemId
-    );
-    setDeletedId(deleteItem?.id);
-    deleteModalOpen();
-  }
-
-  function getDeleteWarehouse() {
-    deleteWarehouseStock({
-      variables: { deleteWarehouseStockInput: { id: deletedId } },
-    });
-  }
 
   /* ====== Handle Search Function ====== */
   const handleSearch = useDebouncedCallback(async (searchInput: string) => {
@@ -219,14 +178,6 @@ export default function WarehouseStock({
           handleUserPermissions={handleUserPermissions}
         />
       )}
-
-      {/* ==== Delete Confirmation Modal ==== */}
-      <ConfirmationModal
-        title="Warehouse"
-        modalOpen={deleteModalOpened}
-        modalClose={deleteModalClose}
-        deleteItem={() => getDeleteWarehouse()}
-      />
 
       {/* ==== Create WarehouseStock Modal ==== */}
       <Modal
