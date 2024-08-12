@@ -155,7 +155,11 @@ export default function Warehouse({
       />
 
       {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Search
+        handleChange={handleChange}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
 
       {/* ==== Loading State ==== */}
       {loading && (

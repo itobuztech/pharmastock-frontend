@@ -7,9 +7,8 @@ import { GetItemCategoryList } from "query/category/categoryList";
 const useItemCatList = () => {
   const [itemCategoryList, setItemCategoryList] = useState<ItemCategories>();
 
-  const [fetchItemCategoryList] = useLazyQuery<CreateItemCategories>(
-    GetItemCategoryList,
-    {
+  const [fetchItemCategoryList, { refetch }] =
+    useLazyQuery<CreateItemCategories>(GetItemCategoryList, {
       onError: (err) => {
         toast.error(err.message);
       },
@@ -19,12 +18,15 @@ const useItemCatList = () => {
           setItemCategoryList(itemCate);
         }
       },
-    }
-  );
+    });
 
   useEffect(() => {
     fetchItemCategoryList();
-  }, [fetchItemCategoryList]);
+  }, [fetchItemCategoryList, refetch]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const selectItemCatList = itemCategoryList?.itemCategories?.map((item) => ({
     value: item.id,

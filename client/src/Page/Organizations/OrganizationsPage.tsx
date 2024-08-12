@@ -170,7 +170,11 @@ export default function OrganizationsPage({
       />
 
       {/* ==== Search ==== */}
-      <Search handleChange={handleChange} searchInput={searchInput} />
+      <Search
+        handleChange={handleChange}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
 
       {/* ==== Loading State ==== */}
       {loading && (
