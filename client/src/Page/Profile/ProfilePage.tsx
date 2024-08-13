@@ -83,14 +83,18 @@ export default function ProfilePage() {
       <div className="w-full lg:w-4/6 xl:w-1/2 bg-white rounded-md py-6 px-6">
         <h2 className="m-0 mb-4">Account</h2>
         <div className="mb-4">
-          <TextInput label="Email" disabled value={admin?.account.user.email} />
+          <TextInput
+            label="Email"
+            disabled
+            defaultValue={admin?.account.user.email}
+          />
         </div>
         {admin?.account.user.organization?.name && (
           <div>
             <TextInput
               label="Organization"
               disabled
-              value={admin?.account.user.organization?.name}
+              defaultValue={admin?.account.user.organization?.name}
             />
             <Space h="md" />
           </div>
