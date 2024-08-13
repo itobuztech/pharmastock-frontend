@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import routes from "../../../Lib/Routes/Routes";
 import ButtonComponent from "../../../Components/Button/ButtonComponent";
@@ -58,7 +58,7 @@ export default function Register() {
     control,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -71,10 +71,12 @@ export default function Register() {
     },
   });
 
-  const roleArray = Object.entries(UserRole).map((role) => {return {
-    value: role[1],
-    label: role[0]
-  }});
+  const roleArray = Object.entries(UserRole).map((role) => {
+    return {
+      value: role[1],
+      label: role[0],
+    };
+  });
 
   const [signUp, { loading: signUpLoading }] = useMutation(SIGNUP_MUTATION, {
     onError: (error) => {
@@ -90,19 +92,21 @@ export default function Register() {
     reset();
   };
 
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [reset, isSubmitSuccessful]);
+
   return (
     <div
       style={{ height: `${height}px` }}
       className="flex flex-col justify-center items-center gap-7"
     >
-        <div
-          className="flex items-center justify-start mx-6 mt-10 no-underline"
-        >
-          <span className="text-black  ml-4 text-2xl font-bold">
-            Pharma Stock
-          </span>
-        </div>
       <div className="m-auto flex flex-col w-full mx-4 md:w-[500px] md:mx-0 px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-6 lg:px-8">
+        <h2 className="text-black text-center text-2xl font-bold">
+          Pharma Stock
+        </h2>
         <div className="self-center mb-2 text-xl font-light text-gray-800 sm:text-2xl">
           Create a new account
         </div>
