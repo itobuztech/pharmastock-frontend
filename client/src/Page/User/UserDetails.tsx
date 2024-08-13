@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { PasswordInput, TextInput, Text, Flex } from "@mantine/core";
+import { Text, Flex } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import { UserById } from "interfaces/interfaces";
 import { GetUserDetails } from "query/user/userDetails";
