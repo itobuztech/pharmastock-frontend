@@ -50,6 +50,46 @@ export default function SidebarComponent() {
             )}
 
           {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Item Category"
+              activeMenuPaths={routes.dashboard.createItemCategory.path}
+              link={routes.dashboard.createItemCategory.path}
+            />
+          )}
+
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Items"
+              activeMenuPaths={routes.dashboard.itemList.path}
+              link={routes.dashboard.itemList.path}
+            />
+          )}
+
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
+          ) && (
+            <MenuLink
+              text="Warehouse"
+              activeMenuPaths={routes.dashboard.warehouseList.path}
+              link={routes.dashboard.warehouseList.path}
+            />
+          )}
+
+          {handleSliderOptionsVisible(
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
+          ) && (
+            <MenuLink
+              text="Warehouse Stocks"
+              activeMenuPaths={routes.dashboard.warehouseStock.path}
+              link={routes.dashboard.warehouseStock.path}
+            />
+          )}
+
+          {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
           ) && (
             <MenuLink
@@ -58,6 +98,7 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmacies.path}
             />
           )}
+
           {(handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
           ) ||
@@ -70,42 +111,7 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmaciesStock.path}
             />
           )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Item Category"
-              activeMenuPaths={routes.dashboard.createItemCategory.path}
-              link={routes.dashboard.createItemCategory.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Items"
-              activeMenuPaths={routes.dashboard.itemList.path}
-              link={routes.dashboard.itemList.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
-          ) && (
-            <MenuLink
-              text="Warehouse"
-              activeMenuPaths={routes.dashboard.warehouseList.path}
-              link={routes.dashboard.warehouseList.path}
-            />
-          )}
-          {handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
-          ) && (
-            <MenuLink
-              text="Warehouse Stocks"
-              activeMenuPaths={routes.dashboard.warehouseStock.path}
-              link={routes.dashboard.warehouseStock.path}
-            />
-          )}
+
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.USER_MANAGEMENT
           ) && (
