@@ -1,8 +1,12 @@
 import { Flex, Pagination, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
-import { USER_PERMISSION_CAPABILITIES, USER_PERMISSION_FIELDS } from "enums/enums";
+import {
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
 import { Permissions, Users } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
+import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,10 +16,12 @@ interface UserTableProps {
   userList?: Users;
   totalCount: number;
   handleUserPermissions: (
-    permission :Permissions,
+    permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  handleDelete: (id: string) => void;
+  showDeleteButton: boolean;
 }
 
 export default function UserTable({
@@ -23,13 +29,17 @@ export default function UserTable({
   setActivePage,
   userList,
   totalCount,
-  handleUserPermissions
+  handleUserPermissions,
+  handleDelete,
+  showDeleteButton,
 }: Readonly<UserTableProps>) {
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.users.path}/${id}`);
   }
+
+  const user = useAppSelector((state) => state.user.currentUser);
 
   const rows = userList?.users?.map((item, i) => (
     <Table.Tr key={item.id}>
@@ -44,8 +54,10 @@ export default function UserTable({
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
-          handleDelete={() => console.log(item.id)}
+          handleDelete={() => handleDelete(item.id)}
+          showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
+          showDeleteButton={showDeleteButton && user?.id !== item.id}
         />
       </Table.Td>
     </Table.Tr>
