@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Button, NumberInput, Select } from "@mantine/core";
-import ButtonComponent from "Components/Button/ButtonComponent";
+import { Button, Group, NumberInput, Select } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
+import { MdOutlineDelete } from "react-icons/md";
+
 import {
   CreateWarehouseStocksByWarehouse,
   Permissions,
   WarehouseStocksByWarehouse,
 } from "interfaces/interfaces";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { toast } from "react-toastify";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
 import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
@@ -22,10 +24,23 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
-import { useNavigate } from "react-router-dom";
+import ButtonComponent from "Components/Button/ButtonComponent";
+import { PharmacyStockFormValues } from "../pharmacy.interface";
+
+const pharmacyStockCreateSchema = yup.object().shape({
+  itemArr: yup.array().of(
+    yup.object().shape({
+      itemId: yup.string().required(),
+      qty: yup
+        .number()
+        .required()
+    })
+  ),
+  pharmacyId: yup.string().required(),
+  warehouseId: yup.string().required(),
+});
 
 export default function PharmacyStockForm({
-  pharmacyName,
   pharmacyId,
   close,
   pharmacyStockDetails,
@@ -34,7 +49,6 @@ export default function PharmacyStockForm({
   refetchItem,
   handleUserPermissions,
 }: Readonly<{
-  pharmacyName?: string;
   pharmacyId?: string;
   close?: () => void;
   pharmacyStockDetails?: PharmacyStock;
@@ -50,7 +64,6 @@ export default function PharmacyStockForm({
   ) => boolean;
 }>) {
   const [qtyValue, setQtyValue] = useState<string | number>("");
-  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
   const permission = useAppSelector((state) => state.user.permission);
@@ -59,24 +72,22 @@ export default function PharmacyStockForm({
   const selectItem = useItemList();
   const navigate = useNavigate();
 
-  const schema = yup
-    .object({
-      pharmacyId: yup.string().required(),
-      warehouseId: yup.string().required(),
-      qty: yup.number().required(),
-      itemId: yup.string().required(),
-    })
-    .required();
-
   const {
-    register,
     handleSubmit,
     reset,
     setValue,
     control,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(pharmacyStockCreateSchema),
+    defaultValues: {
+      itemArr: [{ itemId: "", qty: 0 }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "itemArr",
   });
 
   // Pharmacy Stock create query
@@ -84,40 +95,40 @@ export default function PharmacyStockForm({
     onError: (err) => {
       toast.error(err.message);
     },
-    onCompleted: () => {
-      toast.success("Pharmacy Stock Created Successfully");
-      if (close) {
-        close();
-      }
-      reset();
-      refetchItem();
-    },
   });
-  console.log({ pharmacyId });
 
-  const onSubmit = async (data: CreatePharmacyStockInput) => {
-    const response = await pharmacyStockCreate({
+  const onSubmit = (data: PharmacyStockFormValues) => {
+    pharmacyStockCreate({
       variables: {
         createPharmacyStockInput: data,
       },
+      onCompleted: (d) => {
+        if (id) {
+          toast.success('Pharmacy Stock updated successfully!');
+        } else {
+          toast.success(d.createPharmacyStock);
+        }
+
+        setNewPharmacyStockList && setNewPharmacyStockList(d)
+        reset();
+        refetchItem();
+        close && close();
+      }
     });
-    if (setNewPharmacyStockList) {
-      setNewPharmacyStockList(response.data);
-    }
   };
 
   const [fetchWarehouseStocksByWarehouse] =
     useLazyQuery<CreateWarehouseStocksByWarehouse>(
       GetWarehouseStocksByWarehouse,
       {
-        onError: (err) => {
-          toast.error(err.message);
-        },
         onCompleted: (d) => {
           if (d) {
             const item = d.warehouseStocksByWarehouse;
             setWarehouseStocksList(item);
           }
+        },
+        onError: (err) => {
+          toast.error(err.message);
         },
       }
     );
@@ -141,13 +152,24 @@ export default function PharmacyStockForm({
 
   useEffect(() => {
     if (pharmacyStockDetails) {
-      pharmacyStockDetails.pharmacy?.name &&
-        setValue("pharmacyId", pharmacyStockDetails.pharmacy?.id);
+
+      pharmacyStockDetails.pharmacy?.id &&
+        setValue("pharmacyId", pharmacyStockDetails.pharmacy.id);
+
       pharmacyStockDetails.warehouse?.id &&
-        setValue("warehouseId", pharmacyStockDetails.warehouse?.id);
-      pharmacyStockDetails.item?.id &&
-        setValue("itemId", pharmacyStockDetails.item?.id);
-      setQtyValue(pharmacyStockDetails.finalQty);
+        setValue("warehouseId", pharmacyStockDetails.warehouse.id);
+
+
+      if (pharmacyStockDetails.item && pharmacyStockDetails.finalQty) {
+        const itemArray = [
+          {
+            itemId: pharmacyStockDetails.item.id,
+            qty: pharmacyStockDetails.finalQty
+          },
+        ];
+
+        setValue("itemArr", itemArray);
+      }
     }
   }, [pharmacyStockDetails, setValue]);
 
@@ -197,27 +219,6 @@ export default function PharmacyStockForm({
         />
       </div>
 
-      <div className="mb-4">
-        <Controller
-          name="itemId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              data={id ? selectItem : selectItems}
-              label="Select Item"
-              placeholder="Select Item"
-              value={field.value}
-              onChange={(value) => {
-                field.onChange(value);
-              }}
-              error={errors.itemId && "This field is required"}
-              disabled={id ? true : false}
-            />
-          )}
-        />
-      </div>
-
       {id && (
         <div className="mb-4">
           <NumberInput
@@ -232,23 +233,75 @@ export default function PharmacyStockForm({
         </div>
       )}
 
-      {handleUserPermissions(
-        permission,
-        USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
-        USER_PERMISSION_CAPABILITIES.EDIT
-      ) && (
-        <div className="mb-4">
-          <NumberInput
-            label="Add Quantity"
-            placeholder="Qty"
-            {...register("qty")}
-            value={qtyAddValue}
-            onChange={setQtyAddValue}
-            min={0}
-            max={1000000}
-            error={errors.qty && "This field is required"}
-          />
-        </div>
+      {fields.map((field, index) => (
+        <Group key={field.id} className="mb-4">
+          <div className="w-1/2">
+            <Controller
+              name={`itemArr.${index}.itemId`}
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  data={id ? selectItem : selectItems}
+                  label="Select Item"
+                  placeholder="Select Item"
+                  value={field.value}
+                  onChange={(value) => {
+                    field.onChange(value);
+                  }}
+                  error={errors?.itemArr?.[index]?.itemId && "This field is required"}
+                  disabled={id ? true : false}
+                />
+              )}
+            />
+          </div>
+
+          {handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+            USER_PERMISSION_CAPABILITIES.EDIT
+          ) && (
+              <div className={`${id ? 'w-1/2' : 'w-1/3'}`}>
+                <Controller
+                  name={`itemArr.${index}.qty`}
+                  control={control}
+                  render={({ field }) => (
+                    <NumberInput
+                      label="Add Quantity"
+                      placeholder="Qty"
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      min={0}
+                      max={1000000}
+                      error={errors?.itemArr?.[index]?.qty && "This field is required"}
+                    />
+                  )}
+                />
+              </div>
+            )}
+
+          {!id && (
+            <div className="pt-6 className='flex justify-end ">
+              <Button
+                onClick={() => remove(index)}
+                variant="outline"
+                color="red"
+              >
+                <MdOutlineDelete className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
+
+
+        </Group>
+      ))}
+
+      {!id && (
+        <Button onClick={() => append({ itemId: "", qty: 0 })} variant="outline">
+          Add Item
+        </Button>
       )}
 
       <div className="text-right">
@@ -266,10 +319,10 @@ export default function PharmacyStockForm({
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-              <ButtonComponent type="submit" loading={loading}>
-                Update
-              </ButtonComponent>
-            )}
+                <ButtonComponent type="submit" loading={loading}>
+                  Update
+                </ButtonComponent>
+              )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={loading}>
