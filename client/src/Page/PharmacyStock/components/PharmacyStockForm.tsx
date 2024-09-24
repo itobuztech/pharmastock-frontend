@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Group, NumberInput, Select } from "@mantine/core";
+import { Button, Divider, NumberInput, Select } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
-import { MdOutlineDelete } from "react-icons/md";
+import { CiCircleMinus } from "react-icons/ci";
 
 import {
   CreateWarehouseStocksByWarehouse,
@@ -31,9 +31,7 @@ const pharmacyStockCreateSchema = yup.object().shape({
   itemArr: yup.array().of(
     yup.object().shape({
       itemId: yup.string().required(),
-      qty: yup
-        .number()
-        .required()
+      qty: yup.number().required().min(1),
     })
   ),
   pharmacyId: yup.string().required(),
@@ -104,16 +102,16 @@ export default function PharmacyStockForm({
       },
       onCompleted: (d) => {
         if (id) {
-          toast.success('Pharmacy Stock updated successfully!');
+          toast.success("Pharmacy Stock updated successfully!");
         } else {
           toast.success(d.createPharmacyStock);
         }
 
-        setNewPharmacyStockList && setNewPharmacyStockList(d)
+        setNewPharmacyStockList && setNewPharmacyStockList(d);
         reset();
         refetchItem();
         close && close();
-      }
+      },
     });
   };
 
@@ -152,19 +150,17 @@ export default function PharmacyStockForm({
 
   useEffect(() => {
     if (pharmacyStockDetails) {
-
       pharmacyStockDetails.pharmacy?.id &&
         setValue("pharmacyId", pharmacyStockDetails.pharmacy.id);
 
       pharmacyStockDetails.warehouse?.id &&
         setValue("warehouseId", pharmacyStockDetails.warehouse.id);
 
-
       if (pharmacyStockDetails.item && pharmacyStockDetails.finalQty) {
         const itemArray = [
           {
             itemId: pharmacyStockDetails.item.id,
-            qty: pharmacyStockDetails.finalQty
+            qty: pharmacyStockDetails.finalQty,
           },
         ];
 
@@ -233,9 +229,21 @@ export default function PharmacyStockForm({
         </div>
       )}
 
+      {!id && fields.length > 0 && <Divider my="lg" />}
+
       {fields.map((field, index) => (
-        <Group key={field.id} className="mb-4">
-          <div className="w-1/2">
+        <div key={field.id} className="mb-5 relative">
+          {!id && (
+            <Button
+              onClick={() => remove(index)}
+              variant="transparent"
+              color="red"
+              className="absolute -top-2 -right-4 z-10"
+            >
+              <CiCircleMinus className="w-6 h-6" />
+            </Button>
+          )}
+          <div className="pt-2">
             <Controller
               name={`itemArr.${index}.itemId`}
               control={control}
@@ -249,7 +257,9 @@ export default function PharmacyStockForm({
                   onChange={(value) => {
                     field.onChange(value);
                   }}
-                  error={errors?.itemArr?.[index]?.itemId && "This field is required"}
+                  error={
+                    errors?.itemArr?.[index]?.itemId && "This field is required"
+                  }
                   disabled={id ? true : false}
                 />
               )}
@@ -261,45 +271,36 @@ export default function PharmacyStockForm({
             USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
             USER_PERMISSION_CAPABILITIES.EDIT
           ) && (
-              <div className={`${id ? 'w-1/2' : 'w-1/3'}`}>
-                <Controller
-                  name={`itemArr.${index}.qty`}
-                  control={control}
-                  render={({ field }) => (
-                    <NumberInput
-                      label="Add Quantity"
-                      placeholder="Qty"
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                      }}
-                      min={0}
-                      max={1000000}
-                      error={errors?.itemArr?.[index]?.qty && "This field is required"}
-                    />
-                  )}
-                />
-              </div>
-            )}
-
-          {!id && (
-            <div className="pt-6 className='flex justify-end ">
-              <Button
-                onClick={() => remove(index)}
-                variant="outline"
-                color="red"
-              >
-                <MdOutlineDelete className="w-5 h-5" />
-              </Button>
+            <div className="mt-4">
+              <Controller
+                name={`itemArr.${index}.qty`}
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    label="Add Quantity"
+                    placeholder="Qty"
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    min={0}
+                    max={1000000}
+                    error={
+                      errors?.itemArr?.[index]?.qty && "This field is required"
+                    }
+                  />
+                )}
+              />
             </div>
           )}
-
-
-        </Group>
+        </div>
       ))}
 
       {!id && (
-        <Button onClick={() => append({ itemId: "", qty: 0 })} variant="outline">
+        <Button
+          onClick={() => append({ itemId: "", qty: 0 })}
+          variant="outline"
+        >
           Add Item
         </Button>
       )}
@@ -319,10 +320,10 @@ export default function PharmacyStockForm({
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-                <ButtonComponent type="submit" loading={loading}>
-                  Update
-                </ButtonComponent>
-              )}
+              <ButtonComponent type="submit" loading={loading}>
+                Update
+              </ButtonComponent>
+            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={loading}>
