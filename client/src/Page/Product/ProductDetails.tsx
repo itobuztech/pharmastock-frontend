@@ -22,7 +22,7 @@ export default function ProductDetails({ handleUserPermissions }:Readonly<ChildC
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Item Details"
+        title="Product Details"
         showBackButton={true}
         showCreateButton={false}
       />

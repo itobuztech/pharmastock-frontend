@@ -25,11 +25,11 @@ const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 const OrganizationsPage = React.lazy(
   () => import("Page/Organizations/OrganizationsPage")
 );
-const ItemCategory = React.lazy(
-  () => import("Page/CreateItemCategory/ItemCategory")
+const CategoryList = React.lazy(
+  () => import("Page/Category/CategoryList")
 );
-const ItemCategoryDetails = React.lazy(
-  () => import("Page/CreateItemCategory/ItemCategoryDetails")
+const CategoryDetails = React.lazy(
+  () => import("Page/Category/CategoryDetails")
 );
 const Warehouse = React.lazy(() => import("Page/Warehouse/Warehouse"));
 const WarehouseDetails = React.lazy(
@@ -151,7 +151,7 @@ export default function AppRoutes() {
                 <Route
                   index
                   element={
-                    <ItemCategory
+                    <CategoryList
                       handleUserPermissions={handleUserPermissions}
                     />
                   }
@@ -159,7 +159,7 @@ export default function AppRoutes() {
                 <Route
                   path={routes.dashboard.categoryDetails.path}
                   element={
-                    <ItemCategoryDetails
+                    <CategoryDetails
                       handleUserPermissions={handleUserPermissions}
                     />
                   }

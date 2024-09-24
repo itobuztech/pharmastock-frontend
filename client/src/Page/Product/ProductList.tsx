@@ -105,7 +105,7 @@ export default function ProductList({
         }
       });
       deleteModalClose();
-      toast.success("Item Deleted Successfully");
+      toast.success("Product Deleted Successfully");
     },
   });
 
@@ -145,42 +145,17 @@ export default function ProductList({
     handleSearch(event.currentTarget.value);
   };
 
-  const maxWholesalePrice = itemList?.items.reduce(
-    (max, item) => Math.max(max, item.wholesalePrice),
-    0
-  );
-
-  console.log({ maxWholesalePrice });
-
-  // const onSubmit = () => {
-  //   fetchItemList({
-  //     variables: {
-  //       filterArgs: {
-  //         baseUnit: selectedUnit,
-  //         mrpBaseUnit: sliderValueMrp,
-  //         wholeSalePrice: sliderValue,
-  //       },
-  //       pagination: true,
-  //       paginationArgs: {
-  //         skip: activePage * 10 - 10,
-  //         take: 10,
-  //       },
-  //       searchText: searchInput,
-  //     },
-  //   });
-  // };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Items"
+        title="Products"
         showCreateButton={handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         onClick={open}
-        buttonText="Add Item"
+        buttonText="Add Product"
       />
 
       <Flex wrap="wrap">
@@ -203,8 +178,6 @@ export default function ProductList({
           setSearchInput={setSearchInput}
           fetchItemList={fetchItemList}
           activePage={activePage}
-          // opened={popOverOpened}
-          // popOverOpen={popOverOpen}
         />
       </Flex>
 
@@ -235,7 +208,7 @@ export default function ProductList({
       )}
 
       <ConfirmationModal
-        title="Item"
+        title="Product"
         modalOpen={deleteModalOpened}
         modalClose={deleteModalClose}
         deleteItem={() => getDeleteItem()}
@@ -244,7 +217,7 @@ export default function ProductList({
       <Modal
         opened={opened}
         onClose={close}
-        title="Add New Item"
+        title="Add New Product"
         centered
         size={"lg"}
       >

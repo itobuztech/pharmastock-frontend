@@ -25,7 +25,6 @@ import { useAppSelector } from "Lib/Store/hooks";
 import { useNavigate } from "react-router-dom";
 
 export default function PharmacyStockForm({
-  pharmacyName,
   pharmacyId,
   close,
   pharmacyStockDetails,
@@ -34,7 +33,6 @@ export default function PharmacyStockForm({
   refetchItem,
   handleUserPermissions,
 }: Readonly<{
-  pharmacyName?: string;
   pharmacyId?: string;
   close?: () => void;
   pharmacyStockDetails?: PharmacyStock;
@@ -205,8 +203,8 @@ export default function PharmacyStockForm({
             <Select
               {...field}
               data={id ? selectItem : selectItems}
-              label="Select Item"
-              placeholder="Select Item"
+              label="Select Product"
+              placeholder="Select Product"
               value={field.value}
               onChange={(value) => {
                 field.onChange(value);

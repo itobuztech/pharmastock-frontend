@@ -101,7 +101,7 @@ export default function PharmacyStockSoldForm({
         </div>
         <div className="mb-4">
           <TextInput
-            label="Item"
+            label="Product"
             {...register("itemId")}
             defaultValue={itemName}
             disabled

@@ -23,7 +23,7 @@ interface ItemCategoryTableProps {
   showDeleteButton?: boolean;
 }
 
-export default function ItemCategoryTable({
+export default function CategoryTable({
   activePage,
   setActivePage,
   itemCategoryList,
@@ -68,7 +68,7 @@ export default function ItemCategoryTable({
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Name</Table.Th>
-            <Table.Th>Items</Table.Th>
+            <Table.Th>Products</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>
