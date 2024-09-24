@@ -35,7 +35,7 @@ export default function ItemCategoryTable({
   const navigate = useNavigate();
 
   function screenSwitch(id: string) {
-    navigate(`${routes.dashboard.createItemCategory.path}/${id}`);
+    navigate(`${routes.dashboard.createCategory.path}/${id}`);
   }
 
   const rows = itemCategoryList?.itemCategories.map((item, i) => (

@@ -53,9 +53,9 @@ export default function SidebarComponent() {
             USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT
           ) && (
             <MenuLink
-              text="Item Category"
-              activeMenuPaths={routes.dashboard.createItemCategory.path}
-              link={routes.dashboard.createItemCategory.path}
+              text="Categories"
+              activeMenuPaths={routes.dashboard.categoryList.path}
+              link={routes.dashboard.categoryList.path}
             />
           )}
 
@@ -63,9 +63,9 @@ export default function SidebarComponent() {
             USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
           ) && (
             <MenuLink
-              text="Items"
-              activeMenuPaths={routes.dashboard.itemList.path}
-              link={routes.dashboard.itemList.path}
+              text="Products"
+              activeMenuPaths={routes.dashboard.productList.path}
+              link={routes.dashboard.productList.path}
             />
           )}
 
@@ -73,7 +73,7 @@ export default function SidebarComponent() {
             USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
           ) && (
             <MenuLink
-              text="Warehouse"
+              text="Warehouses"
               activeMenuPaths={routes.dashboard.warehouseList.path}
               link={routes.dashboard.warehouseList.path}
             />

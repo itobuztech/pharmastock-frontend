@@ -4,9 +4,9 @@ import { useQuery } from "@apollo/client";
 import { GetItemDetails } from "query/item/itemDetails";
 import { useParams } from "react-router-dom";
 import { ChildComponentProps, Item } from "interfaces/interfaces";
-import ItemForm from "./components/ItemForm";
+import ProductForm from "./components/ProductForm";
 
-export default function ItemDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function ProductDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
 
@@ -28,7 +28,7 @@ export default function ItemDetails({ handleUserPermissions }:Readonly<ChildComp
       />
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
-        <ItemForm
+        <ProductForm
           editForm={editForm}
           setEditForm={setEditForm}
           itemId={id}

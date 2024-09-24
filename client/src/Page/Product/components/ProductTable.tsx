@@ -23,7 +23,7 @@ interface ItemTableProps {
   showDeleteButton?: boolean;
 }
 
-export default function ItemTable({
+export default function ProductTable({
   activePage,
   itemList,
   handleDelete,
@@ -35,7 +35,7 @@ export default function ItemTable({
   const navigate = useNavigate();
 
   function screenSwitch(itemId: string) {
-    navigate(`${routes.dashboard.itemList.path}/${itemId}`);
+    navigate(`${routes.dashboard.productList.path}/${itemId}`);
   }
 
   const rows = itemList?.items.map((item, i) => (
