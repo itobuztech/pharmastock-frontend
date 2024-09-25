@@ -1,21 +1,27 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
-import ActionPopover from "Components/ActionPopover";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Checkbox, Flex, Pagination, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
+
+import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { Permissions, PharmacyStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import { SelectedPharmacyStock } from "../pharmacyStock.interface";
+import { useAppSelector } from "Lib/Store/hooks";
+import { UserRole } from "gql/graphql";
 interface PharmacyStockTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   pharmaciesStockList?: PharmacyStocks;
   totalCount: number;
-  handleStockOutModal: (pharmacyId: string) => void;
+  selectedPharmacyStock: SelectedPharmacyStock[];
+  setSelectedPharmacyStock: React.Dispatch<
+    React.SetStateAction<SelectedPharmacyStock[]>
+  >;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
@@ -28,35 +34,88 @@ export default function PharmacyStockTable({
   setActivePage,
   pharmaciesStockList,
   totalCount,
-  handleStockOutModal,
   handleUserPermissions,
+  selectedPharmacyStock,
+  setSelectedPharmacyStock,
 }: Readonly<PharmacyStockTableProps>) {
   const navigate = useNavigate();
+  const permission = useAppSelector((state) => state.user.permission);
+  const user = useAppSelector((state) => state.user);
+
+  const handlePharmacyStockClearance = (
+    pharmacyId: string,
+    itemId: string,
+    pharmacyName: string,
+    itemName: string,
+    checked: boolean
+  ) => {
+    setSelectedPharmacyStock((prevSelectedItems) => {
+      if (checked) {
+        return [
+          ...prevSelectedItems,
+          { pharmacyId, itemId, pharmacyName, itemName },
+        ];
+      } else {
+        return prevSelectedItems.filter(
+          (item) => item.pharmacyId !== pharmacyId || item.itemId !== itemId
+        );
+      }
+    });
+  };
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.pharmaciesStock.path}/${id}`);
   }
 
-  const rows = pharmaciesStockList?.pharmacyStocks.map((item, i) => (
-    <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
-      <Table.Td>{item.warehouse.name}</Table.Td>
-      <Table.Td>{item.pharmacy.name}</Table.Td>
-      <Table.Td>{item.item.name}</Table.Td>
-      <Table.Td>{item.finalQty}</Table.Td>
-      <Table.Td className="text-right">
-        <ActionPopover
-          handleView={() => screenSwitch(item.id)}
-          showDeleteModal={false}
-          handleUserPermissions={handleUserPermissions}
-          handleStockOutModal={() => handleStockOutModal(item.pharmacy.id)}
-        />
-      </Table.Td>
-    </Table.Tr>
-  ));
+  const rows = pharmaciesStockList?.pharmacyStocks.map((item, i) => {
+    const isChecked = selectedPharmacyStock.some(
+      (selectedItem) =>
+        selectedItem.pharmacyId === item.pharmacy.id &&
+        selectedItem.itemId === item.item.id
+    );
+
+    return (
+      <Table.Tr key={item.id}>
+        {handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        ) && (
+          <Table.Td>
+            <Checkbox
+              checked={isChecked}
+              onChange={(e) =>
+                handlePharmacyStockClearance(
+                  item.pharmacy.id,
+                  item.item.id,
+                  item.pharmacy.name,
+                  item.item.name,
+                  e.target.checked
+                )
+              }
+            />
+          </Table.Td>
+        )}
+        <Table.Td>
+          {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
+        </Table.Td>
+        <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
+        <Table.Td>{item.warehouse.name}</Table.Td>
+        <Table.Td>{item.pharmacy.name}</Table.Td>
+        <Table.Td>{item.item.name}</Table.Td>
+        <Table.Td>{item.finalQty}</Table.Td>
+        {user.role !== UserRole.Staff && (
+          <Table.Td className="text-right">
+            <ActionPopover
+              handleView={() => screenSwitch(item.id)}
+              showDeleteModal={false}
+              handleUserPermissions={handleUserPermissions}
+            />
+          </Table.Td>
+        )}
+      </Table.Tr>
+    );
+  });
 
   return (
     <div className="bg-white overflow-auto">
@@ -67,13 +126,20 @@ export default function PharmacyStockTable({
       >
         <Table.Thead>
           <Table.Tr>
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+              USER_PERMISSION_CAPABILITIES.CREATE
+            ) && <Table.Th></Table.Th>}
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
             <Table.Th>Item</Table.Th>
             <Table.Th>Qty</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
+            {user.role !== UserRole.Staff && (
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            )}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
@@ -87,14 +153,12 @@ export default function PharmacyStockTable({
         direction="row"
         wrap="wrap"
       >
-        {
-          <Pagination
-            total={totalCount}
-            value={activePage}
-            onChange={setActivePage}
-            mt="sm"
-          />
-        }
+        <Pagination
+          total={totalCount}
+          value={activePage}
+          onChange={setActivePage}
+          mt="sm"
+        />
       </Flex>
       <Space h="md" />
     </div>

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import { toast } from "react-toastify";
+import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { Button, Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
+
 import PharmacyStockTable from "./components/PharmacyStockTable";
 import PageHeader from "Components/PageHeader";
-import { useLazyQuery } from "@apollo/client";
 import { PharmacyStocksList } from "query/pharmacyStock/pharmacyStocksList";
-import { toast } from "react-toastify";
 import {
   ChildComponentProps,
   PharmacyStocks,
   PharmacyStocksLists,
 } from "interfaces/interfaces";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
-import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import EmptyList from "Components/EmptyList";
 import { CreatePharmacyStockInput } from "gql/graphql";
@@ -22,6 +23,7 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
 import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
+import { SelectedPharmacyStock } from "./pharmacyStock.interface";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -40,10 +42,10 @@ export default function PharmacyStock({
     StockSoldModalOpened,
     { open: StockSoldModalOpen, close: StockSoldModalClose },
   ] = useDisclosure(false);
-  const [pharmacyName, setPharmacyName] = useState<string | undefined>("");
-  const [pharmacyId, setPharmacyId] = useState<string | undefined>("");
-  const [itemName, setItemName] = useState<string | undefined>("");
-  const [itemId, setItemId] = useState<string | undefined>("");
+
+  const [selectedPharmacyStock, setSelectedPharmacyStock] = useState<
+    SelectedPharmacyStock[]
+  >([]);
 
   /* ====== Pharmacy Stocks List Query ====== */
   const [fetchPharmaciesStockList, { refetch, loading }] =
@@ -111,18 +113,6 @@ export default function PharmacyStock({
     handleSearch(event.currentTarget.value);
   };
 
-  /* ====== Handle Add User Modal Function ====== */
-  function handleStockOutModal(pharmacyId: string) {
-    const selectItem = pharmacyStocksList?.pharmacyStocks?.find(
-      (x) => x.pharmacy.id === pharmacyId
-    );
-    setPharmacyName(selectItem?.pharmacy.name);
-    setPharmacyId(selectItem?.pharmacy.id);
-    setItemName(selectItem?.item.name);
-    setItemId(selectItem?.item.id);
-    StockSoldModalOpen();
-  }
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -155,6 +145,20 @@ export default function PharmacyStock({
           fetchStockList={fetchPharmaciesStockList}
           activePage={activePage}
         />
+
+        {handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        ) && (
+          <Button
+            disabled={!selectedPharmacyStock.length}
+            ml="auto"
+            onClick={() => StockSoldModalOpen()}
+          >
+            Stock Clearance
+          </Button>
+        )}
       </Flex>
 
       {/* ==== Loading State ==== */}
@@ -171,12 +175,13 @@ export default function PharmacyStock({
         <EmptyList />
       ) : (
         <PharmacyStockTable
+          selectedPharmacyStock={selectedPharmacyStock}
+          setSelectedPharmacyStock={setSelectedPharmacyStock}
           activePage={activePage}
           setActivePage={setActivePage}
           totalCount={totalCount}
           pharmaciesStockList={pharmacyStocksList}
           handleUserPermissions={handleUserPermissions}
-          handleStockOutModal={handleStockOutModal}
         />
       )}
 
@@ -198,12 +203,9 @@ export default function PharmacyStock({
 
       {/* ==== Create PharmacyStock Sold Out Modal ==== */}
       <PharmacyStockSoldForm
+        selectedItems={selectedPharmacyStock}
         StockSoldModalOpened={StockSoldModalOpened}
         StockSoldModalClose={StockSoldModalClose}
-        pharmacyName={pharmacyName}
-        pharmacyId={pharmacyId}
-        itemName={itemName}
-        itemId={itemId}
         refetchItem={refetch}
         setNewPharmacyStockList={setNewPharmacyStockList}
       />
