@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Modal, NumberInput, TextInput, Space } from "@mantine/core";
+import { Modal, NumberInput, TextInput, Divider } from "@mantine/core";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -32,6 +32,7 @@ export default function PharmacyStockSoldForm({
   selectedItems,
   refetchItem,
   setNewPharmacyStockList,
+  setSelectedPharmacyStock
 }: {
   StockSoldModalOpened: boolean;
   StockSoldModalClose: () => void;
@@ -40,6 +41,9 @@ export default function PharmacyStockSoldForm({
   setNewPharmacyStockList?: React.Dispatch<
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
+  setSelectedPharmacyStock?: React.Dispatch<
+  React.SetStateAction<SelectedPharmacyStock[]>
+>;
 }) {
   const [clearPharmacyStock, { loading }] = useMutation(
     GetClearancePharmacyStock,
@@ -51,7 +55,6 @@ export default function PharmacyStockSoldForm({
   );
 
   const {
-    // register,
     setValue,
     handleSubmit,
     control,
@@ -74,12 +77,14 @@ export default function PharmacyStockSoldForm({
   });
 
   const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
+    console.log('data', data.items)
     clearPharmacyStock({
       variables: {
         clearancePharmacyStockInput: data.items,
       },
       onCompleted: (d) => {
         setNewPharmacyStockList && setNewPharmacyStockList(d);
+        setSelectedPharmacyStock && setSelectedPharmacyStock([]);
         StockSoldModalClose();
         toast.success("Pharmacy Stock Cleared Successfully");
         reset();
@@ -119,17 +124,15 @@ export default function PharmacyStockSoldForm({
             <div className="mb-4">
               <TextInput
                 label="Pharmacy"
-                // {...register(`items.${index}.pharmacyId`)}
-                defaultValue={selectedItems[index].pharmacyName}
+                defaultValue={selectedItems[index]?.pharmacyName}
                 disabled
               />
             </div>
 
             <div className="mb-4">
               <TextInput
-              //  {...register(`items.${index}.itemId`)}
                 label="Item"
-                defaultValue={selectedItems[index].itemName}
+                defaultValue={selectedItems[index]?.itemName}
                 disabled
               />
             </div>
@@ -156,7 +159,7 @@ export default function PharmacyStockSoldForm({
               />
             </div>
 
-            <Space h="md" />
+            {index < fields.length - 1 && <Divider my="lg" />}
           </div>
         ))}
 

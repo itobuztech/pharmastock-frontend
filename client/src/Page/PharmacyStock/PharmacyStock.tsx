@@ -191,7 +191,7 @@ export default function PharmacyStock({
         onClose={close}
         title="Create Pharmacy Stock"
         centered
-        size={"sm"}
+        size='lg'
       >
         <PharmacyStockForm
           setNewPharmacyStockList={setNewPharmacyStockList}
@@ -208,6 +208,7 @@ export default function PharmacyStock({
         StockSoldModalClose={StockSoldModalClose}
         refetchItem={refetch}
         setNewPharmacyStockList={setNewPharmacyStockList}
+        setSelectedPharmacyStock={setSelectedPharmacyStock}
       />
     </section>
   );

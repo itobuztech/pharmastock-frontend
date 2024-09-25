@@ -57,7 +57,7 @@ export default function PharmacyStockTable({
         ];
       } else {
         return prevSelectedItems.filter(
-          (item) => item.pharmacyId !== pharmacyId || item.itemId !== itemId
+          (item) => !(item.pharmacyId === pharmacyId && item.itemId === itemId)
         );
       }
     });
@@ -67,12 +67,13 @@ export default function PharmacyStockTable({
     navigate(`${routes.dashboard.pharmaciesStock.path}/${id}`);
   }
 
-  const rows = pharmaciesStockList?.pharmacyStocks.map((item, i) => {
-    const isChecked = selectedPharmacyStock.some(
+  const rows = pharmaciesStockList?.pharmacyStocks?.map((item, i) => {
+    const isChecked = selectedPharmacyStock?.some(
       (selectedItem) =>
         selectedItem.pharmacyId === item.pharmacy.id &&
         selectedItem.itemId === item.item.id
     );
+    const isQtyAbsent = !item.finalQty || item.finalQty <= 0;
 
     return (
       <Table.Tr key={item.id}>
@@ -84,15 +85,16 @@ export default function PharmacyStockTable({
           <Table.Td>
             <Checkbox
               checked={isChecked}
-              onChange={(e) =>
+              disabled={isQtyAbsent}
+              onChange={(e) => {
                 handlePharmacyStockClearance(
                   item.pharmacy.id,
                   item.item.id,
-                  item.pharmacy.name,
-                  item.item.name,
+                  item?.pharmacy?.name,
+                  item?.item?.name,
                   e.target.checked
-                )
-              }
+                );
+              }}
             />
           </Table.Td>
         )}
@@ -100,9 +102,9 @@ export default function PharmacyStockTable({
           {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
         </Table.Td>
         <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
+        <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.warehouse.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
-        <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
         {user.role !== UserRole.Staff && (
           <Table.Td className="text-right">
@@ -133,9 +135,9 @@ export default function PharmacyStockTable({
             ) && <Table.Th></Table.Th>}
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
+            <Table.Th>Item</Table.Th>
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
-            <Table.Th>Item</Table.Th>
             <Table.Th>Qty</Table.Th>
             {user.role !== UserRole.Staff && (
               <Table.Th className="text-right pr-8">Action</Table.Th>
