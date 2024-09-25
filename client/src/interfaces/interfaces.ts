@@ -322,8 +322,8 @@ export interface WarehouseStock {
   finalQty: number;
   id: string;
   item: Item;
-  totalMrpBaseUnit: number;
-  totalWholesalePrice: number;
+  totalMrpBaseUnit?: number | null;
+  totalWholesalePrice?: number | null;
   updatedAt: string;
   warehouse: WarehouseItem;
 }
