@@ -12,11 +12,6 @@ import ItemForm from "./components/ItemForm";
 import ItemTable from "./components/ItemTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import {
-  USER_PERMISSION_CAPABILITIES,
-  USER_PERMISSION_FIELDS,
-} from "enums/enums";
-import { useAppSelector } from "Lib/Store/hooks";
 import ItemFilter from "./components/ItemFilter";
 
 export default function ItemList({
@@ -37,7 +32,6 @@ export default function ItemList({
   const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
-  const permission = useAppSelector((state) => state.user.permission);
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -89,7 +83,7 @@ export default function ItemList({
     }
   }, [newItemList, refetch]);
 
-  const [deleteCategory] = useMutation(ItemDelete, {
+  const [deleteCategory, {loading: loadingStateForProductDelete }] = useMutation(ItemDelete, {
     onError: (err) => {
       toast.error(err.message);
     },
@@ -174,11 +168,7 @@ export default function ItemList({
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Items"
-        showCreateButton={handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        )}
+        showCreateButton={true}
         onClick={open}
         buttonText="Add Item"
       />
@@ -226,11 +216,7 @@ export default function ItemList({
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserPermissions={handleUserPermissions}
-          showDeleteButton={handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.DELETE
-          )}
+          showDeleteButton={true}
         />
       )}
 
@@ -239,6 +225,7 @@ export default function ItemList({
         modalOpen={deleteModalOpened}
         modalClose={deleteModalClose}
         deleteItem={() => getDeleteItem()}
+        loading={loadingStateForProductDelete}
       />
 
       <Modal

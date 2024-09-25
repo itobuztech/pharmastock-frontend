@@ -267,12 +267,7 @@ export default function ItemForm({
             >
               Cancel
             </Button>
-            {handleUserPermissions(
-              permission,
-              USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-              USER_PERMISSION_CAPABILITIES.EDIT
-            ) && (
-              <>
+          
                 {editForm ? (
                   <ButtonComponent type="submit" loading={updateLoading}>
                     Update
@@ -282,8 +277,6 @@ export default function ItemForm({
                     Edit
                   </Button>
                 )}
-              </>
-            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addLoading}>
