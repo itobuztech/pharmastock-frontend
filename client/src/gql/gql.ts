@@ -49,6 +49,7 @@ const documents = {
     "\n  mutation UpdateProfile($updateProfileInput: UpdateProfileInput!) {\n    updateprofile(updateProfileInput: $updateProfileInput)\n  }\n": types.UpdateProfileDocument,
     "\n  mutation ResetPassword($resetPasswordInput: ResetPasswordInput!) {\n    resetPassword(resetPasswordInput: $resetPasswordInput)\n  }\n": types.ResetPasswordDocument,
     "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n": types.MutationDocument,
+    "\nmutation InviteUsers($inviteUsersInput: InviteUsersInput!) {\n  inviteUsers(inviteUsersInput: $inviteUsersInput)\n}\n": types.InviteUsersDocument,
     "\n  mutation Create($createUserInput: CreateUserInput!) {\n    create(createUserInput: $createUserInput) {\n      createdAt\n      email\n      emailConfirmationToken\n      id\n      isEmailConfirmed\n      name\n      organization {\n        id\n        name\n      }\n      updatedAt\n      username\n      role {\n        id\n        name\n        userType\n      }\n    }\n  }\n": types.CreateDocument,
     "\n  mutation DeleteUserBySuperAdmin($deleteUserInput: DeleteUserInput!) {\n    deleteUserBySuperAdmin(deleteUserInput: $deleteUserInput) {\n      message\n    }\n  }\n": types.DeleteUserBySuperAdminDocument,
     "\n  query UserById($userByIdId: String!) {\n    userById(id: $userByIdId) {\n      createdAt\n      email\n      emailConfirmationToken\n      id\n      isEmailConfirmed\n      name\n      organization {\n        id\n        name\n      }\n      updatedAt\n      username\n      role {\n        id\n        name\n        userType\n      }\n    }\n  }\n": types.UserByIdDocument,
@@ -225,6 +226,10 @@ export function graphql(source: "\n  mutation ResetPassword($resetPasswordInput:
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Mutation($tokenConfirmationInput: TokenConfirmationInput!) {\n    tokenConfirmation(tokenConfirmationInput: $tokenConfirmationInput) {\n      access_token\n      user {\n        createdAt\n        email\n        emailConfirmationToken\n        id\n        isEmailConfirmed\n        name\n        updatedAt\n        username\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nmutation InviteUsers($inviteUsersInput: InviteUsersInput!) {\n  inviteUsers(inviteUsersInput: $inviteUsersInput)\n}\n"): (typeof documents)["\nmutation InviteUsers($inviteUsersInput: InviteUsersInput!) {\n  inviteUsers(inviteUsersInput: $inviteUsersInput)\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

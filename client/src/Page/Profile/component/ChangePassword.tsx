@@ -10,9 +10,16 @@ import { Button, PasswordInput, Space, Text } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import messagesData from "Lib/messages";
 import PasswordStrength from "Page/Auth/Register/components/PasswordStrength";
+import { useLocation, useNavigate } from "react-router-dom";
+import routes from "Lib/Routes/Routes";
 
 export default function ChangePassword() {
-  const [editPassForm, setEditPassForm] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isSetPasswordPage = location.pathname.includes("set-password");
+  const [editPassForm, setEditPassForm] = useState(
+    isSetPasswordPage ? true : false
+  );
 
   const passwordSchema = yup
     .object({
@@ -63,6 +70,9 @@ export default function ChangePassword() {
         toast.success(messagesData.profile.passwordChangeSuccess);
         setEditPassForm(false);
         reset();
+        if (isSetPasswordPage) {
+          navigate(routes.login.path);
+        }
       },
     }
   );
@@ -78,7 +88,9 @@ export default function ChangePassword() {
   return (
     <form onSubmit={handleSubmit(handleChangePassword)}>
       <Space h="md" />
-      <h2 className="m-0 mb-4">Change password</h2>
+      <h2 className="m-0 mb-4">
+        {isSetPasswordPage ? "Set Password" : "Change password"}
+      </h2>
       <div className="mb-4">
         <PasswordInput
           label="Old Password"
@@ -120,18 +132,21 @@ export default function ChangePassword() {
       <div className="text-right">
         {editPassForm ? (
           <div className="flex flex-wrap gap-4 justify-end">
-            <Button
-              type="button"
-              onClick={() => {
-                setEditPassForm(false);
-                reset();
-              }}
-              variant="outline"
-            >
-              Cancel
-            </Button>
+            {!isSetPasswordPage && (
+              <Button
+                type="button"
+                onClick={() => {
+                  setEditPassForm(false);
+                  reset();
+                }}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+            )}
+
             <ButtonComponent type="submit" loading={resetPassLoader}>
-              Update
+              {isSetPasswordPage ? "Save" : "Update"}
             </ButtonComponent>
           </div>
         ) : (
