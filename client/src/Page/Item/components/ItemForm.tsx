@@ -23,7 +23,6 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
-import { useAppSelector } from "Lib/Store/hooks";
 import messagesData from "Lib/messages";
 
 export default function ItemForm({
@@ -51,7 +50,7 @@ export default function ItemForm({
 }>) {
   const navigate = useNavigate();
   const selectItemCatList = useItemCatList();
-  const permission = useAppSelector((state) => state.user.permission);
+
   const schema = yup
     .object({
       name: yup
