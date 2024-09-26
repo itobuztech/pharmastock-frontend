@@ -5,7 +5,7 @@ import { GetUsersList } from "query/user/usersList";
 import { toast } from "react-toastify";
 import { ChildComponentProps, UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
-import { LoadingOverlay } from "@mantine/core";
+import { Button, Flex, LoadingOverlay } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
@@ -124,11 +124,14 @@ export default function UserList({
       <PageHeader title="Users" showCreateButton={false} />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Flex>
+        <Search
+          handleChange={handleChange}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
+        <Button ml='auto'>Invite User</Button>
+      </Flex>
 
       {/* ==== Loading State ==== */}
       {loading && (
