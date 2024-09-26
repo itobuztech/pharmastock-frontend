@@ -135,7 +135,15 @@ export default function UserList({
           searchInput={searchInput}
           setSearchInput={setSearchInput}
         />
-        <Button ml="auto" onClick={() => invitationModalOpen()}>Invite User</Button>
+        {handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.USER_PERMISSION,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        ) && (
+          <Button ml="auto" onClick={() => invitationModalOpen()}>
+            Invite User
+          </Button>
+        )}
       </Flex>
 
       {/* ==== Loading State ==== */}
@@ -173,7 +181,10 @@ export default function UserList({
         centered
         size="lg"
       >
-        <UserInvitationForm closeModal={invitationModalClose} refetch={refetch} />
+        <UserInvitationForm
+          closeModal={invitationModalClose}
+          refetch={refetch}
+        />
       </Modal>
 
       {/* ==== Delete Confirmation Modal ==== */}
