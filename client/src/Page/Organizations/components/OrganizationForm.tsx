@@ -61,6 +61,10 @@ export default function OrganizationForm({
         .string()
         .required(messagesData.organization.description.required)
         .trim(messagesData.organization.description.required),
+        adminEmail: yup
+        .string()
+        .required(messagesData.organization.adminEmail.required)
+        .trim(messagesData.organization.adminEmail.required), 
       address: yup
         .string()
         .required(messagesData.organization.address.required)
@@ -184,12 +188,12 @@ export default function OrganizationForm({
         <TextInput
           label="Admin Email"
           placeholder="Admin Email"
-          // {...register("adminEmail")}
+          {...register("adminEmail")}
           disabled={!editForm}
           withAsterisk
         />
         <Text size="sm" mt={5} c="red.6">
-          {errors.name?.message}
+          {errors.adminEmail?.message}
         </Text>
       </div>
 
