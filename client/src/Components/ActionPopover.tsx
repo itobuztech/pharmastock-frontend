@@ -1,13 +1,12 @@
-import React from "react";
 import { Button, Popover } from "@mantine/core";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import { Permissions } from "interfaces/interfaces";
-
 interface ActionPopoverProps {
   handleView: () => void;
   handleDelete?: () => void;
@@ -82,21 +81,6 @@ export default function ActionPopover({
             className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
           >
             Delete
-          </Button>
-        )}
-
-        {handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) && (
-          <Button
-            variant="transparent"
-            fullWidth
-            onClick={handleStockOutModal}
-            className="hover:bg-blue-100 transition-colors text-black"
-          >
-            Stock Sold Out
           </Button>
         )}
       </Popover.Dropdown>

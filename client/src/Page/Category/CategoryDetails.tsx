@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GetCategoryItem } from "query/category/categoryItem";
 import { ItemCategory } from "gql/graphql";
-import ItemCategoryForm from "./components/ItemCategoryForm";
+import CategoryCreateUpdateForm from "./components/CategoryCreateUpdateForm";
 import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function ItemCategoryDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function CategoryDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const [editForm, setEditForm] = useState(false);
   const { id } = useParams();
 
@@ -28,7 +28,7 @@ export default function ItemCategoryDetails({ handleUserPermissions }:Readonly<C
       />
 
       <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
-        <ItemCategoryForm
+        <CategoryCreateUpdateForm
           editForm={editForm}
           setEditForm={setEditForm}
           catId={id}
