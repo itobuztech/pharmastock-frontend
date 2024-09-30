@@ -182,6 +182,19 @@ export default function OrganizationForm({
 
       <div className="mb-4">
         <TextInput
+          label="Admin Email"
+          placeholder="Admin Email"
+          // {...register("adminEmail")}
+          disabled={!editForm}
+          withAsterisk
+        />
+        <Text size="sm" mt={5} c="red.6">
+          {errors.name?.message}
+        </Text>
+      </div>
+
+      <div className="mb-4">
+        <TextInput
           label="Address"
           placeholder="Address"
           {...register("address")}
