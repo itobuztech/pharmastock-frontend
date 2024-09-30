@@ -12,11 +12,6 @@ import ProductForm from "./components/ProductForm";
 import ProductTable from "./components/ProductTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import {
-  USER_PERMISSION_CAPABILITIES,
-  USER_PERMISSION_FIELDS,
-} from "enums/enums";
-import { useAppSelector } from "Lib/Store/hooks";
 import ProductFilter from "./components/ProductFilter";
 
 export default function ProductList({
@@ -37,7 +32,6 @@ export default function ProductList({
   const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
-  const permission = useAppSelector((state) => state.user.permission);
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -89,7 +83,7 @@ export default function ProductList({
     }
   }, [newItemList, refetch]);
 
-  const [deleteCategory] = useMutation(ItemDelete, {
+  const [deleteCategory, {loading: loadingStateForProductDelete }] = useMutation(ItemDelete, {
     onError: (err) => {
       toast.error(err.message);
     },
@@ -149,11 +143,7 @@ export default function ProductList({
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Products"
-        showCreateButton={handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        )}
+        showCreateButton={true}
         onClick={open}
         buttonText="Add Product"
       />
@@ -199,11 +189,7 @@ export default function ProductList({
           totalCount={totalCount}
           setActivePage={setActivePage}
           handleUserPermissions={handleUserPermissions}
-          showDeleteButton={handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.DELETE
-          )}
+          showDeleteButton={true}
         />
       )}
 
@@ -212,6 +198,7 @@ export default function ProductList({
         modalOpen={deleteModalOpened}
         modalClose={deleteModalClose}
         deleteItem={() => getDeleteItem()}
+        loading={loadingStateForProductDelete}
       />
 
       <Modal
