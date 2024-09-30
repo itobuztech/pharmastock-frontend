@@ -69,7 +69,7 @@ export default function PharmacyStockTable({
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
-            <Table.Th>Product</Table.Th>
+            <Table.Th>Item</Table.Th>
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
             <Table.Th>Qty</Table.Th>
