@@ -6,11 +6,13 @@ export default function ConfirmationModal({
   modalOpen,
   modalClose,
   deleteItem,
+  loading
 }: {
   title: string;
   modalOpen: boolean;
   modalClose: () => void;
   deleteItem: () => void;
+  loading?: boolean;
 }) {
   return (
     <Modal
@@ -32,7 +34,7 @@ export default function ConfirmationModal({
         <Button variant="outline" onClick={modalClose}>
           Cancel
         </Button>
-        <Button variant="filled" color="red" onClick={deleteItem}>
+        <Button loading={loading} variant="filled" color="red" onClick={deleteItem}>
           Delete
         </Button>
       </div>

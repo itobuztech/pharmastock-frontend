@@ -17,11 +17,6 @@ import CategoryTable from "./components/CategoryTable";
 import CategoryCreateUpdateForm from "./components/CategoryCreateUpdateForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import {
-  USER_PERMISSION_CAPABILITIES,
-  USER_PERMISSION_FIELDS,
-} from "enums/enums";
-import { useAppSelector } from "Lib/Store/hooks";
 
 export default function CategoryList({
   handleUserPermissions,
@@ -39,7 +34,6 @@ export default function CategoryList({
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
-  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
@@ -59,14 +53,8 @@ export default function CategoryList({
       },
     });
 
-  const hasPermission = handleUserPermissions(
-    permission,
-    USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
-    USER_PERMISSION_CAPABILITIES.CREATE
-  );
-
   /* ====== Category Delete Query ====== */
-  const [deleteCategory] = useMutation(CategoryItemDelete, {
+  const [deleteCategory, { loading: loadingStateForCategoryDelete }] = useMutation(CategoryItemDelete, {
     onError: (err) => {
       toast.error(err.message);
     },
@@ -153,7 +141,7 @@ export default function CategoryList({
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Categories"
-        showCreateButton={hasPermission}
+        showCreateButton={true}
         onClick={open}
         buttonText="Add Category"
       />
@@ -185,11 +173,7 @@ export default function CategoryList({
           handleDelete={handleDelete}
           totalCount={totalCount}
           handleUserPermissions={handleUserPermissions}
-          showDeleteButton={handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.DELETE
-          )}
+          showDeleteButton={true}
         />
       )}
 
@@ -199,6 +183,7 @@ export default function CategoryList({
         modalOpen={deleteModalOpened}
         modalClose={deleteModalClose}
         deleteItem={() => getDeleteCategory()}
+        loading={loadingStateForCategoryDelete}
       />
 
       {/* ==== Create Item Category Modal ==== */}
@@ -215,7 +200,6 @@ export default function CategoryList({
           close={close}
           refetchItemCategory={refetch}
           setNewCategoryList={setNewCategoryList}
-          handleUserPermissions={handleUserPermissions}
         />
       </Modal>
     </section>

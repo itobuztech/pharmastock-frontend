@@ -22,7 +22,6 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
-import { useAppSelector } from "Lib/Store/hooks";
 import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
 
@@ -51,7 +50,7 @@ export default function ProductForm({
 }>) {
   const navigate = useNavigate();
   const selectItemCatList = useItemCatList();
-  const permission = useAppSelector((state) => state.user.permission);
+
   const schema = yup
     .object({
       name: yup
@@ -267,12 +266,7 @@ export default function ProductForm({
             >
               Cancel
             </Button>
-            {handleUserPermissions(
-              permission,
-              USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-              USER_PERMISSION_CAPABILITIES.EDIT
-            ) && (
-              <>
+          
                 {editForm ? (
                   <ButtonComponent type="submit" loading={updateLoading}>
                     Update
@@ -282,8 +276,6 @@ export default function ProductForm({
                     Edit
                   </Button>
                 )}
-              </>
-            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addLoading}>
