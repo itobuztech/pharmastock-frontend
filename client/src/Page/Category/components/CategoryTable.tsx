@@ -4,17 +4,17 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
-import { Items, Permissions } from "interfaces/interfaces";
+import { ItemCategories, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface ItemTableProps {
+interface ItemCategoryTableProps {
   activePage: number;
-  itemList: Items | undefined;
-  handleDelete: (itemId: string) => void;
-  totalCount: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
+  itemCategoryList?: ItemCategories;
+  handleDelete: (id: string) => void;
+  totalCount: number;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
@@ -23,32 +23,28 @@ interface ItemTableProps {
   showDeleteButton?: boolean;
 }
 
-export default function ItemTable({
+export default function CategoryTable({
   activePage,
-  itemList,
+  setActivePage,
+  itemCategoryList,
   handleDelete,
   totalCount,
-  setActivePage,
   handleUserPermissions,
   showDeleteButton,
-}: Readonly<ItemTableProps>) {
+}: Readonly<ItemCategoryTableProps>) {
   const navigate = useNavigate();
 
-  function screenSwitch(itemId: string) {
-    navigate(`${routes.dashboard.itemList.path}/${itemId}`);
+  function screenSwitch(id: string) {
+    navigate(`${routes.dashboard.createCategory.path}/${id}`);
   }
 
-  const rows = itemList?.items.map((item, i) => (
+  const rows = itemCategoryList?.itemCategories.map((item, i) => (
     <Table.Tr key={item.id}>
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{item.name}</Table.Td>
-      <Table.Td>{item.baseUnit}</Table.Td>
-      <Table.Td>{item.hsnCode}</Table.Td>
-      <Table.Td>{item.instructions}</Table.Td>
-      <Table.Td>₹ {item.wholesalePrice}</Table.Td>
-      <Table.Td>₹ {item.mrpBaseUnit}</Table.Td>
+      <Table.Td>{item.Item?.length}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -66,17 +62,13 @@ export default function ItemTable({
       <Table
         horizontalSpacing="md"
         verticalSpacing="md"
-        className="w-[900px] md:w-[1000px] lg:w-full"
+        className="w-[700px] md:w-[900px] lg:w-full"
       >
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Name</Table.Th>
-            <Table.Th>Base Unit</Table.Th>
-            <Table.Th>HSN Code</Table.Th>
-            <Table.Th>Instructions</Table.Th>
-            <Table.Th>Wholesale Price</Table.Th>
-            <Table.Th>MRP Base unit</Table.Th>
+            <Table.Th>Products</Table.Th>
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
         </Table.Thead>

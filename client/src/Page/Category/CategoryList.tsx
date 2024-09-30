@@ -13,8 +13,8 @@ import {
 } from "interfaces/interfaces";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { CategoryItemDelete } from "query/category/categoryDelete";
-import ItemCategoryTable from "./components/ItemCategoryTable";
-import ItemCategoryForm from "./components/ItemCategoryForm";
+import CategoryTable from "./components/CategoryTable";
+import CategoryCreateUpdateForm from "./components/CategoryCreateUpdateForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import {
@@ -23,7 +23,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemCategory({
+export default function CategoryList({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -152,7 +152,7 @@ export default function ItemCategory({
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Category"
+        title="Categories"
         showCreateButton={hasPermission}
         onClick={open}
         buttonText="Add Category"
@@ -178,7 +178,7 @@ export default function ItemCategory({
       {itemCategoryList?.itemCategories.length === 0 ? (
         <EmptyList />
       ) : (
-        <ItemCategoryTable
+        <CategoryTable
           activePage={activePage}
           setActivePage={setActivePage}
           itemCategoryList={itemCategoryList}
@@ -209,7 +209,7 @@ export default function ItemCategory({
         centered
         size={"sm"}
       >
-        <ItemCategoryForm
+        <CategoryCreateUpdateForm
           editForm={editForm}
           setEditForm={setEditForm}
           close={close}

@@ -21,7 +21,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 
-export default function ItemCategoryForm({
+export default function CategoryCreateUpdateForm({
   editForm,
   setEditForm,
   catId,
