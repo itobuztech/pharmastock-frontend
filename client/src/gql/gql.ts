@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n": types.SignupDocument,
+    "\n  mutation Signup($signUpStaffInput: SignUpStaffInput!) {\n    signup(signUpStaffInput: $signUpStaffInput) {\n      success\n    }\n  }\n": types.SignupDocument,
     "\n  mutation CreateItemCategory(\n    $createItemCategoryInput: CreateItemCategoryInput!\n  ) {\n    createItemCategory(createItemCategoryInput: $createItemCategoryInput) {\n      createdAt\n      id\n      name\n      updatedAt\n      Item {\n        id\n      }\n    }\n  }\n": types.CreateItemCategoryDocument,
     "\n  mutation DeleteItemCategory(\n    $deleteItemCategoryInput: DeleteItemCategoryInput!\n  ) {\n    deleteItemCategory(deleteItemCategoryInput: $deleteItemCategoryInput) {\n      createdAt\n      id\n      name\n    }\n  }\n": types.DeleteItemCategoryDocument,
     "\n  query CategoryItem($itemCategoryId: String!) {\n    itemCategory(id: $itemCategoryId) {\n      Item {\n        id\n      }\n      createdAt\n      id\n      name\n      updatedAt\n    }\n  }\n": types.CategoryItemDocument,
@@ -40,7 +40,7 @@ const documents = {
     "\n  query Pharmacies(\n    $pagination: Boolean\n    $paginationArgs: PaginationArgs\n    $searchText: String\n  ) {\n    pharmacies(\n      pagination: $pagination\n      paginationArgs: $paginationArgs\n      searchText: $searchText\n    ) {\n      pharmacies {\n        contactInfo\n        createdAt\n        id\n        location\n        name\n        organization {\n          id\n          name\n        }\n        updatedAt\n      }\n      total\n    }\n  }\n": types.PharmaciesDocument,
     "\n  mutation UpdatePharmacy($updatePharmacyInput: UpdatePharmacyInput!) {\n    updatePharmacy(updatePharmacyInput: $updatePharmacyInput) {\n      contactInfo\n      createdAt\n      id\n      location\n      name\n      updatedAt\n    }\n  }\n": types.UpdatePharmacyDocument,
     "\n  mutation ClearancePharmacyStock(\n    $clearancePharmacyStockInput: [ClearancePharmacyStockInput!]!\n  ) {\n    clearancePharmacyStock(\n      clearancePharmacyStockInput: $clearancePharmacyStockInput\n    ) {\n      createdAt\n      id\n      item {\n        id\n        name\n      }\n      pharmacyStock {\n        id\n        item {\n          id\n          name\n        }\n      }\n      qty\n      status\n      updatedAt\n    }\n  }\n": types.ClearancePharmacyStockDocument,
-    "\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n": types.CreatePharmacyStockDocument,
+    "\nmutation CreatePharmacyStock($createPharmacyStockInput: CreatePharmacyStockInput!) {\n  createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput)\n}\n": types.CreatePharmacyStockDocument,
     "\n  query PharmacyStock($pharmacyStockId: String!) {\n    PharmacyStock(id: $pharmacyStockId) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n": types.PharmacyStockDocument,
     "\n  query MaxPharmacyStockQty {\n    maxPharmacyStockQty {\n      totalQty\n    }\n  }\n": types.MaxPharmacyStockQtyDocument,
     "\n  query PharmacyStocksByPharmacy(\n    $pharmacyId: String!\n    $paginationArgs: PaginationArgs\n  ) {\n    pharmacyStocksByPharmacy(\n      pharmacyId: $pharmacyId\n      paginationArgs: $paginationArgs\n    ) {\n      pharmacyStocks {\n        createdAt\n        finalQty\n        id\n        item {\n          id\n          name\n        }\n        pharmacy {\n          id\n          name\n        }\n        totalMrpBaseUnit\n        totalWholesalePrice\n        updatedAt\n        warehouse {\n          id\n          name\n        }\n      }\n      total\n    }\n  }\n": types.PharmacyStocksByPharmacyDocument,
@@ -84,7 +84,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($signupUserInput: CreateUserInput!) {\n    signup(signupUserInput: $signupUserInput) {\n      success\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Signup($signUpStaffInput: SignUpStaffInput!) {\n    signup(signUpStaffInput: $signUpStaffInput) {\n      success\n    }\n  }\n"): (typeof documents)["\n  mutation Signup($signUpStaffInput: SignUpStaffInput!) {\n    signup(signUpStaffInput: $signUpStaffInput) {\n      success\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -192,7 +192,7 @@ export function graphql(source: "\n  mutation ClearancePharmacyStock(\n    $clea
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreatePharmacyStock(\n    $createPharmacyStockInput: CreatePharmacyStockInput!\n  ) {\n    createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput) {\n      createdAt\n      finalQty\n      id\n      item {\n        id\n        name\n      }\n      pharmacy {\n        id\n        name\n      }\n      updatedAt\n      warehouse {\n        id\n        name\n      }\n    }\n  }\n"];
+export function graphql(source: "\nmutation CreatePharmacyStock($createPharmacyStockInput: CreatePharmacyStockInput!) {\n  createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput)\n}\n"): (typeof documents)["\nmutation CreatePharmacyStock($createPharmacyStockInput: CreatePharmacyStockInput!) {\n  createPharmacyStock(createPharmacyStockInput: $createPharmacyStockInput)\n}\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

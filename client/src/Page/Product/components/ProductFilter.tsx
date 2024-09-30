@@ -13,7 +13,7 @@ import { GetItemMaxPrice } from "query/item/itemMaxPrice";
 
 const baseUnitArray = Object.values(BaseUnit);
 
-export default function ItemFilter({
+export default function ProductFilter({
   selectedUnit,
   sliderValue,
   sliderValueMrp,

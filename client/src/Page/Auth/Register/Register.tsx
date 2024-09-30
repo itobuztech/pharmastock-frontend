@@ -1,56 +1,54 @@
-import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import routes from "../../../Lib/Routes/Routes";
-import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { useMutation } from "@apollo/client";
 import { TextInput, Select, Text } from "@mantine/core";
-import { SIGNUP_MUTATION } from "../../../query/RegisterMutation";
-import { CreateUserInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import { useViewportSize } from "@mantine/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
+
 import PasswordStrength from "./components/PasswordStrength";
-import { UserRole } from "interfaces/interfaces";
 import messagesData from "Lib/messages";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import { RegisterPayload } from "./register.interface";
+import routes from "../../../Lib/Routes/Routes";
+import ButtonComponent from "../../../Components/Button/ButtonComponent";
+import { SIGNUP_MUTATION } from "../../../query/RegisterMutation";
+
+const schema = yup
+.object({
+  username: yup
+    .string()
+    .required(messagesData.register.userName.required)
+    .min(3, messagesData.register.userName.min)
+    .max(100, messagesData.register.userName.max)
+    .trim(messagesData.register.userName.trim),
+  name: yup
+    .string()
+    .required(messagesData.register.name.required)
+    .min(3, messagesData.register.name.min)
+    .max(100, messagesData.register.name.max)
+    .trim(messagesData.register.name.trim)
+    .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.name.matches),
+  email: yup
+    .string()
+    .required(messagesData.register.email.required)
+    .email(messagesData.register.email.email)
+    .trim(messagesData.register.email.required)
+    .matches(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      messagesData.register.email.matches
+    ),
+  password: yup.string().required(messagesData.register.password.required),
+  orgId: yup
+    .string()
+    .required(messagesData.register.organizationId.required),
+})
+.required();
 
 export default function Register() {
   const { height } = useViewportSize();
   const selectOrgItem = useOrganizationList();
-
-  const schema = yup
-    .object({
-      username: yup
-        .string()
-        .required(messagesData.register.userName.required)
-        .min(3, messagesData.register.userName.min)
-        .max(100, messagesData.register.userName.max)
-        .trim(messagesData.register.userName.trim),
-      name: yup
-        .string()
-        .required(messagesData.register.name.required)
-        .min(3, messagesData.register.name.min)
-        .max(100, messagesData.register.name.max)
-        .trim(messagesData.register.name.trim)
-        .matches(/^[a-zA-Z0-9 ]*$/, messagesData.register.name.matches),
-      role: yup.string().required(messagesData.register.role.required),
-      email: yup
-        .string()
-        .required(messagesData.register.email.required)
-        .email(messagesData.register.email.email)
-        .trim(messagesData.register.email.required)
-        .matches(
-          /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-          messagesData.register.email.matches
-        ),
-      password: yup.string().required(messagesData.register.password.required),
-      orgId: yup
-        .string()
-        .required(messagesData.register.organizationId.required),
-    })
-    .required();
 
   const {
     register,
@@ -58,24 +56,16 @@ export default function Register() {
     control,
     reset,
     setValue,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       username: "",
       name: "",
       orgId: "",
-      role: "",
       email: "",
       password: "",
     },
-  });
-
-  const roleArray = Object.entries(UserRole).map((role) => {
-    return {
-      value: role[1],
-      label: role[0],
-    };
   });
 
   const [signUp, { loading: signUpLoading }] = useMutation(SIGNUP_MUTATION, {
@@ -84,19 +74,15 @@ export default function Register() {
     },
   });
 
-  const onSubmit = async (data: CreateUserInput) => {
-    const response = await signUp({
-      variables: { signupUserInput: data },
+  const onSubmit = (data: RegisterPayload) => {
+    signUp({
+      variables: { signUpStaffInput: data },
+      onCompleted: (d) => {
+        toast.success(d?.signup?.success);
+        reset();
+      },
     });
-    toast.success(response.data.signup.success);
-    reset();
   };
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [reset, isSubmitSuccessful]);
 
   return (
     <div
@@ -161,24 +147,6 @@ export default function Register() {
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.orgId?.message}
-              </Text>
-            </div>
-
-            <div className="mb-4">
-              <Select
-                label="Select Role"
-                placeholder="Select Role"
-                data={roleArray}
-                {...register("role")}
-                onChange={(value) => {
-                  if (value) {
-                    setValue("role", value);
-                  }
-                }}
-                withAsterisk
-              />
-              <Text size="sm" mt={5} c="red.6">
-                {errors.role?.message}
               </Text>
             </div>
 
