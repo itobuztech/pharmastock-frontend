@@ -5,7 +5,7 @@ import { GetUsersList } from "query/user/usersList";
 import { toast } from "react-toastify";
 import { ChildComponentProps, UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
-import { LoadingOverlay } from "@mantine/core";
+import { Button, Flex, LoadingOverlay, Modal } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
@@ -16,6 +16,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { DeleteUserBySuperAdmin } from "query/user/userDelete";
+import UserInvitationForm from "./components/UserInvitationForm";
 
 export default function UserList({
   handleUserPermissions,
@@ -30,6 +31,10 @@ export default function UserList({
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const permission = useAppSelector((state) => state.user.permission);
+  const [
+    openUserInvitationModal,
+    { open: invitationModalOpen, close: invitationModalClose },
+  ] = useDisclosure(false);
 
   /* ====== User List Query ====== */
   const [fetchUserList, { refetch, loading }] = useLazyQuery<UserData>(
@@ -124,11 +129,22 @@ export default function UserList({
       <PageHeader title="Users" showCreateButton={false} />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Flex>
+        <Search
+          handleChange={handleChange}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
+        {handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.USER_PERMISSION,
+          USER_PERMISSION_CAPABILITIES.CREATE
+        ) && (
+          <Button ml="auto" onClick={() => invitationModalOpen()}>
+            Invite User
+          </Button>
+        )}
+      </Flex>
 
       {/* ==== Loading State ==== */}
       {loading && (
@@ -157,6 +173,19 @@ export default function UserList({
           )}
         />
       )}
+
+      <Modal
+        opened={openUserInvitationModal}
+        onClose={invitationModalClose}
+        title="Invite User"
+        centered
+        size="lg"
+      >
+        <UserInvitationForm
+          closeModal={invitationModalClose}
+          refetch={refetch}
+        />
+      </Modal>
 
       {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal

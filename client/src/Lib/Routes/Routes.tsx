@@ -1,3 +1,5 @@
+import queryString from "query-string";
+
 import { dashboardRoutes } from "./DashboardRoutes";
 
 export const routes = {
@@ -21,6 +23,11 @@ export const routes = {
   },
   forgotPasswordConfirmation: {
     path: "/forgotpasswordconfirmation",
+  },
+  setPassword: {
+    path: "/set-password",
+    fullPath: (query: { confirmation_token: string }) =>
+      `/set-password${queryString.stringify(query)}`,
   },
   app: {
     path: "/app",

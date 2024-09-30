@@ -14,11 +14,15 @@ const VerifyUser = React.lazy(() => import("./VerifyUser/VerifyUser"));
 const VerifyForgotPassword = React.lazy(
   () => import("./VerifyForgotPassword/VerifyForgotPassword")
 );
+const SetPassword = React.lazy(
+  () => import("Page/Profile/component/SetPassword")
+);
 
 export const AuthRoutes = [
   <Route key="AuthRoutes">
     <Route path={routes.login.path} element={<LoginPage />} />
     <Route path={routes.forgetPassword.path} element={<ForgetPassword />} />
+    <Route path={routes.setPassword.path} element={<SetPassword />} />
     <Route path={routes.register.path} element={<RegisterPage />} />
     <Route path={routes.logout.path} element={<LogoutPage />} />
     <Route path={routes.token.path} element={<VerifyUser />} />
