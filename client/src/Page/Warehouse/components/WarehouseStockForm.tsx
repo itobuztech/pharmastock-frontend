@@ -3,13 +3,12 @@ import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
+import { CreateWarehouseStockInput, Warehouse, WarehouseStock } from "gql/graphql";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   CreateWarehouses,
   Permissions,
   Warehouses,
-  WarehouseStock,
 } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetGenerateSKU } from "query/warehouse/warehouseGenerateSku";
@@ -17,7 +16,6 @@ import { toast } from "react-toastify";
 import { WarehouseStockCreate } from "query/warehouse/warehouseStockCreate";
 import DatePicker from "react-datepicker";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-// import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import useItemList from "Lib/customHooks/useItemList";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -202,7 +200,7 @@ export default function WarehouseStockForm({
           <TextInput
             label="Organization"
             placeholder="Name"
-            defaultValue={user?.organization.name}
+            defaultValue={user?.organization?.name}
             disabled
           />
         </div>
@@ -370,7 +368,7 @@ export default function WarehouseStockForm({
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => {
-                    setStartDate(date);
+                    setStartDate(date as Date);
                     field.onChange(date);
                   }}
                   minDate={new Date()}
