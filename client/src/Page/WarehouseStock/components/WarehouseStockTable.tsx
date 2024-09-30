@@ -41,8 +41,8 @@ export default function WarehouseStockTable({
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
       <Table.Td>{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
-      <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.item.name}</Table.Td>
+      <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
       <Table.Td>₹ {item.totalWholesalePrice}</Table.Td>
       <Table.Td>₹ {item.totalMrpBaseUnit}</Table.Td>
@@ -68,8 +68,8 @@ export default function WarehouseStockTable({
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
+            <Table.Th>Product</Table.Th>
             <Table.Th>Warehouse</Table.Th>
-            <Table.Th>Item</Table.Th>
             <Table.Th>Qty</Table.Th>
             <Table.Th>Total Wholesale Price</Table.Th>
             <Table.Th>Total MRP BaseUnit</Table.Th>

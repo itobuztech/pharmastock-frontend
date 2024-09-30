@@ -7,13 +7,13 @@ export interface DashBoardRoutes {
   organizationDetails: DefaultRoute;
   pharmacies: DefaultRoute;
   pharmacyDetails: DefaultRoute;
-  createItemCategory: DefaultRoute;
-  createItemCategoryDetails: DefaultRoute;
-  itemCategoryList: DefaultRoute;
+  createCategory: DefaultRoute;
+  categoryDetails: DefaultRoute;
+  categoryList: DefaultRoute;
   warehouseList: DefaultRoute;
   warehouseDetails: DefaultRoute;
-  itemList: DefaultRoute;
-  itemDetails: DefaultRoute;
+  productList: DefaultRoute;
+  productDetails: DefaultRoute;
   warehouseStock: DefaultRoute;
   users: DefaultRoute;
   userDetails: DefaultRoute;
@@ -46,17 +46,17 @@ export const dashboardRoutes: DashBoardRoutes = {
     path: `${dashboardPath}/pharmacies/:id`,
     fullPath: `${dashboardPath}/pharmacies/:id`,
   },
-  createItemCategory: {
-    path: `${dashboardPath}/itemCategory`,
-    fullPath: `${dashboardPath}/itemCategory`,
+  createCategory: {
+    path: `${dashboardPath}/categories`,
+    fullPath: `${dashboardPath}/categories`,
   },
-  createItemCategoryDetails: {
-    path: `${dashboardPath}/itemCategory/:id`,
-    fullPath: `${dashboardPath}/itemCategory/:id`,
+  categoryDetails: {
+    path: `${dashboardPath}/categories/:id`,
+    fullPath: `${dashboardPath}/categories/:id`,
   },
-  itemCategoryList: {
-    path: `${dashboardPath}/itemCategoryList`,
-    fullPath: `${dashboardPath}/itemCategoryList`,
+  categoryList: {
+    path: `${dashboardPath}/categories`,
+    fullPath: `${dashboardPath}/categories`,
   },
   warehouseList: {
     path: `${dashboardPath}/warehouse`,
@@ -66,13 +66,13 @@ export const dashboardRoutes: DashBoardRoutes = {
     path: `${dashboardPath}/warehouse/:id`,
     fullPath: `${dashboardPath}/warehouse/:id`,
   },
-  itemList: {
-    path: `${dashboardPath}/items`,
-    fullPath: `${dashboardPath}/items`,
+  productList: {
+    path: `${dashboardPath}/products`,
+    fullPath: `${dashboardPath}/products`,
   },
-  itemDetails: {
-    path: `${dashboardPath}/items/:id`,
-    fullPath: `${dashboardPath}/items/:id`,
+  productDetails: {
+    path: `${dashboardPath}/products/:id`,
+    fullPath: `${dashboardPath}/products/:id`,
   },
   warehouseStock: {
     path: `${dashboardPath}/stocksWarehouse`,
