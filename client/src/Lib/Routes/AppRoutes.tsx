@@ -25,18 +25,18 @@ const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 const OrganizationsPage = React.lazy(
   () => import("Page/Organizations/OrganizationsPage")
 );
-const ItemCategory = React.lazy(
-  () => import("Page/CreateItemCategory/ItemCategory")
+const CategoryList = React.lazy(
+  () => import("Page/Category/CategoryList")
 );
-const ItemCategoryDetails = React.lazy(
-  () => import("Page/CreateItemCategory/ItemCategoryDetails")
+const CategoryDetails = React.lazy(
+  () => import("Page/Category/CategoryDetails")
 );
 const Warehouse = React.lazy(() => import("Page/Warehouse/Warehouse"));
 const WarehouseDetails = React.lazy(
   () => import("Page/Warehouse/WarehouseDetails")
 );
-const ItemList = React.lazy(() => import("Page/Item/ItemList"));
-const ItemDetails = React.lazy(() => import("Page/Item/ItemDetails"));
+const ProductList = React.lazy(() => import("Page/Product/ProductList"));
+const ProductDetails = React.lazy(() => import("Page/Product/ProductDetails"));
 
 const WarehouseStock = React.lazy(
   () => import("Page/WarehouseStock/WarehouseStock")
@@ -141,7 +141,7 @@ export default function AppRoutes() {
 
             <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
-                path={routes.dashboard.createItemCategory.path}
+                path={routes.dashboard.categoryList.path}
                 element={
                   <PermissionGuard
                     field={USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT}
@@ -151,15 +151,15 @@ export default function AppRoutes() {
                 <Route
                   index
                   element={
-                    <ItemCategory
+                    <CategoryList
                       handleUserPermissions={handleUserPermissions}
                     />
                   }
                 />
                 <Route
-                  path={routes.dashboard.createItemCategoryDetails.path}
+                  path={routes.dashboard.categoryDetails.path}
                   element={
-                    <ItemCategoryDetails
+                    <CategoryDetails
                       handleUserPermissions={handleUserPermissions}
                     />
                   }
@@ -195,7 +195,7 @@ export default function AppRoutes() {
 
             <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
-                path={routes.dashboard.itemList.path}
+                path={routes.dashboard.productList.path}
                 element={
                   <PermissionGuard
                     field={USER_PERMISSION_FIELDS.ITEM_MANAGEMENT}
@@ -205,13 +205,13 @@ export default function AppRoutes() {
                 <Route
                   index
                   element={
-                    <ItemList handleUserPermissions={handleUserPermissions} />
+                    <ProductList handleUserPermissions={handleUserPermissions} />
                   }
                 />
                 <Route
-                  path={routes.dashboard.itemDetails.path}
+                  path={routes.dashboard.productDetails.path}
                   element={
-                    <ItemDetails
+                    <ProductDetails
                       handleUserPermissions={handleUserPermissions}
                     />
                   }

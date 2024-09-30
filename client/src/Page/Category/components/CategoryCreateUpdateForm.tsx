@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ItemCategoryUpdate } from "query/category/categoryUpdate";
 
-export default function ItemCategoryForm({
+export default function CategoryCreateUpdateForm({
   editForm,
   setEditForm,
   catId,

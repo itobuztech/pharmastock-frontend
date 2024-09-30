@@ -8,13 +8,13 @@ import { GetItemLists } from "query/item/itemList";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { ItemDelete } from "query/item/itemDelete";
 import { toast } from "react-toastify";
-import ItemForm from "./components/ItemForm";
-import ItemTable from "./components/ItemTable";
+import ProductForm from "./components/ProductForm";
+import ProductTable from "./components/ProductTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import ItemFilter from "./components/ItemFilter";
+import ProductFilter from "./components/ProductFilter";
 
-export default function ItemList({
+export default function ProductList({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -99,7 +99,7 @@ export default function ItemList({
         }
       });
       deleteModalClose();
-      toast.success("Item Deleted Successfully");
+      toast.success("Product Deleted Successfully");
     },
   });
 
@@ -139,38 +139,13 @@ export default function ItemList({
     handleSearch(event.currentTarget.value);
   };
 
-  const maxWholesalePrice = itemList?.items.reduce(
-    (max, item) => Math.max(max, item.wholesalePrice),
-    0
-  );
-
-  console.log({ maxWholesalePrice });
-
-  // const onSubmit = () => {
-  //   fetchItemList({
-  //     variables: {
-  //       filterArgs: {
-  //         baseUnit: selectedUnit,
-  //         mrpBaseUnit: sliderValueMrp,
-  //         wholeSalePrice: sliderValue,
-  //       },
-  //       pagination: true,
-  //       paginationArgs: {
-  //         skip: activePage * 10 - 10,
-  //         take: 10,
-  //       },
-  //       searchText: searchInput,
-  //     },
-  //   });
-  // };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Items"
+        title="Products"
         showCreateButton={true}
         onClick={open}
-        buttonText="Add Item"
+        buttonText="Add Product"
       />
 
       <Flex wrap="wrap">
@@ -182,7 +157,7 @@ export default function ItemList({
         />
         <Space w="md" />
         {/* ==== Filter ==== */}
-        <ItemFilter
+        <ProductFilter
           selectedUnit={selectedUnit}
           sliderValue={sliderValue}
           sliderValueMrp={sliderValueMrp}
@@ -193,8 +168,6 @@ export default function ItemList({
           setSearchInput={setSearchInput}
           fetchItemList={fetchItemList}
           activePage={activePage}
-          // opened={popOverOpened}
-          // popOverOpen={popOverOpen}
         />
       </Flex>
 
@@ -209,7 +182,7 @@ export default function ItemList({
       {itemList?.items.length === 0 ? (
         <EmptyList />
       ) : (
-        <ItemTable
+        <ProductTable
           itemList={itemList}
           activePage={activePage}
           handleDelete={handleDelete}
@@ -221,7 +194,7 @@ export default function ItemList({
       )}
 
       <ConfirmationModal
-        title="Item"
+        title="Product"
         modalOpen={deleteModalOpened}
         modalClose={deleteModalClose}
         deleteItem={() => getDeleteItem()}
@@ -231,11 +204,11 @@ export default function ItemList({
       <Modal
         opened={opened}
         onClose={close}
-        title="Add New Item"
+        title="Add New Product"
         centered
         size={"lg"}
       >
-        <ItemForm
+        <ProductForm
           close={close}
           editForm={editForm}
           setEditForm={setEditForm}

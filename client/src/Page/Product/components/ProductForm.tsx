@@ -14,7 +14,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { BaseUnit, CreateItemInput, UpdateItemInput } from "gql/graphql";
-import { ItemCreate } from "query/item/itemCreate";
 import { toast } from "react-toastify";
 import { GetItemUpdate } from "query/item/itemUpdate";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +23,9 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import messagesData from "Lib/messages";
+import { ItemCreate } from "query/item/itemCreate";
 
-export default function ItemForm({
+export default function ProductForm({
   close,
   editForm,
   setEditForm,
