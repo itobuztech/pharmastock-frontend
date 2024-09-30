@@ -1,82 +1,110 @@
-import React, { useState } from "react";
-import { Modal, NumberInput, TextInput } from "@mantine/core";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Modal, NumberInput, TextInput, Divider } from "@mantine/core";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import ButtonComponent from "Components/Button/ButtonComponent";
 import { useMutation } from "@apollo/client";
-import { GetClearancePharmacyStock } from "query/pharmacyStock/clearancePharmacyStock";
 import { toast } from "react-toastify";
+
+import ButtonComponent from "Components/Button/ButtonComponent";
+import { GetClearancePharmacyStock } from "query/pharmacyStock/clearancePharmacyStock";
+import { CreatePharmacyStockInput } from "gql/graphql";
 import {
   ClearancePharmacyStockInput,
-  CreatePharmacyStockInput,
-} from "gql/graphql";
+  SelectedPharmacyStock,
+} from "../pharmacyStock.interface";
+
+const pharmacyStockClearanceSchema = yup
+  .object({
+    items: yup.array().of(
+      yup.object({
+        pharmacyId: yup.string(),
+        itemId: yup.string(),
+        qty: yup.number().required().min(1),
+      })
+    ),
+  })
+  .required();
 
 export default function PharmacyStockSoldForm({
   StockSoldModalOpened,
   StockSoldModalClose,
-  pharmacyName,
-  pharmacyId,
-  itemName,
-  itemId,
+  selectedItems,
   refetchItem,
   setNewPharmacyStockList,
+  setSelectedPharmacyStock
 }: {
   StockSoldModalOpened: boolean;
   StockSoldModalClose: () => void;
-  pharmacyName?: string;
-  pharmacyId?: string;
-  itemName?: string;
-  itemId?: string;
+  selectedItems: SelectedPharmacyStock[];
   refetchItem: () => void;
   setNewPharmacyStockList?: React.Dispatch<
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
+  setSelectedPharmacyStock?: React.Dispatch<
+  React.SetStateAction<SelectedPharmacyStock[]>
+>;
 }) {
-  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
-
-  const schema = yup
-    .object({
-      pharmacyId: yup.string(),
-      qty: yup.number().required(),
-      itemId: yup.string(),
-    })
-    .required();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
   const [clearPharmacyStock, { loading }] = useMutation(
     GetClearancePharmacyStock,
     {
       onError: (err) => {
         toast.error(err.message);
       },
-      onCompleted: () => {
-        toast.success("Pharmacy Stock Cleared Successfully");
-        StockSoldModalClose();
-        reset();
-        refetchItem();
-      },
     }
   );
 
-  const onSubmit = async (data: ClearancePharmacyStockInput) => {
-    const response = await clearPharmacyStock({
+  const {
+    setValue,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(pharmacyStockClearanceSchema),
+    defaultValues: {
+      items: selectedItems?.map((item) => ({
+        pharmacyId: item.pharmacyId,
+        itemId: item.itemId,
+        qty: 0,
+      })),
+    },
+  });
+
+  const { fields } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
+    console.log('data', data.items)
+    clearPharmacyStock({
       variables: {
-        clearancePharmacyStockInput: [{ ...data, itemId, pharmacyId }],
+        clearancePharmacyStockInput: data.items,
+      },
+      onCompleted: (d) => {
+        setNewPharmacyStockList && setNewPharmacyStockList(d);
+        setSelectedPharmacyStock && setSelectedPharmacyStock([]);
+        StockSoldModalClose();
+        toast.success("Pharmacy Stock Cleared Successfully");
+        reset();
+        refetchItem();
       },
     });
-    if (setNewPharmacyStockList) {
-      setNewPharmacyStockList(response.data);
-    }
   };
+
+  useEffect(() => {
+    if (selectedItems) {
+      const formattedSelectedItems = selectedItems?.map((item) => ({
+        pharmacyId: item.pharmacyId,
+        itemId: item.itemId,
+        qty: 0,
+      }));
+      setValue("items", formattedSelectedItems);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItems.length]);
 
   return (
     <Modal
@@ -88,38 +116,52 @@ export default function PharmacyStockSoldForm({
       overlayProps={{
         zIndex: 500,
       }}
-      size={"sm"}
+      size={"lg"}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-          <TextInput
-            label="Pharmacy"
-            {...register("pharmacyId")}
-            defaultValue={pharmacyName}
-            disabled
-          />
-        </div>
-        <div className="mb-4">
-          <TextInput
-            label="Product"
-            {...register("itemId")}
-            defaultValue={itemName}
-            disabled
-          />
-        </div>
+        {fields.map((field, index) => (
+          <div key={field.id}>
+            <div className="mb-4">
+              <TextInput
+                label="Pharmacy"
+                defaultValue={selectedItems[index]?.pharmacyName}
+                disabled
+              />
+            </div>
 
-        <div className="mb-4">
-          <NumberInput
-            label="Add Quantity"
-            placeholder="Qty"
-            {...register("qty")}
-            value={qtyAddValue}
-            onChange={setQtyAddValue}
-            min={0}
-            max={1000000}
-            error={errors.qty && "This field is required"}
-          />
-        </div>
+            <div className="mb-4">
+              <TextInput
+                label="Item"
+                defaultValue={selectedItems[index]?.itemName}
+                disabled
+              />
+            </div>
+
+            <div className="mb-4">
+              <Controller
+                name={`items.${index}.qty`}
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    label="Add Quantity"
+                    placeholder="Qty"
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    min={0}
+                    max={1000000}
+                    error={
+                      errors?.items?.[index]?.qty && "This field is required"
+                    }
+                  />
+                )}
+              />
+            </div>
+
+            {index < fields.length - 1 && <Divider my="lg" />}
+          </div>
+        ))}
 
         <ButtonComponent type="submit" loading={loading}>
           Sold
