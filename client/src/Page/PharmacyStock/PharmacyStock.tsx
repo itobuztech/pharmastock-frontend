@@ -77,7 +77,8 @@ export default function PharmacyStock({
         searchText: "",
       },
     });
-  }, [activePage, fetchPharmaciesStockList, refetch, searchInput]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage, refetch, searchInput]);
 
   /* ====== New Pharmacy Stocks Add In The List ====== */
   useEffect(() => {
