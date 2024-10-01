@@ -258,11 +258,7 @@ export default function ProductForm({
         </Text>
       </div>
 
-      <div className={`text-right ${handleUserPermissions(
-        permission,
-        USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
-        USER_PERMISSION_CAPABILITIES.CREATE,
-      ) ? 'hidden' : ''}`}>
+      <div className={`text-right ${permission.ITEM_MANAGEMENT?.CAPABILITIES.EDIT ? '' : 'hidden'}`}>
         {itemId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             <Button

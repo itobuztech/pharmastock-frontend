@@ -77,7 +77,7 @@ export default function WarehouseDetails({
         },
       },
     });
-  }, [activePage, fetchWarehouseStocksByWarehouse, id]);
+  }, [activePage, id]);
 
   useEffect(() => {
     if (newWarehouseStockList) {
@@ -91,7 +91,7 @@ export default function WarehouseDetails({
         }
       });
     }
-  }, [newWarehouseStockList, refetchWarehouseStock, refetch]);
+  }, [newWarehouseStockList, refetch]);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">

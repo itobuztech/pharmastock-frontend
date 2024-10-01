@@ -14,6 +14,7 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ItemCategoryUpdate } from "query/category/categoryUpdate";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function CategoryCreateUpdateForm({
   editForm,
@@ -35,6 +36,7 @@ export default function CategoryCreateUpdateForm({
   >;
 }>) {
   const navigate = useNavigate();
+  const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
       name: yup.string().required(),
@@ -122,7 +124,7 @@ export default function CategoryCreateUpdateForm({
           error={errors.name && "This field is required"}
         />
       </div>
-      <div className="text-right">
+      <div className={`text-right ${permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.EDIT ? '' : 'hidden'}`}>
         {catId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             <Button

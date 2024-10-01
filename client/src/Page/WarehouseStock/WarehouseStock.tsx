@@ -80,8 +80,6 @@ export default function WarehouseStock({
     });
   }, [
     activePage,
-    fetchWarehouseStocksList,
-    refetchWarehouseStockList,
     searchInput,
   ]);
 
@@ -98,11 +96,12 @@ export default function WarehouseStock({
         }
       });
     }
-  }, [newWarehouseStockList, refetchWarehouseStockList]);
+  }, [newWarehouseStockList]);
 
   useEffect(() => {
     refetchWarehouseStockList();
-  }, [refetchWarehouseStockList]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* ====== Handle Search Function ====== */
   const handleSearch = useDebouncedCallback(async (searchInput: string) => {

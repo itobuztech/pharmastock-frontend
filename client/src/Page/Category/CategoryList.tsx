@@ -17,6 +17,7 @@ import CategoryTable from "./components/CategoryTable";
 import CategoryCreateUpdateForm from "./components/CategoryCreateUpdateForm";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function CategoryList({
   handleUserPermissions,
@@ -34,6 +35,7 @@ export default function CategoryList({
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
+  const permission = useAppSelector((state) => state.user.permission);
 
   /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
@@ -85,7 +87,8 @@ export default function CategoryList({
         searchText: "",
       },
     });
-  }, [activePage, fetchItemCategoryList, refetch, searchInput]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage, refetch, searchInput]);
 
   /* ====== New Category Add In The List ====== */
   useEffect(() => {
@@ -141,7 +144,7 @@ export default function CategoryList({
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Categories"
-        showCreateButton={true}
+        showCreateButton={permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.CREATE ? true : false}
         onClick={open}
         buttonText="Add Category"
       />

@@ -13,6 +13,7 @@ import ProductTable from "./components/ProductTable";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import ProductFilter from "./components/ProductFilter";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ProductList({
   handleUserPermissions,
@@ -32,6 +33,7 @@ export default function ProductList({
   const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
+  const permission = useAppSelector((state) => state.user.permission);
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -143,7 +145,7 @@ export default function ProductList({
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Products"
-        showCreateButton={true}
+        showCreateButton={permission.ITEM_MANAGEMENT?.CAPABILITIES.CREATE ? true : false}
         onClick={open}
         buttonText="Add Product"
       />
