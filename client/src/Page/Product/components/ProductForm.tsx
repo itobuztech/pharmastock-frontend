@@ -24,6 +24,7 @@ import {
 } from "enums/enums";
 import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ProductForm({
   close,
@@ -50,6 +51,7 @@ export default function ProductForm({
 }>) {
   const navigate = useNavigate();
   const selectItemCatList = useItemCatList();
+  const permission = useAppSelector((state) => state.user.permission);
 
   const schema = yup
     .object({
@@ -256,7 +258,11 @@ export default function ProductForm({
         </Text>
       </div>
 
-      <div className="text-right">
+      <div className={`text-right ${handleUserPermissions(
+        permission,
+        USER_PERMISSION_FIELDS.ITEM_MANAGEMENT,
+        USER_PERMISSION_CAPABILITIES.CREATE,
+      ) ? 'hidden' : ''}`}>
         {itemId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             <Button
