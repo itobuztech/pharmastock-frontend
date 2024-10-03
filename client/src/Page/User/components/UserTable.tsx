@@ -46,11 +46,11 @@ export default function UserTable({
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
-      <Table.Td>{item.username}</Table.Td>
-      <Table.Td>{item.name}</Table.Td>
-      <Table.Td>{item.email}</Table.Td>
-      <Table.Td>{item.organization?.name}</Table.Td>
-      <Table.Td>{item.role.userType}</Table.Td>
+      <Table.Td>{item.username ?? 'N/A'}</Table.Td>
+      <Table.Td>{item.name ?? 'N/A'}</Table.Td>
+      <Table.Td>{item.email ?? 'N/A'}</Table.Td>
+      <Table.Td>{item.organization?.name ?? 'N/A'}</Table.Td>
+      <Table.Td>{item.role.userType ?? 'N/A'}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}

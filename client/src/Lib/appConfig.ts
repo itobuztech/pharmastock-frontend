@@ -10,6 +10,7 @@ const appConfig = {
     user: "app_user",
     store: "app_store",
     accessToken: "access_token",
+    userData: "userData"
   },
 };
 export default appConfig;
