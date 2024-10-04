@@ -61,6 +61,10 @@ export default function OrganizationForm({
         .string()
         .required(messagesData.organization.description.required)
         .trim(messagesData.organization.description.required),
+      adminEmail: yup
+        .string()
+        .required(messagesData.organization.adminEmail.required)
+        .trim(messagesData.organization.adminEmail.required),
       address: yup
         .string()
         .required(messagesData.organization.address.required)
@@ -99,7 +103,7 @@ export default function OrganizationForm({
         toast.error(err.message);
       },
       onCompleted: () => {
-        toast.success("Organization Added Successfully");
+        toast.success("Organization added successfully");
         reset();
         if (close) {
           close();
@@ -117,7 +121,7 @@ export default function OrganizationForm({
         toast.error(err.message);
       },
       onCompleted: () => {
-        toast.success("Organization Updated Successfully");
+        toast.success("Organization updated successfully");
         setEditForm(false);
         refetchItem();
       },
@@ -179,6 +183,20 @@ export default function OrganizationForm({
           {errors.description?.message}
         </Text>
       </div>
+
+      {!orgId && (
+        <div className="mb-4">
+          <TextInput
+            label="Admin Email"
+            placeholder="Admin Email"
+            {...register("adminEmail")}
+            withAsterisk
+          />
+          <Text size="sm" mt={5} c="red.6">
+            {errors.adminEmail?.message}
+          </Text>
+        </div>
+      )}
 
       <div className="mb-4">
         <TextInput

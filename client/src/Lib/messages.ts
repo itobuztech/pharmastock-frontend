@@ -46,6 +46,9 @@ export const messagesData = {
     description: {
       required: "Description is a required field",
     },
+    adminEmail: {
+      required: "Admin Email is a required field"
+    },
     address: {
       required: "Address is a required field",
     },
