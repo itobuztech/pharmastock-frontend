@@ -61,10 +61,14 @@ export default function OrganizationForm({
         .string()
         .required(messagesData.organization.description.required)
         .trim(messagesData.organization.description.required),
-      adminEmail: yup
-        .string()
-        .required(messagesData.organization.adminEmail.required)
-        .trim(messagesData.organization.adminEmail.required),
+      adminEmail: yup.string().when('$orgId', {
+        is: (orgId: string | undefined) => !orgId,
+        then: (schema) =>
+          schema
+            .required(messagesData.organization.adminEmail.required)
+            .trim(messagesData.organization.adminEmail.required),
+        otherwise: (schema) => schema.notRequired(),
+      }),
       address: yup
         .string()
         .required(messagesData.organization.address.required)
@@ -82,8 +86,7 @@ export default function OrganizationForm({
       country: yup
         .string()
         .required(messagesData.organization.country.required),
-    })
-    .required();
+    });
 
   const {
     register,
@@ -92,9 +95,13 @@ export default function OrganizationForm({
     reset,
     setValue,
     formState: { errors },
+
   } = useForm({
     resolver: yupResolver(schema),
+    context: { orgId },
   });
+
+  
 
   const [addOrganization, { loading: addOrgLoading }] = useMutation(
     CreateOrganization,
