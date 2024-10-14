@@ -4,8 +4,10 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
+import { UserRole } from "gql/graphql";
 import { ItemCategories, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
+import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,6 +35,7 @@ export default function CategoryTable({
   showDeleteButton,
 }: Readonly<ItemCategoryTableProps>) {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.role);
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.createCategory.path}/${id}`);
@@ -49,7 +52,7 @@ export default function CategoryTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
-          showDeleteModal={true}
+          showDeleteModal={user === UserRole.Superadmin ? true : false}
           handleUserPermissions={handleUserPermissions}
           showDeleteButton={showDeleteButton}
         />
