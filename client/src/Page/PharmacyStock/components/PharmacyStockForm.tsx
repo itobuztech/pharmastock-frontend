@@ -150,13 +150,14 @@ export default function PharmacyStockForm({
 
   useEffect(() => {
     if (pharmacyStockDetails) {
+      setQtyValue(pharmacyStockDetails.finalQty);
       pharmacyStockDetails.pharmacy?.id &&
         setValue("pharmacyId", pharmacyStockDetails.pharmacy.id);
 
       pharmacyStockDetails.warehouse?.id &&
         setValue("warehouseId", pharmacyStockDetails.warehouse.id);
 
-      if (pharmacyStockDetails.item && pharmacyStockDetails.finalQty) {
+      if (pharmacyStockDetails.item) {
         const itemArray = [
           {
             itemId: pharmacyStockDetails.item.id,
