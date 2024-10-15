@@ -252,8 +252,8 @@ export default function PharmacyStockForm({
                 <Select
                   {...field}
                   data={id ? selectItem : selectItems}
-                  label="Select Item"
-                  placeholder="Select Item"
+                  label="Select Product"
+                  placeholder="Select Product"
                   value={field.value}
                   onChange={(value) => {
                     field.onChange(value);
@@ -269,8 +269,8 @@ export default function PharmacyStockForm({
 
           {handleUserPermissions(
             permission,
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
-            USER_PERMISSION_CAPABILITIES.EDIT
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+            USER_PERMISSION_CAPABILITIES.CREATE
           ) && (
             <div className="mt-4">
               <Controller
@@ -318,7 +318,7 @@ export default function PharmacyStockForm({
             </Button>
             {handleUserPermissions(
               permission,
-              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
               <ButtonComponent type="submit" loading={loading}>
