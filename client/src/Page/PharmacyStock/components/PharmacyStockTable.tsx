@@ -106,7 +106,7 @@ export default function PharmacyStockTable({
         <Table.Td>{item.warehouse.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
-        {user.role !== UserRole.Staff && (
+       
           <Table.Td className="text-right">
             <ActionPopover
               handleView={() => screenSwitch(item.id)}
@@ -114,7 +114,7 @@ export default function PharmacyStockTable({
               handleUserPermissions={handleUserPermissions}
             />
           </Table.Td>
-        )}
+      
       </Table.Tr>
     );
   });
@@ -135,7 +135,7 @@ export default function PharmacyStockTable({
             ) && <Table.Th></Table.Th>}
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
-            <Table.Th>Item</Table.Th>
+            <Table.Th>Product</Table.Th>
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
             <Table.Th>Qty</Table.Th>

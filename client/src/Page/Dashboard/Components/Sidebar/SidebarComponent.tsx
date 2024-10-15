@@ -59,9 +59,9 @@ export default function SidebarComponent() {
             />
           )}
 
-          {handleSliderOptionsVisible(
+          {(handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
-          ) && (
+          ) && user.role !== UserRole.Staff) && (
             <MenuLink
               text="Products"
               activeMenuPaths={routes.dashboard.productList.path}
@@ -69,9 +69,9 @@ export default function SidebarComponent() {
             />
           )}
 
-          {handleSliderOptionsVisible(
+          {(handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
-          ) && (
+          ) && user.role !== UserRole.Staff) && (
             <MenuLink
               text="Warehouses"
               activeMenuPaths={routes.dashboard.warehouseList.path}
