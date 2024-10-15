@@ -121,13 +121,6 @@ export default function PharmacyStockSoldForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         {fields.map((field, index) => (
           <div key={field.id}>
-            <div className="mb-4">
-              <TextInput
-                label="Pharmacy"
-                defaultValue={selectedItems[index]?.pharmacyName}
-                disabled
-              />
-            </div>
 
             <div className="mb-4">
               <TextInput
