@@ -7,6 +7,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import { Permissions } from "interfaces/interfaces";
+import { UserRole } from "gql/graphql";
 interface ActionPopoverProps {
   handleView: () => void;
   handleDelete?: () => void;
@@ -33,6 +34,7 @@ export default function ActionPopover({
   handleUserPermissions,
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
+  const user = useAppSelector((state) => state.user);
 
   return (
     <Popover width={200} position="bottom-end" withArrow shadow="md">
@@ -42,11 +44,12 @@ export default function ActionPopover({
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        {handleUserPermissions(
+        {(handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.VIEW
-        ) && (
+        ) ||
+          user.role === UserRole.Staff) && (
           <Button
             variant="transparent"
             fullWidth
