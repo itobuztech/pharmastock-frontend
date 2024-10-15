@@ -77,6 +77,8 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     });
   };
 
+  // console.log('admin', admin)
+
   useEffect(() => {
     if (admin) {
       setValue("name", admin.account.user.name);

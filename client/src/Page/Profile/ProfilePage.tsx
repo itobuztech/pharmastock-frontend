@@ -52,8 +52,8 @@ export default function ProfilePage() {
                 id: d.account.user.organization?.id,
               },
               pharmacy: {
-                id: d.account.user.pharmacy.id,
-                name: d.account.user.pharmacy.name
+                id: d?.account?.user?.pharmacy?.id,
+                name: d?.account?.user?.pharmacy?.name
               }
             },
           },
