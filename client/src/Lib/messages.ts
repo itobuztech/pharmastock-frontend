@@ -154,6 +154,7 @@ export const messagesData = {
       trim: "Username is a required field",
       min: "Username must be at least 3 characters",
     },
+    pharmacy: "Select at least one pharmacy",
     password: {
       required: "Old Password is a required field",
       newPassword: "New Password is a required field",

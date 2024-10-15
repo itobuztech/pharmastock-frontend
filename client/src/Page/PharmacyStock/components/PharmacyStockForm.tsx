@@ -309,21 +309,23 @@ export default function PharmacyStockForm({
       <div className="text-right">
         {id ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-            >
-              Cancel
-            </Button>
             {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-              <ButtonComponent type="submit" loading={loading}>
-                Update
-              </ButtonComponent>
+              <>
+                <Button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <ButtonComponent type="submit" loading={loading}>
+                  Update
+                </ButtonComponent>
+              </>
             )}
           </div>
         ) : (

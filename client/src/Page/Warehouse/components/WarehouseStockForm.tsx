@@ -3,7 +3,11 @@ import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { CreateWarehouseStockInput, Warehouse, WarehouseStock } from "gql/graphql";
+import {
+  CreateWarehouseStockInput,
+  Warehouse,
+  WarehouseStock,
+} from "gql/graphql";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   CreateWarehouses,
@@ -390,21 +394,23 @@ export default function WarehouseStockForm({
       <div className="text-right">
         {warehouseStockId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-            >
-              Cancel
-            </Button>
             {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-              <ButtonComponent type="submit" loading={loading}>
-                Update
-              </ButtonComponent>
+              <>
+                <Button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <ButtonComponent type="submit" loading={loading}>
+                  Update
+                </ButtonComponent>
+              </>
             )}
           </div>
         ) : (

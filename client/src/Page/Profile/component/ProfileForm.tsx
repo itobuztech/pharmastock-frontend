@@ -15,7 +15,7 @@ import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 
 export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
   const [editForm, setEditForm] = useState(false);
-  const user = useAppSelector((state) => state.user);
+  const isStaff = useAppSelector((state) => state.user.role === UserRole.Staff);
   const selectPharmaList = usePharmacyList();
 
   const schema = yup
@@ -34,7 +34,14 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
         .max(100, messagesData.profile.userName.max)
         .trim(messagesData.profile.userName.trim),
 
-      pharmacyId: yup.string().required(),
+        pharmacy: yup.string().when('$isStaff', {
+        is: (isStaff: string | undefined) => isStaff,
+        then: (schema) =>
+          schema
+            .required()
+            .trim(),
+        otherwise: (schema) => schema.notRequired(),
+      }),
     })
 
     .required();
@@ -47,7 +54,8 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     control,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    context: { isStaff }
   });
 
   const [updateProfile, { loading: updateProfileLoader }] = useMutation(
@@ -73,6 +81,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     if (admin) {
       setValue("name", admin.account.user.name);
       setValue("username", admin.account.user.username);
+      setValue("pharmacy", admin.account.user.pharmacy?.id)
     }
   }, [admin, setValue]);
 
@@ -102,10 +111,10 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
           {errors.username?.message}
         </Text>
       </div>
-      {user.role === UserRole.Staff && (
+      {isStaff && (
         <div className="mb-4">
           <Controller
-            name="pharmacyId"
+            name="pharmacy"
             control={control}
             render={({ field }) => (
               <Select
@@ -118,7 +127,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
                 onChange={(value) => {
                   field.onChange(value);
                 }}
-                error={errors.pharmacyId && "This field is required"}
+                error={errors.pharmacy && "This field is required"}
               />
             )}
           />
