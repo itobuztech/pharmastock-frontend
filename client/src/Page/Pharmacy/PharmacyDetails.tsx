@@ -103,7 +103,7 @@ export default function PharmacyDetails({
           permission,
           USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
           USER_PERMISSION_CAPABILITIES.CREATE
-        )}
+        ) && !id}
         onClick={open}
         buttonText="Add Pharmacy Stock"
       />

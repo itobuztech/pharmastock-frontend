@@ -81,6 +81,7 @@ export default function WarehouseStockForm({
   const permission = useAppSelector((state) => state.user.permission);
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.currentUser);
+  const [warehouseId, setWarehouseId] = useState('');
 
   const schema = yup
     .object({
@@ -195,7 +196,7 @@ export default function WarehouseStockForm({
     }
   }, [setValue, warehouseStockDetails?.warehouseStock]);
 
-  console.log(user);
+  console.log(getValues('warehouseId'));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,8 +227,13 @@ export default function WarehouseStockForm({
                   {...field}
                   label="Select Warehouse"
                   placeholder="Select Warehouse"
-                  onChange={(value) => field.onChange(value)}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    setWarehouseId(String(value))
+                    console.log('v', value)
+                  }}
                   value={field.value}
+                  withAsterisk
                   data={selectWarehouseItem || selectWarehouseItems}
                   maxDropdownHeight={300}
                   error={errors.warehouseId && "This field is required"}
@@ -246,8 +252,9 @@ export default function WarehouseStockForm({
             render={({ field }) => (
               <Select
                 {...field}
-                label="Select Item"
-                placeholder="Select Item"
+                label="Select Product"
+                placeholder="Select Product"
+                withAsterisk
                 onChange={async (value) => {
                   const { warehouseId } = getValues();
                   const res = await fetchSku({
@@ -270,7 +277,7 @@ export default function WarehouseStockForm({
                 maxDropdownHeight={300}
                 error={errors.itemId && "This field is required"}
                 searchable
-                disabled={warehouseStockId ? true : false}
+                disabled={warehouseId ? false : true }
                 nothingFoundMessage="Nothing found..."
               />
             )}
@@ -279,6 +286,7 @@ export default function WarehouseStockForm({
         <div className="flex-1">
           <TextInput
             label="SKU"
+            withAsterisk
             placeholder="SKU"
             {...register("sku")}
             error={errors.sku && "This field is required"}
@@ -317,6 +325,7 @@ export default function WarehouseStockForm({
                   onChange={setQtyAddValue}
                   min={0}
                   max={10000}
+                  withAsterisk
                   error={errors.qty && "This field is required"}
                 />
               </div>
@@ -338,6 +347,7 @@ export default function WarehouseStockForm({
               label="Batch Name"
               placeholder="Batch Name"
               {...register("batchName")}
+              withAsterisk
               error={errors.batchName && "This field is required"}
             />
           </div>
