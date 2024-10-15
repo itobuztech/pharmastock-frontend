@@ -91,7 +91,7 @@ export default function ProductForm({
       toast.error(err.message);
     },
     onCompleted: () => {
-      toast.success("Item Created Successfully");
+      toast.success("Product Created Successfully");
       if (close) {
         close();
       }
@@ -105,7 +105,7 @@ export default function ProductForm({
       toast.error(err.message);
     },
     onCompleted: () => {
-      toast.success("Item Updated Successfully");
+      toast.success("Product Updated Successfully");
       setEditForm(false);
       refetchItem();
     },

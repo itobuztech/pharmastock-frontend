@@ -59,22 +59,23 @@ export default function ActionPopover({
             View
           </Button>
         )}
-
-        {showUserModal &&
-          handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.CREATE
-          ) && (
-            <Button
-              variant="transparent"
-              fullWidth
-              onClick={handleUserModal}
-              className="hover:bg-blue-100 transition-colors text-black"
-            >
-              Add User
-            </Button>
-          )}
+        <div className="hidden">
+          {showUserModal &&
+            handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+              USER_PERMISSION_CAPABILITIES.CREATE
+            ) && (
+              <Button
+                variant="transparent"
+                fullWidth
+                onClick={handleUserModal}
+                className="hover:bg-blue-100 transition-colors text-black"
+              >
+                Add User
+              </Button>
+            )}
+        </div>
 
         {showDeleteModal && showDeleteButton && (
           <Button
