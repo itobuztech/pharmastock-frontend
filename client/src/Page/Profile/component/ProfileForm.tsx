@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, Space, TextInput, Text } from "@mantine/core";
+import { Button, Space, TextInput, Text, Select } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { GetProfileUpdate } from "query/profile/profileUpdate";
 import { toast } from "react-toastify";
-import { UpdateProfileInput } from "gql/graphql";
+import { UpdateProfileInput, UserRole } from "gql/graphql";
 import { AdminProfile } from "interfaces/interfaces";
 import messagesData from "Lib/messages";
+import { useAppSelector } from "Lib/Store/hooks";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 
 export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
   const [editForm, setEditForm] = useState(false);
+  const isStaff = useAppSelector((state) => state.user.role === UserRole.Staff);
+  const selectPharmaList = usePharmacyList();
 
   const schema = yup
     .object({
@@ -29,7 +33,17 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
         .min(3, messagesData.profile.userName.min)
         .max(100, messagesData.profile.userName.max)
         .trim(messagesData.profile.userName.trim),
+
+        pharmacy: yup.string().when('$isStaff', {
+        is: (isStaff: string | undefined) => isStaff,
+        then: (schema) =>
+          schema
+            .required()
+            .trim(),
+        otherwise: (schema) => schema.notRequired(),
+      }),
     })
+
     .required();
 
   const {
@@ -37,9 +51,11 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     handleSubmit,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    context: { isStaff }
   });
 
   const [updateProfile, { loading: updateProfileLoader }] = useMutation(
@@ -65,6 +81,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     if (admin) {
       setValue("name", admin.account.user.name);
       setValue("username", admin.account.user.username);
+      setValue("pharmacy", admin.account.user.pharmacy?.id)
     }
   }, [admin, setValue]);
 
@@ -94,6 +111,28 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
           {errors.username?.message}
         </Text>
       </div>
+      {isStaff && (
+        <div className="mb-4">
+          <Controller
+            name="pharmacy"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                withAsterisk
+                data={selectPharmaList}
+                label="Select Pharmacy"
+                placeholder="Select Pharmacy"
+                value={field.value}
+                onChange={(value) => {
+                  field.onChange(value);
+                }}
+                error={errors.pharmacy && "This field is required"}
+              />
+            )}
+          />
+        </div>
+      )}
 
       <div className="text-right">
         {editForm ? (

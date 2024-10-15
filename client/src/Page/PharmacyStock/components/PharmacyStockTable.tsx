@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Checkbox, Flex, Pagination, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
@@ -41,6 +41,7 @@ export default function PharmacyStockTable({
   const navigate = useNavigate();
   const permission = useAppSelector((state) => state.user.permission);
   const user = useAppSelector((state) => state.user);
+  const params = useParams();
 
   const handlePharmacyStockClearance = (
     pharmacyId: string,
@@ -77,11 +78,11 @@ export default function PharmacyStockTable({
 
     return (
       <Table.Tr key={item.id}>
-        {handleUserPermissions(
+        {(handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
           USER_PERMISSION_CAPABILITIES.CREATE
-        ) && (
+        ) && !params.id) && (
           <Table.Td>
             <Checkbox
               checked={isChecked}

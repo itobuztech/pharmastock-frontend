@@ -27,7 +27,7 @@ export const routes = {
   setPassword: {
     path: "/set-password",
     fullPath: (query: { confirmation_token: string }) =>
-      `/set-password${queryString.stringify(query)}`,
+      `/set-password?${queryString.stringify(query)}`,
   },
   app: {
     path: "/app",

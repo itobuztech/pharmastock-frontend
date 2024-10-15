@@ -22,6 +22,10 @@ export const GetUser = gql`
         }
         updatedAt
         username
+        pharmacy {
+          id
+          name
+        }
       }
     }
   }

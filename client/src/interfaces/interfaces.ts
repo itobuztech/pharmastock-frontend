@@ -96,6 +96,10 @@ export interface AdminProfile {
       organization?: Organization;
       role?: Role;
       username: string;
+      pharmacy?: {
+        id: string;
+        name: string;
+      };
     };
   };
 }

@@ -194,13 +194,6 @@ export default function WarehouseForm({
       <div className="text-right">
         {id ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-            >
-              Cancel
-            </Button>
 
             {handleUserPermissions(
               permission,
@@ -208,6 +201,13 @@ export default function WarehouseForm({
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
               <>
+               <Button
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outline"
+            >
+              Cancel
+            </Button>
                 {editForm ? (
                   <ButtonComponent type="submit" loading={updateLoading}>
                     Update
