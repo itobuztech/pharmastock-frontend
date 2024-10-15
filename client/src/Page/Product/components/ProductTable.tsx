@@ -4,8 +4,10 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
+import { UserRole } from "gql/graphql";
 import { Items, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
+import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,6 +35,7 @@ export default function ProductTable({
   showDeleteButton,
 }: Readonly<ItemTableProps>) {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.role);
 
   function screenSwitch(itemId: string) {
     navigate(`${routes.dashboard.productList.path}/${itemId}`);
@@ -53,7 +56,7 @@ export default function ProductTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
-          showDeleteModal={true}
+          showDeleteModal={user === UserRole.Superadmin ? true : false}
           handleUserPermissions={handleUserPermissions}
           showDeleteButton={showDeleteButton}
         />

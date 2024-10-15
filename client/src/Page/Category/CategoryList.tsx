@@ -70,7 +70,7 @@ export default function CategoryList({
           setTotalCount(paginationCount);
         }
       });
-      toast.success("Pharmacy Deleted Successfully");
+      toast.success("Category Deleted Successfully");
       deleteModalClose();
     },
   });
