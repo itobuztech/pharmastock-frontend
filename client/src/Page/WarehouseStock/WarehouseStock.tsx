@@ -1,4 +1,4 @@
-import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
+import { Flex, Modal, Space } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
@@ -23,6 +23,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "Page/PharmacyStock/components/StockFilter";
+import WarehouseStockSkeleton from "./components/WarehouseStockSkeletopn";
 
 export default function WarehouseStock({
   handleUserPermissions,
@@ -77,11 +78,8 @@ export default function WarehouseStock({
         searchText: searchKeyword,
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    activePage,
-    searchKeyword,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage, searchKeyword]);
 
   /* ====== New Warehouse Stocks Add In The List ====== */
   useEffect(() => {
@@ -96,12 +94,12 @@ export default function WarehouseStock({
         }
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newWarehouseStockList]);
 
   useEffect(() => {
     refetchWarehouseStockList();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -136,24 +134,25 @@ export default function WarehouseStock({
 
       {/* ==== Loading State ==== */}
       {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
+        <WarehouseStockSkeleton numOfRows={6} />
       )}
 
       {/* ==== WarehouseStocks List Empty List and List ==== */}
-      {!warehouseStocksList?.warehouseStocks.length ? (
+
+      {!loading &&
+        warehouseStocksList &&
+        warehouseStocksList.warehouseStocks.length > 1 && (
+          <WarehouseStockTable
+            activePage={activePage}
+            setActivePage={setActivePage}
+            totalCount={totalCount}
+            warehouseStocksList={warehouseStocksList}
+            handleUserPermissions={handleUserPermissions}
+          />
+        )}
+
+      {!loading && warehouseStocksList?.warehouseStocks.length === 0 && (
         <EmptyList />
-      ) : (
-        <WarehouseStockTable
-          activePage={activePage}
-          setActivePage={setActivePage}
-          totalCount={totalCount}
-          warehouseStocksList={warehouseStocksList}
-          handleUserPermissions={handleUserPermissions}
-        />
       )}
 
       {/* ==== Create WarehouseStock Modal ==== */}

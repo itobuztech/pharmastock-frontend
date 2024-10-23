@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import WarehouseTableSkeleton from "./components/WarehouseTableSkeleton";
 
 export default function Warehouse({
   handleUserPermissions,
@@ -139,18 +140,11 @@ export default function Warehouse({
       <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <WarehouseTableSkeleton numOfRows={6} />}
 
       {/* ==== Warehouse Empty List and List ==== */}
-      {!warehouseList?.warehouses.length ? (
-        <EmptyList />
-      ) : (
+
+      {!loading && warehouseList && warehouseList?.warehouses.length > 0 && (
         <WarehouseListTable
           activePage={activePage}
           setActivePage={setActivePage}
@@ -165,6 +159,8 @@ export default function Warehouse({
           )}
         />
       )}
+
+      {!loading && warehouseList?.warehouses.length === 0 && <EmptyList />}
 
       {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal

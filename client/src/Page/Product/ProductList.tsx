@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
+import { Flex, Modal, Space } from "@mantine/core";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
@@ -14,6 +14,7 @@ import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import ProductFilter from "./components/ProductFilter";
 import { useAppSelector } from "Lib/Store/hooks";
+import ProductTableSkeleton from "./components/ProductTableSkeleton";
 
 export default function ProductList({
   handleUserPermissions,
@@ -149,11 +150,7 @@ export default function ProductList({
       </Flex>
 
       {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
+       <ProductTableSkeleton numOfRows={6} />
       )}
 
       {loading && itemList?.items.length === 0 && <EmptyList />}

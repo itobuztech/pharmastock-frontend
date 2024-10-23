@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { Button, Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
+import { Button, Flex, Modal, Space } from "@mantine/core";
 
 import PharmacyStockTable from "./components/PharmacyStockTable";
 import PageHeader from "Components/PageHeader";
@@ -24,6 +24,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
 import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 import { SelectedPharmacyStock } from "./pharmacyStock.interface";
+import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -77,7 +78,7 @@ export default function PharmacyStock({
         searchText: searchKeyword,
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage, refetch, searchKeyword]);
 
   /* ====== New Pharmacy Stocks Add In The List ====== */
@@ -140,27 +141,26 @@ export default function PharmacyStock({
       </Flex>
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <ProductTableSkeleton numOfRows={6} />}
 
       {/* ==== PharmacyStocks List Empty List and List ==== */}
-      {!pharmacyStocksList?.pharmacyStocks.length ? (
+
+      {!loading &&
+        pharmacyStocksList &&
+        pharmacyStocksList?.pharmacyStocks.length > 0 && (
+          <PharmacyStockTable
+            selectedPharmacyStock={selectedPharmacyStock}
+            setSelectedPharmacyStock={setSelectedPharmacyStock}
+            activePage={activePage}
+            setActivePage={setActivePage}
+            totalCount={totalCount}
+            pharmaciesStockList={pharmacyStocksList}
+            handleUserPermissions={handleUserPermissions}
+          />
+        )}
+
+      {!loading && pharmacyStocksList?.pharmacyStocks.length === 0 && (
         <EmptyList />
-      ) : (
-        <PharmacyStockTable
-          selectedPharmacyStock={selectedPharmacyStock}
-          setSelectedPharmacyStock={setSelectedPharmacyStock}
-          activePage={activePage}
-          setActivePage={setActivePage}
-          totalCount={totalCount}
-          pharmaciesStockList={pharmacyStocksList}
-          handleUserPermissions={handleUserPermissions}
-        />
       )}
 
       {/* ==== Create PharmacyStock Modal ==== */}
@@ -169,7 +169,7 @@ export default function PharmacyStock({
         onClose={close}
         title="Create Pharmacy Stock"
         centered
-        size='lg'
+        size="lg"
       >
         <PharmacyStockForm
           setNewPharmacyStockList={setNewPharmacyStockList}
