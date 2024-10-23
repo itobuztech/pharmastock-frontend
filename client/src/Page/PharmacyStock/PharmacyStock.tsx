@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { Button, Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
 
 import PharmacyStockTable from "./components/PharmacyStockTable";
@@ -35,7 +35,7 @@ export default function PharmacyStock({
   const [opened, { open, close }] = useDisclosure(false);
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
-  const [searchInput, setSearchInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
   const permission = useAppSelector((state) => state.user.permission);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [
@@ -74,11 +74,11 @@ export default function PharmacyStock({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage, refetch, searchInput]);
+  }, [activePage, refetch, searchKeyword]);
 
   /* ====== New Pharmacy Stocks Add In The List ====== */
   useEffect(() => {
@@ -94,25 +94,6 @@ export default function PharmacyStock({
       });
     }
   }, [newPharmacyStockList, refetch]);
-
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchPharmaciesStockList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -130,19 +111,15 @@ export default function PharmacyStock({
 
       <Flex wrap="wrap">
         {/* ==== Search ==== */}
-        <Search
-          handleChange={handleChange}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
+        <Search onChange={(e: string) => setSearchKeyword(e)} />
         <Space w="md" />
 
         {/* ==== Filter ==== */}
         <StockFilter
           sliderValue={sliderValue}
           setSliderValue={setSliderValue}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
+          searchInput={searchKeyword}
+          setSearchInput={setSearchKeyword}
           fetchStockList={fetchPharmaciesStockList}
           activePage={activePage}
         />

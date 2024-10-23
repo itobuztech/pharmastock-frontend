@@ -6,8 +6,8 @@ import {
   SelectOrgItem,
 } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { toast } from "react-toastify";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { DeleteOrganization } from "query/organization/organizationDelete";
@@ -17,12 +17,13 @@ import OrganizationTable from "./components/OrganizationTable";
 import OrganizationForm from "./components/OrganizationForm";
 import EmptyList from "Components/EmptyList";
 import UserCreateForm from "Page/User/components/UserCreateForm";
-import Search from "Components/Search";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import Search from "Components/Search";
+import OrganizationTableSkeleton from "./components/OrganizationTableSkeleton";
 
 export default function OrganizationsPage({
   handleUserPermissions,
@@ -41,7 +42,7 @@ export default function OrganizationsPage({
   const [deleteOrgId, setDeleteOrgId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
   const [selectOrgItem, setSelectOrgItem] = useState<SelectOrgItem>();
-  const [searchInput, setSearchInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
 
   const [userModalOpened, { open: userModalOpen, close: userModalClose }] =
     useDisclosure(false);
@@ -93,10 +94,10 @@ export default function OrganizationsPage({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
-  }, [organizationList, activePage, refetch, searchInput]);
+  }, [organizationList, activePage, refetch, searchKeyword]);
 
   /* ====== Add New Org List ====== */
   useEffect(() => {
@@ -137,25 +138,6 @@ export default function OrganizationsPage({
     userModalOpen();
   }
 
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    organizationList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -170,25 +152,14 @@ export default function OrganizationsPage({
       />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <OrganizationTableSkeleton numOfRows={6} />}
 
       {/* ==== Organization Empty List and List ==== */}
-      {!organization?.organizations.length ? (
-        <EmptyList />
-      ) : (
+
+      {!loading && Number(organization?.organizations.length) > 0 && (
         <OrganizationTable
           organizationList={organization}
           activePage={activePage}
@@ -203,6 +174,10 @@ export default function OrganizationsPage({
             USER_PERMISSION_CAPABILITIES.DELETE
           )}
         />
+      )}
+
+      {Number(organization?.organizations?.length) === 0 && !loading && (
+        <EmptyList />
       )}
 
       {/* ==== Delete Confirmation Modal ==== */}

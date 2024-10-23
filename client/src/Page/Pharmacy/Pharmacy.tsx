@@ -4,7 +4,10 @@ import { LoadingOverlay, Modal } from "@mantine/core";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { ChildComponentProps, Pharmacies } from "interfaces/interfaces";
 import { GetPharmacyList } from "query/pharmacy/pharmacyList";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import {
+  useDebouncedState,
+  useDisclosure,
+} from "@mantine/hooks";
 import { CreatePharmacyInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import ConfirmationModal from "Components/ConfirmationModal";
@@ -29,7 +32,7 @@ export default function Pharmacy({
   const [deletedId, setDeletedId] = useState<string>();
   const [totalCount, setTotalCount] = useState(1);
   const [editForm, setEditForm] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
@@ -85,10 +88,10 @@ export default function Pharmacy({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
-  }, [fetchPharmacyList, activePage, refetch, searchInput]);
+  }, [fetchPharmacyList, activePage, refetch, searchKeyword]);
 
   /* ====== New Pharmacy Add In The List ====== */
   useEffect(() => {
@@ -124,25 +127,6 @@ export default function Pharmacy({
     deleteModalClose();
   }
 
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchPharmacyList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -157,11 +141,7 @@ export default function Pharmacy({
       />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
       {loading && (
