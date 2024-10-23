@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
-import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
@@ -21,6 +21,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import WarehouseTableSkeleton from "./components/WarehouseTableSkeleton";
 
 export default function Warehouse({
   handleUserPermissions,
@@ -37,7 +38,7 @@ export default function Warehouse({
   ] = useDisclosure(false);
   const permission = useAppSelector((state) => state.user.permission);
   const [editForm, setEditForm] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
 
   /* ====== Warehouse List Query ====== */
   const [fetchWarehouseList, { refetch, loading }] =
@@ -64,10 +65,10 @@ export default function Warehouse({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
-  }, [activePage, fetchWarehouseList, refetch, searchInput]);
+  }, [activePage, fetchWarehouseList, refetch, searchKeyword]);
 
   /* ====== New Warehouse Add In The List ====== */
   useEffect(() => {
@@ -122,25 +123,6 @@ export default function Warehouse({
     });
   }
 
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchWarehouseList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
@@ -155,25 +137,14 @@ export default function Warehouse({
       />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <WarehouseTableSkeleton numOfRows={6} />}
 
       {/* ==== Warehouse Empty List and List ==== */}
-      {!warehouseList?.warehouses.length ? (
-        <EmptyList />
-      ) : (
+
+      {!loading && warehouseList && warehouseList?.warehouses.length > 0 && (
         <WarehouseListTable
           activePage={activePage}
           setActivePage={setActivePage}
@@ -188,6 +159,8 @@ export default function Warehouse({
           )}
         />
       )}
+
+      {!loading && warehouseList?.warehouses.length === 0 && <EmptyList />}
 
       {/* ==== Delete Confirmation Modal ==== */}
       <ConfirmationModal

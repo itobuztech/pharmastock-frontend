@@ -5,10 +5,10 @@ import { GetUsersList } from "query/user/usersList";
 import { toast } from "react-toastify";
 import { ChildComponentProps, UserData, Users } from "interfaces/interfaces";
 import UserTable from "./components/UserTable";
-import { Button, Flex, LoadingOverlay, Modal } from "@mantine/core";
+import { Button, Flex, Modal } from "@mantine/core";
 import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { useAppSelector } from "Lib/Store/hooks";
 import {
@@ -17,6 +17,7 @@ import {
 } from "enums/enums";
 import { DeleteUserBySuperAdmin } from "query/user/userDelete";
 import UserInvitationForm from "./components/UserInvitationForm";
+import UserTableSkeleton from "./components/UserTableSkeleton";
 
 export default function UserList({
   handleUserPermissions,
@@ -24,7 +25,7 @@ export default function UserList({
   const [userList, setUserList] = useState<Users>();
   const [activePage, setActivePage] = useState(1);
   const [totalCount, setTotalCount] = useState(1);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
   const [deletedId, setDeletedId] = useState<string>();
   const [
     deleteModalOpened,
@@ -64,7 +65,7 @@ export default function UserList({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
   }
@@ -73,26 +74,7 @@ export default function UserList({
   useEffect(() => {
     getUserList();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchUserList, activePage, refetch, searchInput]);
-
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchUserList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
+  }, [fetchUserList, activePage, refetch, searchKeyword]);
 
   /* ====== User Delete Query ====== */
   const [deleteUser] = useMutation(DeleteUserBySuperAdmin, {
@@ -135,11 +117,7 @@ export default function UserList({
 
       {/* ==== Search ==== */}
       <Flex>
-        <Search
-          handleChange={handleChange}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
+        <Search onChange={(e: string) => setSearchKeyword(e)} />
         {handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.USER_PERMISSION,
@@ -152,18 +130,11 @@ export default function UserList({
       </Flex>
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <UserTableSkeleton numOfRows={6} />}
 
       {/* ==== User Table Empty List and List ==== */}
-      {!userList?.users?.length ? (
-        <EmptyList />
-      ) : (
+
+      {!loading && userList && userList.users.length > 0 && (
         <UserTable
           activePage={activePage}
           setActivePage={setActivePage}
@@ -179,6 +150,8 @@ export default function UserList({
         />
       )}
 
+      {!loading && userList?.users.length === 0 && <EmptyList />}
+
       <Modal
         opened={openUserInvitationModal}
         onClose={invitationModalClose}
@@ -188,7 +161,7 @@ export default function UserList({
       >
         <UserInvitationForm
           closeModal={invitationModalClose}
-          refetch={refetch}
+          refetch={getUserList}
         />
       </Modal>
 

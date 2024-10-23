@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Flex, LoadingOverlay, Modal, Space } from "@mantine/core";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { Flex, Modal, Space } from "@mantine/core";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
 import { useLazyQuery, useMutation } from "@apollo/client";
@@ -14,6 +14,7 @@ import EmptyList from "Components/EmptyList";
 import Search from "Components/Search";
 import ProductFilter from "./components/ProductFilter";
 import { useAppSelector } from "Lib/Store/hooks";
+import ProductTableSkeleton from "./components/ProductTableSkeleton";
 
 export default function ProductList({
   handleUserPermissions,
@@ -29,11 +30,11 @@ export default function ProductList({
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const [editForm, setEditForm] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
   const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [sliderValueMrp, setSliderValueMrp] = useState<number>(0);
   const permission = useAppSelector((state) => state.user.permission);
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
 
   const [fetchItemList, { refetch, loading }] = useLazyQuery<ItemLists>(
     GetItemLists,
@@ -66,10 +67,10 @@ export default function ProductList({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
-  }, [activePage, fetchItemList, refetch, searchInput]);
+  }, [activePage, fetchItemList, refetch, searchKeyword]);
 
   useEffect(() => {
     if (newItemList) {
@@ -85,25 +86,26 @@ export default function ProductList({
     }
   }, [newItemList, refetch]);
 
-  const [deleteCategory, {loading: loadingStateForProductDelete }] = useMutation(ItemDelete, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: () => {
-      refetch().then(({ data }) => {
-        if (data) {
-          const item = data.items;
-          const total = data.items.total;
-          const paginationCount = Math.ceil(total / 10);
+  const [deleteCategory, { loading: loadingStateForProductDelete }] =
+    useMutation(ItemDelete, {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: () => {
+        refetch().then(({ data }) => {
+          if (data) {
+            const item = data.items;
+            const total = data.items.total;
+            const paginationCount = Math.ceil(total / 10);
 
-          setItemList(item);
-          setTotalCount(paginationCount);
-        }
-      });
-      deleteModalClose();
-      toast.success("Product Deleted Successfully");
-    },
-  });
+            setItemList(item);
+            setTotalCount(paginationCount);
+          }
+        });
+        deleteModalClose();
+        toast.success("Product Deleted Successfully");
+      },
+    });
 
   function handleDelete(catId: string) {
     const deleteItem = itemList?.items.find((x) => x.id === catId);
@@ -117,46 +119,20 @@ export default function ProductList({
     });
   }
 
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchItemList({
-      variables: {
-        filterArgs: {
-          baseUnit: null,
-          mrpBaseUnit: null,
-          wholeSalePrice: null,
-        },
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Products"
-        showCreateButton={permission.ITEM_MANAGEMENT?.CAPABILITIES.CREATE ? true : false}
+        showCreateButton={
+          permission.ITEM_MANAGEMENT?.CAPABILITIES.CREATE ? true : false
+        }
         onClick={open}
         buttonText="Add Product"
       />
 
       <Flex wrap="wrap">
         {/* ==== Search ==== */}
-        <Search
-          handleChange={handleChange}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
+        <Search onChange={(e: string) => setSearchKeyword(e)} />
         <Space w="md" />
         {/* ==== Filter ==== */}
         <ProductFilter
@@ -166,24 +142,20 @@ export default function ProductList({
           setSelectedUnit={setSelectedUnit}
           setSliderValue={setSliderValue}
           setSliderValueMrp={setSliderValueMrp}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
+          searchInput={searchKeyword}
+          setSearchInput={setSearchKeyword}
           fetchItemList={fetchItemList}
           activePage={activePage}
         />
       </Flex>
 
       {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
+       <ProductTableSkeleton numOfRows={6} />
       )}
 
-      {itemList?.items.length === 0 ? (
-        <EmptyList />
-      ) : (
+      {loading && itemList?.items.length === 0 && <EmptyList />}
+
+      {!loading && Number(itemList?.items.length) > 0 && (
         <ProductTable
           itemList={itemList}
           activePage={activePage}
