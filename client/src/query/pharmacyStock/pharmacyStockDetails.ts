@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GetPharmacyStockDetails = gql`
-  query PharmacyStock($pharmacyStockId: String!) {
+ query PharmacyStock($pharmacyStockId: String!) {
     PharmacyStock(id: $pharmacyStockId) {
       createdAt
       finalQty
@@ -15,10 +15,6 @@ export const GetPharmacyStockDetails = gql`
         name
       }
       updatedAt
-      warehouse {
-        id
-        name
-      }
     }
   }
 `;

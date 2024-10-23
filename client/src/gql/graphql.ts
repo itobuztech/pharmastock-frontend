@@ -33,6 +33,10 @@ export enum BaseUnit {
   Vial = 'VIAL'
 }
 
+export type BatchStockMovementsInput = {
+  batchName: Scalars['String']['input'];
+};
+
 export type ClearancePharmacyStock = {
   __typename?: 'ClearancePharmacyStock';
   createdAt: Scalars['DateTime']['output'];
@@ -98,10 +102,13 @@ export type CreateStockMovementInput = {
   batchName?: InputMaybe<Scalars['String']['input']>;
   expiry?: InputMaybe<Scalars['DateTime']['input']>;
   itemId: Scalars['String']['input'];
+  lotName: Scalars['String']['input'];
   organizationId?: InputMaybe<Scalars['String']['input']>;
+  pharmacyId?: InputMaybe<Scalars['String']['input']>;
   pharmacyStockClearanceId?: InputMaybe<Scalars['String']['input']>;
   pharmacyStockId?: InputMaybe<Scalars['String']['input']>;
   qty: Scalars['Float']['input'];
+  warehouseId?: InputMaybe<Scalars['String']['input']>;
   warehouseStockId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -275,6 +282,10 @@ export type LoginUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type LotStockMovementsInput = {
+  lotName: Scalars['String']['input'];
+};
+
 export type MaxPharmacyStockQty = {
   __typename?: 'MaxPharmacyStockQty';
   totalQty?: Maybe<Scalars['Float']['output']>;
@@ -302,7 +313,7 @@ export type Mutation = {
   createPharmacyStock: Scalars['String']['output'];
   createStockMovement: StockMovement;
   createWarehouse: Warehouse;
-  createWarehouseStock: WarehouseStock;
+  createWarehouseStock: Scalars['String']['output'];
   deleteItem: Item;
   deleteItemCategory: ItemCategory;
   deleteOrganization: Organization;
@@ -374,7 +385,7 @@ export type MutationCreateWarehouseArgs = {
 
 
 export type MutationCreateWarehouseStockArgs = {
-  createWarehouseStockInput: CreateWarehouseStockInput;
+  createWarehouseStockInput: Array<CreateWarehouseStockInput>;
 };
 
 
@@ -539,6 +550,12 @@ export type PaginatedStockMovements = {
   total: Scalars['Float']['output'];
 };
 
+export type PaginatedStockMovementsByBatch = {
+  __typename?: 'PaginatedStockMovementsByBatch';
+  stockMovementsByBatch: Array<StockMovementsByBatch>;
+  total: Scalars['Float']['output'];
+};
+
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   total: Scalars['Float']['output'];
@@ -585,7 +602,6 @@ export type PharmacyStock = {
   totalMrpBaseUnit?: Maybe<Scalars['Float']['output']>;
   totalWholesalePrice?: Maybe<Scalars['Float']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  warehouse?: Maybe<Warehouse>;
 };
 
 export type Query = {
@@ -609,6 +625,10 @@ export type Query = {
   pharmacyStocksByPharmacy?: Maybe<PaginatedPharmacyStocks>;
   sku: Sku;
   stockMovements?: Maybe<PaginatedStockMovements>;
+  stockMovementsByBatch?: Maybe<PaginatedStockMovementsByBatch>;
+  stockMovementsByLot?: Maybe<PaginatedStockMovementsByBatch>;
+  stockMovementsByLotName?: Maybe<PaginatedStockMovementsByBatch>;
+  stockMovementsLot?: Maybe<PaginatedStockMovements>;
   user: User;
   userById: User;
   users?: Maybe<PaginatedUsers>;
@@ -701,6 +721,37 @@ export type QuerySkuArgs = {
 
 
 export type QueryStockMovementsArgs = {
+  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryStockMovementsByBatchArgs = {
+  batchStockMovementsInput: BatchStockMovementsInput;
+  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryStockMovementsByLotArgs = {
+  batchStockMovementsInput: BatchStockMovementsInput;
+  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryStockMovementsByLotNameArgs = {
+  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
+  lotStockMovementsInput: LotStockMovementsInput;
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryStockMovementsLotArgs = {
   filterArgs?: InputMaybe<FilterStockMovementsInputs>;
   paginationArgs?: InputMaybe<PaginationArgs>;
   searchText?: InputMaybe<Scalars['String']['input']>;
@@ -805,14 +856,27 @@ export type StockMovement = {
   expiry?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['String']['output'];
   item?: Maybe<Scalars['String']['output']>;
-  itemId: Scalars['String']['output'];
-  pharmacyName?: Maybe<Scalars['String']['output']>;
-  pharmacyStockClearanceId?: Maybe<Scalars['String']['output']>;
-  pharmacyStockId?: Maybe<Scalars['String']['output']>;
+  lotName: Scalars['String']['output'];
+  organisation?: Maybe<Scalars['String']['output']>;
   qty: Scalars['Float']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  warehouseName?: Maybe<Scalars['String']['output']>;
-  warehouseStockId?: Maybe<Scalars['String']['output']>;
+  warehouse?: Maybe<Scalars['String']['output']>;
+};
+
+export type StockMovementsByBatch = {
+  __typename?: 'StockMovementsByBatch';
+  batchName?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  expiry?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  item?: Maybe<Scalars['String']['output']>;
+  lotName: Scalars['String']['output'];
+  organisation?: Maybe<Scalars['String']['output']>;
+  pharmacy?: Maybe<Scalars['String']['output']>;
+  pharmacyClearance?: Maybe<Scalars['String']['output']>;
+  qty: Scalars['Float']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  warehouse?: Maybe<Scalars['String']['output']>;
 };
 
 export type TokenConfirmationInput = {
@@ -857,7 +921,6 @@ export type UpdatePharmacyInput = {
 
 export type UpdateProfileInput = {
   name: Scalars['String']['input'];
-  pharmacy?: InputMaybe<Scalars['ID']['input']>;
   username: Scalars['String']['input'];
 };
 
@@ -1140,7 +1203,7 @@ export type PharmacyStockQueryVariables = Exact<{
 }>;
 
 
-export type PharmacyStockQuery = { __typename?: 'Query', PharmacyStock: { __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: string, name: string } | null } };
+export type PharmacyStockQuery = { __typename?: 'Query', PharmacyStock: { __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null } };
 
 export type MaxPharmacyStockQtyQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1153,7 +1216,7 @@ export type PharmacyStocksByPharmacyQueryVariables = Exact<{
 }>;
 
 
-export type PharmacyStocksByPharmacyQuery = { __typename?: 'Query', pharmacyStocksByPharmacy?: { __typename?: 'PaginatedPharmacyStocks', total: number, pharmacyStocks: Array<{ __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, totalMrpBaseUnit?: number | null, totalWholesalePrice?: number | null, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: string, name: string } | null }> } | null };
+export type PharmacyStocksByPharmacyQuery = { __typename?: 'Query', pharmacyStocksByPharmacy?: { __typename?: 'PaginatedPharmacyStocks', total: number, pharmacyStocks: Array<{ __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, totalMrpBaseUnit?: number | null, totalWholesalePrice?: number | null, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null }> } | null };
 
 export type PharmacyStocksQueryVariables = Exact<{
   filterArgs?: InputMaybe<FilterPharmacyStockInputs>;
@@ -1163,7 +1226,7 @@ export type PharmacyStocksQueryVariables = Exact<{
 }>;
 
 
-export type PharmacyStocksQuery = { __typename?: 'Query', PharmacyStocks?: { __typename?: 'PaginatedPharmacyStocks', total: number, pharmacyStocks: Array<{ __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: string, name: string } | null }> } | null };
+export type PharmacyStocksQuery = { __typename?: 'Query', PharmacyStocks?: { __typename?: 'PaginatedPharmacyStocks', total: number, pharmacyStocks: Array<{ __typename?: 'PharmacyStock', createdAt: any, finalQty: number, id: string, updatedAt?: any | null, item?: { __typename?: 'Item', id: string, name: string } | null, pharmacy?: { __typename?: 'Pharmacy', id: string, name: string } | null }> } | null };
 
 export type AccountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1266,11 +1329,11 @@ export type WarehouseListQueryVariables = Exact<{
 export type WarehouseListQuery = { __typename?: 'Query', warehouses?: { __typename?: 'PaginatedWarehouses', total: number, warehouses: Array<{ __typename?: 'Warehouse', area: string, createdAt: any, id: string, location: string, updatedAt?: any | null, name: string, organization?: { __typename?: 'Organization', name: string, id: string } | null }> } | null };
 
 export type WarehouseStockCreateMutationVariables = Exact<{
-  createWarehouseStockInput: CreateWarehouseStockInput;
+  createWarehouseStockInput: Array<CreateWarehouseStockInput> | CreateWarehouseStockInput;
 }>;
 
 
-export type WarehouseStockCreateMutation = { __typename?: 'Mutation', createWarehouseStock: { __typename?: 'WarehouseStock', createdAt: any, finalQty: number, id: string, totalMrpBaseUnit?: number | null, totalWholesalePrice?: number | null, updatedAt?: any | null, SKU: { __typename?: 'Sku', id: string, sku: string }, item: { __typename?: 'Item', id: string, name: string }, warehouse: { __typename?: 'Warehouse', id: string, name: string } } };
+export type WarehouseStockCreateMutation = { __typename?: 'Mutation', createWarehouseStock: string };
 
 export type DeleteWarehouseStockMutationVariables = Exact<{
   deleteWarehouseStockInput: DeleteWarehouseStockInput;
@@ -1345,10 +1408,10 @@ export const PharmaciesDocument = {"kind":"Document","definitions":[{"kind":"Ope
 export const UpdatePharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updatePharmacyInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdatePharmacyInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updatePharmacyInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updatePharmacyInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contactInfo"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<UpdatePharmacyMutation, UpdatePharmacyMutationVariables>;
 export const ClearancePharmacyStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ClearancePharmacyStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"clearancePharmacyStockInput"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ClearancePharmacyStockInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clearancePharmacyStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"clearancePharmacyStockInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"clearancePharmacyStockInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacyStock"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"qty"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<ClearancePharmacyStockMutation, ClearancePharmacyStockMutationVariables>;
 export const CreatePharmacyStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreatePharmacyStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createPharmacyStockInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreatePharmacyStockInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createPharmacyStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createPharmacyStockInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createPharmacyStockInput"}}}]}]}}]} as unknown as DocumentNode<CreatePharmacyStockMutation, CreatePharmacyStockMutationVariables>;
-export const PharmacyStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyStockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"PharmacyStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyStockId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<PharmacyStockQuery, PharmacyStockQueryVariables>;
+export const PharmacyStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyStockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"PharmacyStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyStockId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<PharmacyStockQuery, PharmacyStockQueryVariables>;
 export const MaxPharmacyStockQtyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MaxPharmacyStockQty"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"maxPharmacyStockQty"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalQty"}}]}}]}}]} as unknown as DocumentNode<MaxPharmacyStockQtyQuery, MaxPharmacyStockQtyQueryVariables>;
-export const PharmacyStocksByPharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStocksByPharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocksByPharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pharmacyId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalMrpBaseUnit"}},{"kind":"Field","name":{"kind":"Name","value":"totalWholesalePrice"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<PharmacyStocksByPharmacyQuery, PharmacyStocksByPharmacyQueryVariables>;
-export const PharmacyStocksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStocks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterPharmacyStockInputs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"PharmacyStocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filterArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<PharmacyStocksQuery, PharmacyStocksQueryVariables>;
+export const PharmacyStocksByPharmacyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStocksByPharmacy"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocksByPharmacy"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pharmacyId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pharmacyId"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalMrpBaseUnit"}},{"kind":"Field","name":{"kind":"Name","value":"totalWholesalePrice"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<PharmacyStocksByPharmacyQuery, PharmacyStocksByPharmacyQueryVariables>;
+export const PharmacyStocksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PharmacyStocks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterPharmacyStockInputs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"PharmacyStocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filterArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pharmacyStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<PharmacyStocksQuery, PharmacyStocksQueryVariables>;
 export const AccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"emailConfirmationToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailConfirmed"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userType"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AccountQuery, AccountQueryVariables>;
 export const UpdateprofileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Updateprofile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateProfileInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateprofile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateProfileInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateProfileInput"}}}]}]}}]} as unknown as DocumentNode<UpdateprofileMutation, UpdateprofileMutationVariables>;
 export const ResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResetPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ResetPasswordInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resetPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"resetPasswordInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordInput"}}}]}]}}]} as unknown as DocumentNode<ResetPasswordMutation, ResetPasswordMutationVariables>;
@@ -1363,7 +1426,7 @@ export const DeleteWarehouseDocument = {"kind":"Document","definitions":[{"kind"
 export const WarehouseDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"WarehouseDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"warehouseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"warehouseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"area"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<WarehouseDetailsQuery, WarehouseDetailsQueryVariables>;
 export const GenerateSkuDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"GenerateSKU"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"generateSkuNameInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSkuNameInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSKU"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"generateSkuNameInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"generateSkuNameInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sku"}}]}}]}}]} as unknown as DocumentNode<GenerateSkuMutation, GenerateSkuMutationVariables>;
 export const WarehouseListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"WarehouseList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"warehouses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"warehouses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"area"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<WarehouseListQuery, WarehouseListQueryVariables>;
-export const WarehouseStockCreateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"WarehouseStockCreate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createWarehouseStockInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateWarehouseStockInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWarehouseStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createWarehouseStockInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createWarehouseStockInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"SKU"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalMrpBaseUnit"}},{"kind":"Field","name":{"kind":"Name","value":"totalWholesalePrice"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<WarehouseStockCreateMutation, WarehouseStockCreateMutationVariables>;
+export const WarehouseStockCreateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"WarehouseStockCreate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createWarehouseStockInput"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateWarehouseStockInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWarehouseStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createWarehouseStockInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createWarehouseStockInput"}}}]}]}}]} as unknown as DocumentNode<WarehouseStockCreateMutation, WarehouseStockCreateMutationVariables>;
 export const DeleteWarehouseStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteWarehouseStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deleteWarehouseStockInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteWarehouseStockInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteWarehouseStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"deleteWarehouseStockInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deleteWarehouseStockInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"SKU"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalMrpBaseUnit"}},{"kind":"Field","name":{"kind":"Name","value":"totalWholesalePrice"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteWarehouseStockMutation, DeleteWarehouseStockMutationVariables>;
 export const WarehouseStockDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"WarehouseStockDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"warehouseStockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"warehouseStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"warehouseStockId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"SKU"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sku"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"finalQty"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalMrpBaseUnit"}},{"kind":"Field","name":{"kind":"Name","value":"totalWholesalePrice"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<WarehouseStockDetailsQuery, WarehouseStockDetailsQueryVariables>;
 export const MaxWarehouseStockQtyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MaxWarehouseStockQty"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"maxWarehouseStockQty"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalQty"}}]}}]}}]} as unknown as DocumentNode<MaxWarehouseStockQtyQuery, MaxWarehouseStockQtyQueryVariables>;

@@ -26,10 +26,6 @@ export const PharmacyStocksList = gql`
           name
         }
         updatedAt
-        warehouse {
-          id
-          name
-        }
       }
       total
     }

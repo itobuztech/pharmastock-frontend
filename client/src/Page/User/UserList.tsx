@@ -56,8 +56,7 @@ export default function UserList({
     }
   );
 
-  /* ====== User Pagination Variable ====== */
-  useEffect(() => {
+  const getUserList = () => {
     fetchUserList({
       variables: {
         pagination: true,
@@ -68,6 +67,12 @@ export default function UserList({
         searchText: "",
       },
     });
+  }
+
+  /* ====== User Pagination Variable ====== */
+  useEffect(() => {
+    getUserList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchUserList, activePage, refetch, searchInput]);
 
   /* ====== Handle Search Function ====== */
