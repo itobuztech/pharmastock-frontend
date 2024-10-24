@@ -24,10 +24,6 @@ export const GetPharmacyStocksByPharmacy = gql`
         totalMrpBaseUnit
         totalWholesalePrice
         updatedAt
-        warehouse {
-          id
-          name
-        }
       }
       total
     }

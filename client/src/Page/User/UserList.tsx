@@ -57,8 +57,7 @@ export default function UserList({
     }
   );
 
-  /* ====== User Pagination Variable ====== */
-  useEffect(() => {
+  const getUserList = () => {
     fetchUserList({
       variables: {
         pagination: true,
@@ -69,6 +68,12 @@ export default function UserList({
         searchText: searchKeyword,
       },
     });
+  }
+
+  /* ====== User Pagination Variable ====== */
+  useEffect(() => {
+    getUserList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchUserList, activePage, refetch, searchKeyword]);
 
   /* ====== User Delete Query ====== */
@@ -156,7 +161,7 @@ export default function UserList({
       >
         <UserInvitationForm
           closeModal={invitationModalClose}
-          refetch={refetch}
+          refetch={getUserList}
         />
       </Modal>
 

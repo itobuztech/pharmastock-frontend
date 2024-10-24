@@ -20,6 +20,14 @@ export default function useUserInvitation({
     email: yup.string().required(),
     organizationId: yup.string().required(),
     role: yup.string().required(),
+    pharmacyId: yup.string().when('$isStaff', {
+      is: (isStaff: string | undefined) => isStaff,
+      then: (schema) =>
+        schema
+          .required()
+          .trim(),
+      otherwise: (schema) => schema.notRequired(),
+    }),
   });
 
   const [inviteUser, { loading: loadingStateForInvite }] = useMutation(
@@ -40,7 +48,7 @@ export default function useUserInvitation({
         if (d) {
           toast.success('Invitation sent successfully');
           closeModal();
-          refetch()
+          refetch();
         }
       },
     });
