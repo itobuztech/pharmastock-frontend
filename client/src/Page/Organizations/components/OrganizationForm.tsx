@@ -169,6 +169,8 @@ export default function OrganizationForm({
     }
   }, [orgDetails?.organization, setValue]);
 
+  // console.log('details', orgDetails?.organization.User?.map((e) => e.role?.name))
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -310,17 +312,17 @@ export default function OrganizationForm({
         </div>
       </form>
 
-      {orgDetails?.organization.User?.length && <Divider />}
+      {orgDetails?.organization?.User?.length && <Divider />}
 
       <div className="mt-5">
-        {orgDetails?.organization.User?.some(
-          (user) => user.role?.name === UserRole.Admin
+        {orgDetails?.organization?.User?.some(
+          (user) => user.role?.userType === UserRole.Admin
         ) && (
           <div className="mb-4">
             <Title size="sm">Admin Emails</Title>
             <ul>
               {orgDetails?.organization.User?.filter(
-                (user) => user.role?.name === UserRole.Admin
+                (user) => user.role?.userType === UserRole.Admin
               ).map((user, index) => (
                 <li key={index}>{user.email}</li>
               ))}
@@ -328,14 +330,14 @@ export default function OrganizationForm({
           </div>
         )}
 
-        {orgDetails?.organization.User?.some(
-          (user) => user.role?.name === UserRole.Staff
+        {orgDetails?.organization?.User?.some(
+          (user) => user.role?.userType === UserRole.Staff
         ) && (
           <div className="mb-4">
             <Title size="sm">Staff Emails</Title>
             <ul>
               {orgDetails?.organization.User?.filter(
-                (user) => user.role?.name === UserRole.Staff
+                (user) => user.role?.userType === UserRole.Staff
               ).map((user, index) => (
                 <li key={index}>{user.email}</li>
               ))}
