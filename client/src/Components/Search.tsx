@@ -1,36 +1,62 @@
-import { TextInput } from "@mantine/core";
-import React from "react";
-import { BiSearch, BiX } from "react-icons/bi";
+import { ChangeEvent, useId, useState } from 'react';
+import {
+  MantineRadius,
+  MantineSize,
+  MantineSpacing,
+  TextInput,
+} from '@mantine/core';
+import { BiSearch, BiX } from 'react-icons/bi';
 
 export default function Search({
-  searchInput,
-  handleChange,
-  setSearchInput,
+  onChange,
+  placeHolder,
+  radius = 'md',
+  className,
+  marginTop,
+  size,
 }: {
-  searchInput: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  setSearchInput: React.Dispatch<React.SetStateAction<string>>;
+  readonly onChange: (e: string) => void;
+  readonly placeHolder?: string;
+  readonly radius?: MantineRadius;
+  readonly className?: string;
+  readonly marginTop?: MantineSpacing;
+  readonly size?: MantineSize;
 }) {
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchValue(value);
+    onChange(value);
+  };
+
+  const clearInput = () => {
+    setSearchValue('');
+    onChange('');
+  };
+
   return (
-    <div className="w-7/12 lg:w-1/2 xl:w-1/4 rounded-md mb-8">
+    <div className={`${className && className} w-7/12 lg:w-1/2 xl:w-1/4 rounded-md mb-8`}>
       <TextInput
-        leftSectionPointerEvents="none"
+        value={searchValue}
+        radius={radius}
+
+        onChange={handleInputChange}
+        rightSectionPointerEvents='all'
+        mt={marginTop}
+        size={size}
+        name={useId()}
+        placeholder={placeHolder ?? 'Search ...'}
         leftSection={<BiSearch size={20} />}
         rightSection={
-          searchInput ? (
+          searchValue ? (
             <BiX
               size={20}
               cursor="pointer"
-              onClick={() => setSearchInput("")}
+              onClick={clearInput}
             />
-          ) : (
-            ""
-          )
+          ) : ""
         }
-        value={searchInput}
-        onChange={handleChange}
-        placeholder="Search..."
-        radius="md"
       />
     </div>
   );

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { LoadingOverlay, Modal } from "@mantine/core";
-import { useDebouncedCallback, useDisclosure } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { Modal } from "@mantine/core";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CreateItemCategoryInput } from "gql/graphql";
@@ -16,8 +16,9 @@ import { CategoryItemDelete } from "query/category/categoryDelete";
 import CategoryTable from "./components/CategoryTable";
 import CategoryCreateUpdateForm from "./components/CategoryCreateUpdateForm";
 import EmptyList from "Components/EmptyList";
-import Search from "Components/Search";
 import { useAppSelector } from "Lib/Store/hooks";
+import Search from "Components/Search";
+import CategoriesTableSkeleton from "./components/CategoriesTableSkeleton";
 
 export default function CategoryList({
   handleUserPermissions,
@@ -30,12 +31,12 @@ export default function CategoryList({
     useState<CreateItemCategoryInput>();
   const [deletedId, setDeletedId] = useState<string>();
   const [editForm, setEditForm] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
   const [
     deleteModalOpened,
     { open: deleteModalOpen, close: deleteModalClose },
   ] = useDisclosure(false);
   const permission = useAppSelector((state) => state.user.permission);
+  const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
 
   /* ====== Category List Query ====== */
   const [fetchItemCategoryList, { refetch, loading }] =
@@ -56,24 +57,25 @@ export default function CategoryList({
     });
 
   /* ====== Category Delete Query ====== */
-  const [deleteCategory, { loading: loadingStateForCategoryDelete }] = useMutation(CategoryItemDelete, {
-    onError: (err) => {
-      toast.error(err.message);
-    },
-    onCompleted: () => {
-      refetch().then(({ data }) => {
-        if (data) {
-          const itemCate = data.itemCategories;
-          const total = data.itemCategories.total;
-          const paginationCount = Math.ceil(total / 10);
-          setItemCategoryList(itemCate);
-          setTotalCount(paginationCount);
-        }
-      });
-      toast.success("Category Deleted Successfully");
-      deleteModalClose();
-    },
-  });
+  const [deleteCategory, { loading: loadingStateForCategoryDelete }] =
+    useMutation(CategoryItemDelete, {
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onCompleted: () => {
+        refetch().then(({ data }) => {
+          if (data) {
+            const itemCate = data.itemCategories;
+            const total = data.itemCategories.total;
+            const paginationCount = Math.ceil(total / 10);
+            setItemCategoryList(itemCate);
+            setTotalCount(paginationCount);
+          }
+        });
+        toast.success("Category Deleted Successfully");
+        deleteModalClose();
+      },
+    });
 
   /* ====== Category Pagination Variable ====== */
   useEffect(() => {
@@ -84,11 +86,11 @@ export default function CategoryList({
           skip: activePage * 10 - 10,
           take: 10,
         },
-        searchText: "",
+        searchText: searchKeyword,
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage, refetch, searchInput]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePage, refetch, searchKeyword]);
 
   /* ====== New Category Add In The List ====== */
   useEffect(() => {
@@ -121,54 +123,32 @@ export default function CategoryList({
     });
   }
 
-  /* ====== Handle Search Function ====== */
-  const handleSearch = useDebouncedCallback(async (searchInput: string) => {
-    fetchItemCategoryList({
-      variables: {
-        pagination: true,
-        paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
-        },
-        searchText: searchInput,
-      },
-    });
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(event.currentTarget.value);
-    handleSearch(event.currentTarget.value);
-  };
-
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Categories"
-        showCreateButton={permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.CREATE ? true : false}
+        showCreateButton={
+          permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.CREATE
+            ? true
+            : false
+        }
         onClick={open}
         buttonText="Add Category"
       />
 
       {/* ==== Search ==== */}
-      <Search
-        handleChange={handleChange}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-      />
+      <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      )}
+      {loading && <CategoriesTableSkeleton numOfRows={6} />}
 
       {/* ==== Item Category Empty List and List ==== */}
-      {itemCategoryList?.itemCategories.length === 0 ? (
+
+      {loading && itemCategoryList?.itemCategories.length === 0 && (
         <EmptyList />
-      ) : (
+      )}
+
+      {!loading && Number(itemCategoryList?.itemCategories.length) > 0 && (
         <CategoryTable
           activePage={activePage}
           setActivePage={setActivePage}
