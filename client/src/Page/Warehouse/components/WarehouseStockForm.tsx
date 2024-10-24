@@ -230,6 +230,8 @@ export default function WarehouseStockForm({
                       onChange={(value) => {
                         field.onChange(value);
                         setWarehouseId(String(value));
+                        setValue(`warehouseStock.${index}.itemId`, "");
+                        setValue(`warehouseStock.${index}.sku`, "");
                       }}
                       value={field.value}
                       withAsterisk
@@ -276,7 +278,12 @@ export default function WarehouseStockForm({
                       );
                       field.onChange(value);
                     }}
-                    value={field.value}
+                    value={
+                      getValues(`warehouseStock.${index}.warehouseId`)
+                        ? field.value
+                        : null
+                    }
+                    
                     data={selectItem}
                     maxDropdownHeight={300}
                     error={errors?.warehouseStock?.[index]?.itemId?.message}
