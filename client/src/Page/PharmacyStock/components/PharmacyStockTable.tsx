@@ -105,14 +105,14 @@ export default function PharmacyStockTable({
         <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
-
+        {user.role !== UserRole.Staff &&
         <Table.Td className="text-right">
           <ActionPopover
             handleView={() => screenSwitch(item.id)}
             showDeleteModal={false}
             handleUserPermissions={handleUserPermissions}
           />
-        </Table.Td>
+        </Table.Td>}
       </Table.Tr>
     );
   });
