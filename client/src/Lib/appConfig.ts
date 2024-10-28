@@ -12,5 +12,8 @@ const appConfig = {
     accessToken: "access_token",
     userData: "userData"
   },
+  pagination: {
+    defaultPage: 10
+  }
 };
 export default appConfig;

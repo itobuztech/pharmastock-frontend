@@ -11,6 +11,8 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { Permissions } from "interfaces/interfaces";
+import StocksMovementList from "Page/Dashboard/StocksMovement/StocksMovementList";
+import StocksMovementDetails from "Page/Dashboard/StocksMovement/StocksMovementDetails";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
@@ -25,9 +27,7 @@ const PharmacyPage = React.lazy(() => import("Page/Pharmacy/Pharmacy"));
 const OrganizationsPage = React.lazy(
   () => import("Page/Organizations/OrganizationsPage")
 );
-const CategoryList = React.lazy(
-  () => import("Page/Category/CategoryList")
-);
+const CategoryList = React.lazy(() => import("Page/Category/CategoryList"));
 const CategoryDetails = React.lazy(
   () => import("Page/Category/CategoryDetails")
 );
@@ -205,7 +205,9 @@ export default function AppRoutes() {
                 <Route
                   index
                   element={
-                    <ProductList handleUserPermissions={handleUserPermissions} />
+                    <ProductList
+                      handleUserPermissions={handleUserPermissions}
+                    />
                   }
                 />
                 <Route
@@ -244,7 +246,7 @@ export default function AppRoutes() {
                     />
                   }
                 />
-                  <Route
+                <Route
                   path={routes.dashboard.warehouseStockCreate.path}
                   element={
                     <WarehouseStockDetails
@@ -306,6 +308,17 @@ export default function AppRoutes() {
                   }
                 />
               </Route>
+            </Route>
+
+            <Route path={routes.dashboard.path} element={<AuthGuard />}>
+              <Route
+                path={routes.dashboard.stocksMovement.path}
+                element={<StocksMovementList handleUserPermissions={handleUserPermissions} />}
+              />
+               <Route
+                path={routes.dashboard.stocksMovement.path}
+                element={<StocksMovementDetails handleUserPermissions={handleUserPermissions} />}
+              />
             </Route>
 
             <Route path="*" element={<NotFound />} />

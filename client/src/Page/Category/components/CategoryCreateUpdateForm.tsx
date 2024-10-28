@@ -23,7 +23,7 @@ export default function CategoryCreateUpdateForm({
   close,
   refetchItemCategory,
   categoryItem,
-  setNewCategoryList
+  setNewCategoryList,
 }: Readonly<{
   editForm?: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -124,7 +124,13 @@ export default function CategoryCreateUpdateForm({
           error={errors.name && "This field is required"}
         />
       </div>
-      <div className={`text-right ${permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.EDIT ? '' : 'hidden'}`}>
+      <div
+        className={`text-right ${
+          permission.ITEM_CATEGORIES_MANAGEMENT?.CAPABILITIES.EDIT
+            ? ""
+            : "hidden"
+        }`}
+      >
         {catId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             <Button
@@ -134,18 +140,16 @@ export default function CategoryCreateUpdateForm({
             >
               Cancel
             </Button>
-         
-                {editForm ? (
-                  <ButtonComponent type="submit" loading={updateLoading}>
-                    Update
-                  </ButtonComponent>
-                ) : (
-                  <Button type="button" onClick={() => setEditForm(true)}>
-                    Edit
-                  </Button>
-                )}
-        
-            
+
+            {editForm ? (
+              <ButtonComponent type="submit" loading={updateLoading}>
+                Update
+              </ButtonComponent>
+            ) : (
+              <Button type="button" onClick={() => setEditForm(true)}>
+                Edit
+              </Button>
+            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addLoading}>

@@ -111,6 +111,11 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmaciesStock.path}
             />
           )}
+           <MenuLink
+              text="Stocks Movement"
+              activeMenuPaths={routes.dashboard.stocksMovement.path}
+              link={routes.dashboard.stocksMovement.path}
+            />
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.USER_MANAGEMENT
