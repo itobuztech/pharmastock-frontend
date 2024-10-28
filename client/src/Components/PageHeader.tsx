@@ -1,5 +1,4 @@
 import { Button } from "@mantine/core";
-import React from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { BsPlusLg } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";

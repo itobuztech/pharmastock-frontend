@@ -1,8 +1,7 @@
-import { Flex, Modal, Space } from "@mantine/core";
+import { Flex, Space } from "@mantine/core";
 import PageHeader from "Components/PageHeader";
 import React, { useEffect, useState } from "react";
-import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
+import { useDebouncedState } from "@mantine/hooks";
 import {
   ChildComponentProps,
   WarehouseStocks,
@@ -13,9 +12,6 @@ import { toast } from "react-toastify";
 import { GetWarehouseStocks } from "query/warehouse/warehouseStocks";
 import WarehouseStockTable from "./components/WarehouseStockTable";
 import EmptyList from "Components/EmptyList";
-import { CreateWarehouseStockInput } from "gql/graphql";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
-import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import Search from "Components/Search";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -24,23 +20,20 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "Page/PharmacyStock/components/StockFilter";
 import WarehouseStockSkeleton from "./components/WarehouseStockSkeletopn";
+import { useNavigate } from "react-router-dom";
+import routes from "Lib/Routes/Routes";
 
 export default function WarehouseStock({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
-  const [opened, { open, close }] = useDisclosure(false);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocks>();
   const [totalCount, setTotalCount] = useState(1);
   const [activePage, setActivePage] = useState(1);
   const permission = useAppSelector((state) => state.user.permission);
-  const selectOrganizationItem = useOrganizationList();
-  const selectWarehouseItem = useWarehouseItems();
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
-
-  const [newWarehouseStockList, setNewWarehouseStockList] =
-    useState<CreateWarehouseStockInput>();
+  const navigate = useNavigate();
 
   /* ====== Warehouse Stocks List Query ====== */
   const [
@@ -81,26 +74,14 @@ export default function WarehouseStock({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage, searchKeyword]);
 
-  /* ====== New Warehouse Stocks Add In The List ====== */
-  useEffect(() => {
-    if (newWarehouseStockList) {
-      refetchWarehouseStockList().then(({ data }) => {
-        if (data) {
-          const items = data.warehouseStocks;
-          const total = data.warehouseStocks.total;
-          const paginationCount = Math.ceil(total / 10);
-          setWarehouseStocksList(items);
-          setTotalCount(paginationCount);
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newWarehouseStockList]);
-
   useEffect(() => {
     refetchWarehouseStockList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function screenSwitch(id: string) {
+    navigate(`${routes.dashboard.warehouseStockCreate.path}`);
+  }
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
@@ -111,7 +92,7 @@ export default function WarehouseStock({
           USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
-        onClick={open}
+        onClick={() => screenSwitch('1')}
         buttonText="Add Warehouse Stock"
       />
 
@@ -156,24 +137,6 @@ export default function WarehouseStock({
         <EmptyList />
       )}
 
-      {/* ==== Create WarehouseStock Modal ==== */}
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Create Stocks"
-        centered
-        size={"xl"}
-      >
-        <WarehouseStockForm
-          selectOrgItem={selectOrganizationItem}
-          selectWarehouseItem={selectWarehouseItem}
-          close={close}
-          refetchItem={refetchWarehouseStockList}
-          setNewWarehouseStockList={setNewWarehouseStockList}
-          list={true}
-          handleUserPermissions={handleUserPermissions}
-        />
-      </Modal>
     </section>
   );
 }

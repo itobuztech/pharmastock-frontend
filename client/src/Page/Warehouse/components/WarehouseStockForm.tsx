@@ -12,7 +12,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
@@ -29,6 +29,7 @@ import {
   WarehouseStockFormProps,
   WarehouseStockFormSchema,
 } from "../warehouse.interface";
+import routes from "Lib/Routes/Routes";
 
 const schema = yup
   .object({
@@ -58,6 +59,7 @@ export default function WarehouseStockForm({
   handleUserPermissions,
 }: Readonly<WarehouseStockFormProps>) {
   const params = useParams();
+  const location = useLocation();
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -67,6 +69,8 @@ export default function WarehouseStockForm({
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.currentUser);
   const [warehouseId, setWarehouseId] = useState("");
+  const isCreate = location.pathname.includes('create')
+  
 
   const {
     register,
@@ -118,6 +122,7 @@ export default function WarehouseStockForm({
           toast.success("Warehouse Stock updated Successfully");
         } else {
           toast.success("Warehouse Stock Created Successfully");
+          navigate(routes.dashboard.warehouseStock.path);
         }
 
         if (close) {
@@ -310,7 +315,7 @@ export default function WarehouseStockForm({
                 disabled={warehouseStockId ? true : false}
               />
             </div>
-            {!id && !list && (
+            {!id && !isCreate && (
               <div className="flex-1">
                 <NumberInput
                   label="Total Quantity"
@@ -324,7 +329,7 @@ export default function WarehouseStockForm({
               </div>
             )}
 
-            {id || warehouseStockId || list ? (
+            {id || warehouseStockId || isCreate ? (
               <>
                 {handleUserPermissions(
                   permission,
