@@ -58,7 +58,7 @@ export default function PharmacyStock({
         if (d) {
           const pharmaList = d.PharmacyStocks;
           const total = d.PharmacyStocks.total;
-          const paginationCount = Math.ceil(total / 10);
+          const paginationCount = Math.ceil(total / 2);
 
           setPharmacyStocksList(pharmaList);
           setTotalCount(paginationCount);
@@ -72,8 +72,8 @@ export default function PharmacyStock({
       variables: {
         pagination: true,
         paginationArgs: {
-          skip: activePage * 10 - 10,
-          take: 10,
+          skip: activePage * 2 - 2,
+          take: 2,
         },
         searchText: searchKeyword,
       },
@@ -88,7 +88,7 @@ export default function PharmacyStock({
         if (data) {
           const pharmaList = data.PharmacyStocks;
           const total = data.PharmacyStocks.total;
-          const paginationCount = Math.ceil(total / 10);
+          const paginationCount = Math.ceil(total / 2);
           setPharmacyStocksList(pharmaList);
           setTotalCount(paginationCount);
         }
