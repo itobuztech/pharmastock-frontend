@@ -25,9 +25,6 @@ export default function ProductTableSkeleton({
               <div className="h-4 w-24 bg-gray-200 animate-pulse" />
             </Table.Td>
             <Table.Td>
-              <div className="h-4 w-28 bg-gray-200 animate-pulse" />
-            </Table.Td>
-            <Table.Td>
               <div className="h-4 w-40 bg-gray-200 animate-pulse" />
             </Table.Td>
             <Table.Td>
