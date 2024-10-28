@@ -18,6 +18,7 @@ export interface DashBoardRoutes {
   users: DefaultRoute;
   userDetails: DefaultRoute;
   warehouseStockDetails: DefaultRoute;
+  warehouseStockCreate: DefaultRoute;
   pharmaciesStock: DefaultRoute;
   pharmacyStockDetails: DefaultRoute;
 }
@@ -85,6 +86,10 @@ export const dashboardRoutes: DashBoardRoutes = {
   userDetails: {
     path: `${dashboardPath}/users/:id`,
     fullPath: `${dashboardPath}/users:id`,
+  },
+  warehouseStockCreate: {
+    path: `${dashboardPath}/stocksWarehouse/create`,
+    fullPath: `${dashboardPath}/stocksWarehouse/create`,
   },
   warehouseStockDetails: {
     path: `${dashboardPath}/stocksWarehouse/:id`,
