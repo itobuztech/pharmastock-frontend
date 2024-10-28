@@ -138,10 +138,11 @@ export default function WarehouseStock({
       )}
 
       {/* ==== WarehouseStocks List Empty List and List ==== */}
+      
 
       {!loading &&
         warehouseStocksList &&
-        warehouseStocksList.warehouseStocks.length > 1 && (
+        warehouseStocksList.warehouseStocks.length > 0 && (
           <WarehouseStockTable
             activePage={activePage}
             setActivePage={setActivePage}
