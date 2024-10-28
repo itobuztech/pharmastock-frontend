@@ -104,7 +104,6 @@ export default function PharmacyStockTable({
         </Table.Td>
         <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
-        <Table.Td>{item.warehouse.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
        
@@ -137,7 +136,6 @@ export default function PharmacyStockTable({
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
             <Table.Th>Product</Table.Th>
-            <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
             <Table.Th>Qty</Table.Th>
             {user.role !== UserRole.Staff && (

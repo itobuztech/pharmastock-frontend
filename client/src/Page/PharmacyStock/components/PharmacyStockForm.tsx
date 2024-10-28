@@ -154,14 +154,11 @@ export default function PharmacyStockForm({
       pharmacyStockDetails.pharmacy?.id &&
         setValue("pharmacyId", pharmacyStockDetails.pharmacy.id);
 
-      pharmacyStockDetails.warehouse?.id &&
-        setValue("warehouseId", pharmacyStockDetails.warehouse.id);
-
       if (pharmacyStockDetails.item) {
         const itemArray = [
           {
             itemId: pharmacyStockDetails.item.id,
-            qty: pharmacyStockDetails.finalQty,
+            qty: 0,
           },
         ];
 
@@ -210,7 +207,7 @@ export default function PharmacyStockForm({
                 field.onChange(value);
               }}
               error={errors.warehouseId && "This field is required"}
-              disabled={id ? true : false}
+
             />
           )}
         />
@@ -244,7 +241,7 @@ export default function PharmacyStockForm({
               <CiCircleMinus className="w-6 h-6" />
             </Button>
           )}
-          <div className="pt-2">
+          <div className={`${!id && 'pt-2'}`}>
             <Controller
               name={`itemArr.${index}.itemId`}
               control={control}
@@ -269,7 +266,7 @@ export default function PharmacyStockForm({
 
           {handleUserPermissions(
             permission,
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+            USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
             USER_PERMISSION_CAPABILITIES.CREATE
           ) && (
             <div className="mt-4">
@@ -311,7 +308,7 @@ export default function PharmacyStockForm({
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             {handleUserPermissions(
               permission,
-              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+              USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
               <>
