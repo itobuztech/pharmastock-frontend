@@ -91,7 +91,7 @@ export default function SidebarComponent() {
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
-          ) && (
+          ) && user.role !== UserRole.Staff && (
             <MenuLink
               text="Pharmacies"
               activeMenuPaths={routes.dashboard.pharmacies.path}
