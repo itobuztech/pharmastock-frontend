@@ -32,7 +32,7 @@ export default function PharmacyStockSoldForm({
   selectedItems,
   refetchItem,
   setNewPharmacyStockList,
-  setSelectedPharmacyStock
+  setSelectedPharmacyStock,
 }: {
   StockSoldModalOpened: boolean;
   StockSoldModalClose: () => void;
@@ -42,8 +42,8 @@ export default function PharmacyStockSoldForm({
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
   setSelectedPharmacyStock?: React.Dispatch<
-  React.SetStateAction<SelectedPharmacyStock[]>
->;
+    React.SetStateAction<SelectedPharmacyStock[]>
+  >;
 }) {
   const [clearPharmacyStock, { loading }] = useMutation(
     GetClearancePharmacyStock,
@@ -77,7 +77,7 @@ export default function PharmacyStockSoldForm({
   });
 
   const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
-    console.log('data', data.items)
+    console.log("data", data.items);
     clearPharmacyStock({
       variables: {
         clearancePharmacyStockInput: data.items,
@@ -121,38 +121,39 @@ export default function PharmacyStockSoldForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         {fields.map((field, index) => (
           <div key={field.id}>
+            <div className="flex gap-3">
+              <div className="mb-4 w-1/2">
+                <TextInput
+                  label="Item"
+                  defaultValue={selectedItems[index]?.itemName}
+                  disabled
+                />
+              </div>
 
-            <div className="mb-4">
-              <TextInput
-                label="Item"
-                defaultValue={selectedItems[index]?.itemName}
-                disabled
-              />
+              <div className="mb-4 w-1/2">
+                <Controller
+                  name={`items.${index}.qty`}
+                  control={control}
+                  render={({ field }) => (
+                    <NumberInput
+                      label="Add Quantity"
+                      placeholder="Qty"
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      min={0}
+                      max={1000000}
+                      error={
+                        errors?.items?.[index]?.qty && "This field is required"
+                      }
+                    />
+                  )}
+                />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <Controller
-                name={`items.${index}.qty`}
-                control={control}
-                render={({ field }) => (
-                  <NumberInput
-                    label="Add Quantity"
-                    placeholder="Qty"
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
-                    min={0}
-                    max={1000000}
-                    error={
-                      errors?.items?.[index]?.qty && "This field is required"
-                    }
-                  />
-                )}
-              />
-            </div>
-
-            {index < fields.length - 1 && <Divider my="lg" />}
+            {index < fields.length - 1 && <Divider my="xs" />}
           </div>
         ))}
 

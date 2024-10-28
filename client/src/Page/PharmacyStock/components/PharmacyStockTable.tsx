@@ -78,44 +78,41 @@ export default function PharmacyStockTable({
 
     return (
       <Table.Tr key={item.id}>
-        {(handleUserPermissions(
+        {handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
           USER_PERMISSION_CAPABILITIES.CREATE
-        ) && !params.id) && (
-          <Table.Td>
-            <Checkbox
-              checked={isChecked}
-              disabled={isQtyAbsent}
-              onChange={(e) => {
-                handlePharmacyStockClearance(
-                  item.pharmacy.id,
-                  item.item.id,
-                  item?.pharmacy?.name,
-                  item?.item?.name,
-                  e.target.checked
-                );
-              }}
-            />
-          </Table.Td>
-        )}
-        <Table.Td>
-          {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-        </Table.Td>
+        ) &&
+          !params.id && (
+            <Table.Td>
+              <Checkbox
+                checked={isChecked}
+                disabled={isQtyAbsent}
+                onChange={(e) => {
+                  handlePharmacyStockClearance(
+                    item.pharmacy.id,
+                    item.item.id,
+                    item?.pharmacy?.name,
+                    item?.item?.name,
+                    e.target.checked
+                  );
+                }}
+              />
+            </Table.Td>
+          )}
+        <Table.Td>{i + 1}</Table.Td>
         <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
-        <Table.Td>{item.warehouse.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
-       
-          <Table.Td className="text-right">
-            <ActionPopover
-              handleView={() => screenSwitch(item.id)}
-              showDeleteModal={false}
-              handleUserPermissions={handleUserPermissions}
-            />
-          </Table.Td>
-      
+        {user.role !== UserRole.Staff &&
+        <Table.Td className="text-right">
+          <ActionPopover
+            handleView={() => screenSwitch(item.id)}
+            showDeleteModal={false}
+            handleUserPermissions={handleUserPermissions}
+          />
+        </Table.Td>}
       </Table.Tr>
     );
   });
@@ -137,7 +134,6 @@ export default function PharmacyStockTable({
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
             <Table.Th>Product</Table.Th>
-            <Table.Th>Warehouse</Table.Th>
             <Table.Th>Pharmacy</Table.Th>
             <Table.Th>Qty</Table.Th>
             {user.role !== UserRole.Staff && (

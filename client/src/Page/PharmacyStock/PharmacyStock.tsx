@@ -103,7 +103,7 @@ export default function PharmacyStock({
         showBackButton={false}
         showCreateButton={handleUserPermissions(
           permission,
-          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+          USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
         buttonText="Add Pharmacy Stock"
