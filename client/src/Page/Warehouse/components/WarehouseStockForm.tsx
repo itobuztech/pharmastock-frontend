@@ -12,7 +12,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 import DatePicker from "react-datepicker";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import ButtonComponent from "Components/Button/ButtonComponent";
@@ -55,11 +55,9 @@ export default function WarehouseStockForm({
   refetchItem,
   setNewWarehouseStockList,
   warehouseStockId,
-  list,
   handleUserPermissions,
 }: Readonly<WarehouseStockFormProps>) {
   const params = useParams();
-  const location = useLocation();
   const [qtyValue, setQtyValue] = useState<string | number>("");
   const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -69,8 +67,6 @@ export default function WarehouseStockForm({
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.currentUser);
   const [warehouseId, setWarehouseId] = useState("");
-  const isCreate = location.pathname.includes('create')
-  
 
   const {
     register,
@@ -288,7 +284,6 @@ export default function WarehouseStockForm({
                         ? field.value
                         : null
                     }
-                    
                     data={selectItem}
                     maxDropdownHeight={300}
                     error={errors?.warehouseStock?.[index]?.itemId?.message}
@@ -315,7 +310,7 @@ export default function WarehouseStockForm({
                 disabled={warehouseStockId ? true : false}
               />
             </div>
-            {!id && !isCreate && (
+            {params.id && (
               <div className="flex-1">
                 <NumberInput
                   label="Total Quantity"
@@ -329,35 +324,22 @@ export default function WarehouseStockForm({
               </div>
             )}
 
-            {id || warehouseStockId || isCreate ? (
-              <>
-                {handleUserPermissions(
-                  permission,
-                  USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
-                  USER_PERMISSION_CAPABILITIES.EDIT
-                ) && (
-                  <div className="flex-1">
-                    <NumberInput
-                      label="Add Quantity"
-                      placeholder="Qty"
-                      {...register(`warehouseStock.${index}.qty`)}
-                      value={qtyAddValue}
-                      onChange={setQtyAddValue}
-                      min={0}
-                      max={10000}
-                      withAsterisk
-                      error={errors?.warehouseStock?.[index]?.qty?.message}
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
               <div className="flex-1">
-                <TextInput
-                  label="Batch Name"
-                  placeholder="Batch Name"
-                  {...register(`warehouseStock.${index}.batchName`)}
-                  error={errors?.warehouseStock?.[index]?.batchName?.message}
+                <NumberInput
+                  label="Add Quantity"
+                  placeholder="Qty"
+                  {...register(`warehouseStock.${index}.qty`)}
+                  value={qtyAddValue}
+                  onChange={setQtyAddValue}
+                  min={0}
+                  max={10000}
+                  withAsterisk
+                  error={errors?.warehouseStock?.[index]?.qty?.message}
                 />
               </div>
             )}
