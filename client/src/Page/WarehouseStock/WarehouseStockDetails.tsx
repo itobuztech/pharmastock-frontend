@@ -21,7 +21,7 @@ export default function WarehouseStockDetails({ handleUserPermissions }:Readonly
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
-        title="Warehouse Stock Details"
+        title={id ? 'Warehouse Stock Details': 'Create Stocks'}
         showBackButton={true}
         showCreateButton={false}
       />
