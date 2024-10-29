@@ -49,12 +49,12 @@ export default function StocksMovementTable({
           <Table.Td>
             {format(parseISO(item.updatedAt), appConfig.dateFormat)}
           </Table.Td>
-          <Table.Td>{item.batchName}</Table.Td>
+          <Table.Td>{item.lotName}</Table.Td>
           <Table.Td>{item.item}</Table.Td>
           <Table.Td>{item.warehouse ?? "N/A"}</Table.Td>
           <Table.Td>{item.organisation}</Table.Td>
           <Table.Td>{item.transactionType}</Table.Td>
-          <Table.Td>{item.qty}</Table.Td>
+          <Table.Td>{item.totalLotItemsQty}</Table.Td>
           <Table.Td className="text-right">
             <ActionPopover
               handleView={() => screenSwitch(item.lotName)}
@@ -77,12 +77,12 @@ export default function StocksMovementTable({
           <Table.Tr>
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
-            <Table.Th>Batch Name</Table.Th>
+            <Table.Th>Lot Name</Table.Th>
             <Table.Th>Product</Table.Th>
             <Table.Th>Warehouse</Table.Th>
             <Table.Th>Organisation</Table.Th>
             <Table.Th>Transaction Type</Table.Th>
-            <Table.Th>Qty</Table.Th>
+            <Table.Th>Total Lot Item Qty</Table.Th>
 
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>
