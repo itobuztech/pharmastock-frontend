@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, NumberInput, Select, TextInput } from "@mantine/core";
+import { Button, Divider, NumberInput, Select, TextInput } from "@mantine/core";
 import {
   Controller,
   SubmitHandler,
@@ -29,6 +29,7 @@ import {
   WarehouseStockFormProps,
   WarehouseStockFormSchema,
 } from "../warehouse.interface";
+import routes from "Lib/Routes/Routes";
 
 const schema = yup
   .object({
@@ -54,12 +55,10 @@ export default function WarehouseStockForm({
   refetchItem,
   setNewWarehouseStockList,
   warehouseStockId,
-  list,
   handleUserPermissions,
 }: Readonly<WarehouseStockFormProps>) {
   const params = useParams();
   const [qtyValue, setQtyValue] = useState<string | number>("");
-  const [qtyAddValue, setQtyAddValue] = useState<string | number>("");
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const selectItem = useItemList();
@@ -97,6 +96,17 @@ export default function WarehouseStockForm({
     name: "warehouseStock",
   });
 
+  const [qtyValues, setQtyValues] = useState(fields.map(() => 0));
+
+  const handleQtyChange = (index: number, value: number) => {
+    setQtyValues((prevQty) => {
+      const updatedQty = [...prevQty];
+      updatedQty[index] = value;
+      return updatedQty;
+    });
+    setValue(`warehouseStock.${index}.qty`, value);
+  };
+
   const [createWarehouseStock, { loading }] = useMutation(
     WarehouseStockCreate,
     {
@@ -118,13 +128,14 @@ export default function WarehouseStockForm({
           toast.success("Warehouse Stock updated Successfully");
         } else {
           toast.success("Warehouse Stock Created Successfully");
+          navigate(routes.dashboard.warehouseStock.path);
         }
 
         if (close) {
           close();
         }
         reset();
-        setQtyAddValue("");
+        setQtyValues([]);
         refetchItem();
         if (setNewWarehouseStockList) {
           setNewWarehouseStockList(d);
@@ -191,224 +202,219 @@ export default function WarehouseStockForm({
         />
       </div>
 
-      {fields.map((item, index) => (
-        <div key={item.id} className="mt-5 relative">
-          {!params.id && (
-            <Button
-              onClick={() => remove(index)}
-              variant="transparent"
-              color="red"
-              className="absolute -top-2 -right-4 z-10"
-            >
-              <RxCross2 className="w-6 h-6" />
-            </Button>
-          )}
+      <Divider />
 
-          <div
-            className={`${
-              params.id ? "pt-0 mb-6" : "pt-4 mb-4"
-            } flex flex-wrap gap-4 justify-between`}
-          >
-            <div className="flex-1">
-              {id ? (
-                <TextInput
-                  label="Warehouse"
-                  placeholder="Warehouse"
-                  name={`warehouseStock.${index}.warehouseId`}
-                  disabled={id ? true : false}
-                  error={errors?.warehouseStock?.[index]?.warehouseId?.message}
-                />
-              ) : (
+      {fields.map((item, index) => (
+        <>
+          <div key={item.id} className="mt-5 relative">
+            {!params.id && (
+              <Button
+                onClick={() => remove(index)}
+                variant="transparent"
+                color="red"
+                className="absolute -top-2 -right-4 z-10"
+              >
+                <RxCross2 className="w-6 h-6" />
+              </Button>
+            )}
+
+            <div
+              className={`${
+                params.id ? "pt-0 mb-6" : "pt-4 mb-4"
+              } flex flex-wrap gap-4 justify-between`}
+            >
+              <div className="flex-1">
+                {id ? (
+                  <TextInput
+                    label="Warehouse"
+                    placeholder="Warehouse"
+                    name={`warehouseStock.${index}.warehouseId`}
+                    disabled={id ? true : false}
+                    error={
+                      errors?.warehouseStock?.[index]?.warehouseId?.message
+                    }
+                  />
+                ) : (
+                  <Controller
+                    name={`warehouseStock.${index}.warehouseId`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Select Warehouse"
+                        placeholder="Select Warehouse"
+                        onChange={(value) => {
+                          field.onChange(value);
+                          setWarehouseId(String(value));
+                          setValue(`warehouseStock.${index}.itemId`, "");
+                          setValue(`warehouseStock.${index}.sku`, "");
+                        }}
+                        value={field.value}
+                        withAsterisk
+                        data={selectWarehouseItem || selectWarehouseItems}
+                        maxDropdownHeight={300}
+                        error={
+                          errors?.warehouseStock?.[index]?.warehouseId?.message
+                        }
+                        disabled={id || warehouseStockId ? true : false}
+                      />
+                    )}
+                  />
+                )}
+              </div>
+              <div className="flex-1">
                 <Controller
-                  name={`warehouseStock.${index}.warehouseId`}
+                  name={`warehouseStock.${index}.itemId`}
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      label="Select Warehouse"
-                      placeholder="Select Warehouse"
-                      onChange={(value) => {
-                        field.onChange(value);
-                        setWarehouseId(String(value));
-                        setValue(`warehouseStock.${index}.itemId`, "");
-                        setValue(`warehouseStock.${index}.sku`, "");
-                      }}
-                      value={field.value}
+                      label="Select Product"
+                      placeholder="Select Product"
                       withAsterisk
-                      data={selectWarehouseItem || selectWarehouseItems}
-                      maxDropdownHeight={300}
-                      error={
-                        errors?.warehouseStock?.[index]?.warehouseId?.message
+                      onChange={async (value) => {
+                        const res = await fetchSku({
+                          variables: {
+                            generateSkuNameInput: {
+                              organizationId:
+                                warehouseDetails?.warehouse.organization?.id ||
+                                user?.organization.id,
+                              warehouseId: id
+                                ? id
+                                : getValues(
+                                    `warehouseStock.${index}.warehouseId`
+                                  ),
+                              itemId: value,
+                            },
+                          },
+                        });
+                        setValue(
+                          `warehouseStock.${index}.sku`,
+                          res.data?.generateSKU.sku as string
+                        );
+                        field.onChange(value);
+                      }}
+                      value={
+                        getValues(`warehouseStock.${index}.warehouseId`)
+                          ? field.value
+                          : null
                       }
-                      disabled={id || warehouseStockId ? true : false}
+                      data={selectItem}
+                      maxDropdownHeight={300}
+                      error={errors?.warehouseStock?.[index]?.itemId?.message}
+                      searchable
+                      disabled={warehouseId ? false : true}
+                      nothingFoundMessage="Nothing found..."
                     />
                   )}
                 />
+              </div>
+            </div>
+            <div
+              className={`${
+                params.id ? "mb-6" : "mb-4"
+              } flex flex-wrap gap-4 justify-between`}
+            >
+              <div className="flex-1">
+                <TextInput
+                  label="SKU"
+                  withAsterisk
+                  placeholder="SKU"
+                  {...register(`warehouseStock.${index}.sku`)}
+                  error={errors?.warehouseStock?.[index]?.sku?.message}
+                  disabled={warehouseStockId ? true : false}
+                />
+              </div>
+              {params.id && (
+                <div className="flex-1">
+                  <NumberInput
+                    label="Total Quantity"
+                    placeholder="Qty"
+                    value={qtyValue}
+                    onChange={setQtyValue}
+                    min={0}
+                    max={1000000}
+                    disabled
+                  />
+                </div>
+              )}
+
+              {handleUserPermissions(
+                permission,
+                USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+                USER_PERMISSION_CAPABILITIES.EDIT
+              ) && (
+                <div className="flex-1">
+                  <NumberInput
+                    label="Add Quantity"
+                    placeholder="Qty"
+                    {...register(`warehouseStock.${index}.qty`)}
+                    value={qtyValues[index]}
+                    onChange={(value) => handleQtyChange(index, Number(value))}
+                    min={0}
+                    max={10000}
+                    withAsterisk
+                    error={errors?.warehouseStock?.[index]?.qty?.message}
+                  />
+                </div>
               )}
             </div>
-            <div className="flex-1">
-              <Controller
-                name={`warehouseStock.${index}.itemId`}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label="Select Product"
-                    placeholder="Select Product"
-                    withAsterisk
-                    onChange={async (value) => {
-                      const res = await fetchSku({
-                        variables: {
-                          generateSkuNameInput: {
-                            organizationId:
-                              warehouseDetails?.warehouse.organization?.id ||
-                              user?.organization.id,
-                            warehouseId: id
-                              ? id
-                              : getValues(
-                                  `warehouseStock.${index}.warehouseId`
-                                ),
-                            itemId: value,
-                          },
-                        },
-                      });
-                      setValue(
-                        `warehouseStock.${index}.sku`,
-                        res.data?.generateSKU.sku as string
-                      );
-                      field.onChange(value);
-                    }}
-                    value={
-                      getValues(`warehouseStock.${index}.warehouseId`)
-                        ? field.value
-                        : null
-                    }
-                    
-                    data={selectItem}
-                    maxDropdownHeight={300}
-                    error={errors?.warehouseStock?.[index]?.itemId?.message}
-                    searchable
-                    disabled={warehouseId ? false : true}
-                    nothingFoundMessage="Nothing found..."
+
+            {handleUserPermissions(
+              permission,
+              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+              USER_PERMISSION_CAPABILITIES.EDIT
+            ) && (
+              <div className="flex flex-wrap gap-4 justify-between mb-6">
+                <div className="flex-1">
+                  <TextInput
+                    label="Batch Name"
+                    placeholder="Batch Name"
+                    {...register(`warehouseStock.${index}.batchName`)}
+                    error={errors?.warehouseStock?.[index]?.batchName?.message}
                   />
-                )}
-              />
-            </div>
-          </div>
-          <div
-            className={`${
-              params.id ? "mb-6" : "mb-4"
-            } flex flex-wrap gap-4 justify-between`}
-          >
-            <div className="flex-1">
-              <TextInput
-                label="SKU"
-                withAsterisk
-                placeholder="SKU"
-                {...register(`warehouseStock.${index}.sku`)}
-                error={errors?.warehouseStock?.[index]?.sku?.message}
-                disabled={warehouseStockId ? true : false}
-              />
-            </div>
-            {!id && !list && (
-              <div className="flex-1">
-                <NumberInput
-                  label="Total Quantity"
-                  placeholder="Qty"
-                  value={qtyValue}
-                  onChange={setQtyValue}
-                  min={0}
-                  max={1000000}
-                  disabled
-                />
-              </div>
-            )}
+                </div>
 
-            {id || warehouseStockId || list ? (
-              <>
-                {handleUserPermissions(
-                  permission,
-                  USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
-                  USER_PERMISSION_CAPABILITIES.EDIT
-                ) && (
-                  <div className="flex-1">
-                    <NumberInput
-                      label="Add Quantity"
-                      placeholder="Qty"
-                      {...register(`warehouseStock.${index}.qty`)}
-                      value={qtyAddValue}
-                      onChange={setQtyAddValue}
-                      min={0}
-                      max={10000}
-                      withAsterisk
-                      error={errors?.warehouseStock?.[index]?.qty?.message}
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="flex-1">
-                <TextInput
-                  label="Batch Name"
-                  placeholder="Batch Name"
-                  {...register(`warehouseStock.${index}.batchName`)}
-                  error={errors?.warehouseStock?.[index]?.batchName?.message}
-                />
-              </div>
-            )}
-          </div>
-
-          {handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
-            USER_PERMISSION_CAPABILITIES.EDIT
-          ) && (
-            <div className="flex flex-wrap gap-4 justify-between mb-6">
-              <div className="flex-1">
-                <TextInput
-                  label="Batch Name"
-                  placeholder="Batch Name"
-                  {...register(`warehouseStock.${index}.batchName`)}
-                  error={errors?.warehouseStock?.[index]?.batchName?.message}
-                />
-              </div>
-
-              <div className="flex-1 datePicker">
-                <span className="block text-sm font-medium leading-[23px]">
-                  Expiry Date
-                </span>
-                <Controller
-                  name={`warehouseStock.${index}.expiry`}
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      selected={startDate}
-                      onChange={(date) => {
-                        setStartDate(date as Date);
-                        const dateV = date?.toISOString();
-                        setValue(
-                          `warehouseStock.${index}.expiry`,
-                          dateV as any
-                        );
-                        field.onChange(date);
-                      }}
-                      minDate={new Date()}
-                      dateFormat="MMMM d, yyyy"
-                      placeholderText="Select expiry date"
-                      className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
-                    />
-                  )}
-                />
-                {errors?.warehouseStock?.[index]?.expiry && (
-                  <span className="text-xs text-red-500">
-                    {errors?.warehouseStock?.[index]?.expiry?.message}
+                <div className="flex-1 datePicker">
+                  <span className="block text-sm font-medium leading-[23px]">
+                    Expiry Date
                   </span>
-                )}
+                  <Controller
+                    name={`warehouseStock.${index}.expiry`}
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        selected={startDate}
+                        onChange={(date) => {
+                          setStartDate(date as Date);
+                          const dateV = date?.toISOString();
+                          setValue(
+                            `warehouseStock.${index}.expiry`,
+                            dateV as any
+                          );
+                          field.onChange(date);
+                        }}
+                        minDate={new Date()}
+                        dateFormat="MMMM d, yyyy"
+                        placeholderText="Select expiry date"
+                        className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+                      />
+                    )}
+                  />
+                  {errors?.warehouseStock?.[index]?.expiry && (
+                    <span className="text-xs text-red-500">
+                      {errors?.warehouseStock?.[index]?.expiry?.message}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+
+          {index < fields.length - 1 && <Divider />}
+        </>
       ))}
+
       {!params.id && (
         <Button
           type="button"

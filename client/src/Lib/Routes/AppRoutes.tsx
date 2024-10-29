@@ -244,6 +244,14 @@ export default function AppRoutes() {
                     />
                   }
                 />
+                  <Route
+                  path={routes.dashboard.warehouseStockCreate.path}
+                  element={
+                    <WarehouseStockDetails
+                      handleUserPermissions={handleUserPermissions}
+                    />
+                  }
+                />
               </Route>
             </Route>
 

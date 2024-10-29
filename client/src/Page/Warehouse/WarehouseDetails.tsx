@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
-import { CreateWarehouseStockInput, UserRole, Warehouse } from "gql/graphql";
+import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
 import WarehouseForm from "./components/WarehouseForm";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -34,7 +34,6 @@ export default function WarehouseDetails({
   const [activePage, setActivePage] = useState(1);
   const [warehouseStocksList, setWarehouseStocksList] =
     useState<WarehouseStocksByWarehouse>();
-    const user = useAppSelector((state) => state.user);
   const [newWarehouseStockList, setNewWarehouseStockList] =
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
@@ -78,6 +77,7 @@ export default function WarehouseDetails({
         },
       },
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage, id]);
 
   useEffect(() => {
@@ -92,6 +92,7 @@ export default function WarehouseDetails({
         }
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newWarehouseStockList, refetch]);
 
   return (
@@ -115,7 +116,6 @@ export default function WarehouseDetails({
           id={id}
           refetchWarehouse={refetch}
           warehouseDetails={warehouseDetails}
-          selectOrgItem={selectOrganizationItem}
           handleUserPermissions={handleUserPermissions}
         />
       </div>
