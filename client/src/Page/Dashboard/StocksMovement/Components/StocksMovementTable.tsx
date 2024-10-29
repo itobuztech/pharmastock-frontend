@@ -7,12 +7,13 @@ import routes from "Lib/Routes/Routes";
 import { PaginatedStockMovementsLot } from "../Hooks/useGetStocksMovementLot";
 import ActionPopover from "Components/ActionPopover";
 import {
-    USER_PERMISSION_CAPABILITIES,
-    USER_PERMISSION_FIELDS,
-  } from "enums/enums";
-  import { Permissions } from "interfaces/interfaces";
+  USER_PERMISSION_CAPABILITIES,
+  USER_PERMISSION_FIELDS,
+} from "enums/enums";
+import { Permissions } from "interfaces/interfaces";
+import appConfig from "Lib/appConfig";
 
-interface PharmacyStockTableProps {
+interface StocksMovementTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   stocksMovementList: PaginatedStockMovementsLot | null | undefined;
@@ -29,29 +30,34 @@ export default function StocksMovementTable({
   setActivePage,
   totalCount,
   stocksMovementList,
-  handleUserPermissions
-}: Readonly<PharmacyStockTableProps>) {
+  handleUserPermissions,
+}: Readonly<StocksMovementTableProps>) {
   const navigate = useNavigate();
 
-  function screenSwitch(id: string) {
-    navigate(`${routes.dashboard.pharmaciesStock.path}/${id}`);
+  function screenSwitch(lotName: string) {
+    navigate(`${routes.dashboard.stocksMovement.path}/${lotName}`);
   }
+
   const rows =
     stocksMovementList &&
     stocksMovementList?.stockMovementsLot?.map((item, i) => {
       return (
         <Table.Tr key={item.id}>
-          <Table.Td>{activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}</Table.Td>
-          <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
+          <Table.Td>
+            {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
+          </Table.Td>
+          <Table.Td>
+            {format(parseISO(item.updatedAt), appConfig.dateFormat)}
+          </Table.Td>
           <Table.Td>{item.batchName}</Table.Td>
           <Table.Td>{item.item}</Table.Td>
-          <Table.Td>{item.warehouse ?? 'N/A'}</Table.Td>
+          <Table.Td>{item.warehouse ?? "N/A"}</Table.Td>
           <Table.Td>{item.organisation}</Table.Td>
-          <Table.Td className="capitalize">{item.transactionType}</Table.Td>
-
+          <Table.Td>{item.transactionType}</Table.Td>
+          <Table.Td>{item.qty}</Table.Td>
           <Table.Td className="text-right">
             <ActionPopover
-              handleView={() => screenSwitch(item.id)}
+              handleView={() => screenSwitch(item.lotName)}
               showDeleteModal={false}
               handleUserPermissions={handleUserPermissions}
             />
@@ -74,8 +80,9 @@ export default function StocksMovementTable({
             <Table.Th>Batch Name</Table.Th>
             <Table.Th>Product</Table.Th>
             <Table.Th>Warehouse</Table.Th>
-            <Table.Th>organisation</Table.Th>
+            <Table.Th>Organisation</Table.Th>
             <Table.Th>Transaction Type</Table.Th>
+            <Table.Th>Qty</Table.Th>
 
             <Table.Th className="text-right pr-8">Action</Table.Th>
           </Table.Tr>

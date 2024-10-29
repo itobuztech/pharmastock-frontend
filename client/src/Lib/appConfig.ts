@@ -14,6 +14,7 @@ const appConfig = {
   },
   pagination: {
     defaultPage: 10
-  }
+  },
+ dateFormat: "MM/dd/yyyy"
 };
 export default appConfig;

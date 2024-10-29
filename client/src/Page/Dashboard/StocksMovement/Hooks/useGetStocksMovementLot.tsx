@@ -1,12 +1,11 @@
+import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 
 import { stockMovementsLot } from "query/stocksMovement/stocksMovement.query";
-import { useEffect, useState } from "react";
 import appConfig from "Lib/appConfig";
 import { StockMovementsType } from "gql/graphql";
-
-interface StockMovement {
+export interface StockMovement {
   batchName: string;
   createdAt: string;
   expiry: string | null;
@@ -54,7 +53,6 @@ export default function useGetStocksMovementLot({
         if (d) {
           const paginationCount = Math.ceil(d.stockMovementsLot.total / 10);
           setTotalCount(paginationCount);
-
           setStocksMovementList(d.stockMovementsLot);
         }
       },

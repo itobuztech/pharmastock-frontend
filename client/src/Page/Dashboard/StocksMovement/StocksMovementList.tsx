@@ -1,19 +1,21 @@
 import { useDebouncedState } from "@mantine/hooks";
+import { Flex, Space } from "@mantine/core";
+import { useState } from "react";
 
 import useGetStocksMovementLot from "./Hooks/useGetStocksMovementLot";
 import PageHeader from "Components/PageHeader";
 import Search from "Components/Search";
 import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 import EmptyList from "Components/EmptyList";
-import StocksMovementTable from "./Components/StockMovementTable";
-import { Flex, Space } from "@mantine/core";
-import StockMovementFilter from "./Components/StockMovementFilter";
+import StocksMovementTable from "./Components/StocksMovementTable";
+import StockMovementFilter, { FilterData } from "./Components/StockMovementFilter";
 import { ChildComponentProps } from "interfaces/interfaces";
 
 export default function StocksMovementList({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
   const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
+  const [filters, setFilters] = useState<FilterData>();
 
   const {
     loadingStateStockMovement,
@@ -23,6 +25,10 @@ export default function StocksMovementList({
     totalCount,
   } = useGetStocksMovementLot({
     searchKeyword: searchKeyword,
+    warehouseId: filters?.warehouseId as string,
+    transactionType: filters?.transactionType,
+    startDate: filters?.startDate,
+    endDate: filters?.endDate
   });
 
   return (
@@ -40,7 +46,7 @@ export default function StocksMovementList({
 
         {/* ==== Filter ==== */}
         <StockMovementFilter
-          searchInput={searchKeyword}
+          setFilterData={setFilters}
           setSearchInput={setSearchKeyword}
         />
       </Flex>

@@ -316,7 +316,7 @@ export default function AppRoutes() {
                 element={<StocksMovementList handleUserPermissions={handleUserPermissions} />}
               />
                <Route
-                path={routes.dashboard.stocksMovement.path}
+                path={routes.dashboard.stocksMovementDetails.path}
                 element={<StocksMovementDetails handleUserPermissions={handleUserPermissions} />}
               />
             </Route>
