@@ -1,39 +1,30 @@
+import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { LoadingOverlay, Space, TextInput } from "@mantine/core";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+
 import PageHeader from "Components/PageHeader";
 import { AdminProfile, Permissions } from "interfaces/interfaces";
-import React, { useEffect, useState } from "react";
 import { GetUser } from "query/profile/getUserAccount";
-import { toast } from "react-toastify";
 import ChangePassword from "./component/ChangePassword";
 import ProfileForm from "./component/ProfileForm";
-import { useDispatch } from "react-redux";
 import { GetPermission } from "query/getPermission";
 import { setPermission, setRole } from "Lib/Store/User/User.Slice";
-import { useAppSelector } from "Lib/Store/hooks";
 
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<AdminProfile>();
   const dispatch = useDispatch();
 
-  const [fetchPermissions, { data: permissionsData }] = useLazyQuery<{
+  const [fetchPermissions] = useLazyQuery<{
     getpermissions: Permissions;
   }>(GetPermission, {
-    fetchPolicy: "network-only",
     onCompleted: (d) => {
       dispatch(setPermission(d.getpermissions));
     },
   });
 
-  useEffect(() => {
-    if (permissionsData) {
-      console.log("Permissions data:", permissionsData);
-    }
-  }, [permissionsData]);
-
-  const user = useAppSelector((state) => state.user);
-
-  const [getCurrentUser, { loading, refetch }] = useLazyQuery(GetUser, {
+  const [getCurrentUser, { loading }] = useLazyQuery(GetUser, {
     onError: (err) => {
       toast.error(err.message);
     },
@@ -53,8 +44,8 @@ export default function ProfilePage() {
               },
               pharmacy: {
                 id: d?.account?.user?.pharmacy?.id,
-                name: d?.account?.user?.pharmacy?.name
-              }
+                name: d?.account?.user?.pharmacy?.name,
+              },
             },
           },
         };
@@ -66,9 +57,9 @@ export default function ProfilePage() {
 
   useEffect(() => {
     getCurrentUser();
-    refetch();
     fetchPermissions();
-  }, [getCurrentUser, refetch, fetchPermissions, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
