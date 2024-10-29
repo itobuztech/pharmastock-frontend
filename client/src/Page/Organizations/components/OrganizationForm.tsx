@@ -4,14 +4,11 @@ import {
   Select,
   Textarea,
   TextInput,
-  Text,
-  Divider,
-  Title,
+  Text
 } from "@mantine/core";
 import {
   createOrganizationInput,
   Permissions,
-  UserRole,
 } from "interfaces/interfaces";
 import { CreateOrganization } from "query/organization/organizationCreate";
 import React, { useEffect, useMemo } from "react";
@@ -169,8 +166,6 @@ export default function OrganizationForm({
     }
   }, [orgDetails?.organization, setValue]);
 
-  // console.log('details', orgDetails?.organization.User?.map((e) => e.role?.name))
-
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -311,40 +306,6 @@ export default function OrganizationForm({
           )}
         </div>
       </form>
-
-      {orgDetails?.organization?.User?.length && <Divider />}
-
-      <div className="mt-5">
-        {orgDetails?.organization?.User?.some(
-          (user) => user.role?.userType === UserRole.Admin
-        ) && (
-          <div className="mb-4">
-            <Title size="sm">Admin Emails</Title>
-            <ul>
-              {orgDetails?.organization.User?.filter(
-                (user) => user.role?.userType === UserRole.Admin
-              ).map((user, index) => (
-                <li key={index}>{user.email}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {orgDetails?.organization?.User?.some(
-          (user) => user.role?.userType === UserRole.Staff
-        ) && (
-          <div className="mb-4">
-            <Title size="sm">Staff Emails</Title>
-            <ul>
-              {orgDetails?.organization.User?.filter(
-                (user) => user.role?.userType === UserRole.Staff
-              ).map((user, index) => (
-                <li key={index}>{user.email}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
