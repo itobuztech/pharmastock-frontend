@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GetOrganizationDetails } from "query/organization/organizationDetails";
 import { useParams } from "react-router-dom";
-import { Organization } from "gql/graphql";
+import { Organization, UserRole } from "gql/graphql";
+import { Title, Skeleton } from "@mantine/core";
+
 import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
 import { ChildComponentProps } from "interfaces/interfaces";
+
 
 export default function OrganizationDetails({
   handleUserPermissions,
@@ -13,7 +16,11 @@ export default function OrganizationDetails({
   const { orgId } = useParams();
   const [editForm, setEditForm] = useState(false);
 
-  const { data: orgDetails, refetch } = useQuery<{
+  const {
+    data: orgDetails,
+    refetch,
+    loading,
+  } = useQuery<{
     organization: Organization;
   }>(GetOrganizationDetails, {
     variables: {
@@ -28,16 +35,61 @@ export default function OrganizationDetails({
         showBackButton={true}
         showCreateButton={false}
       />
-
-      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
-        <OrganizationForm
-          editForm={editForm}
-          setEditForm={setEditForm}
-          orgId={orgId}
-          refetchItem={refetch}
-          orgDetails={orgDetails}
-          handleUserPermissions={handleUserPermissions}
-        />
+      <div className="lg:flex gap-3">
+        <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6 shadow-sm">
+          <OrganizationForm
+            editForm={editForm}
+            setEditForm={setEditForm}
+            orgId={orgId}
+            refetchItem={refetch}
+            orgDetails={orgDetails}
+            handleUserPermissions={handleUserPermissions}
+          />
+        </div>
+        <div className="w-full lg:w-1/2 mt-5 lg:mt-0">
+          {loading ? (
+            <Skeleton height={300} />
+          ) : (
+            <>
+              {orgDetails?.organization?.User?.some(
+                (user) => user.role?.userType === UserRole.Admin
+              ) && (
+                <div className="bg-white rounded-md py-6 px-6 shadow-sm mb-3">
+                  <div className="mb-4">
+                    <Title size="sm">Admin Emails</Title>
+                    <ul>
+                      {orgDetails?.organization.User?.filter(
+                        (user) => user.role?.userType === UserRole.Admin
+                      ).map((user, index) => (
+                        <li key={index} className="text-gray-700">
+                          {user.email}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+              {orgDetails?.organization?.User?.some(
+                (user) => user.role?.userType === UserRole.Staff
+              ) && (
+                <div className="bg-white rounded-md py-6 px-6 shadow-sm mt-3">
+                  <div className="mb-4">
+                    <Title size="sm">Staff Emails</Title>
+                    <ul>
+                      {orgDetails?.organization.User?.filter(
+                        (user) => user.role?.userType === UserRole.Staff
+                      ).map((user, index) => (
+                        <li key={index} className="text-gray-700">
+                          {user.email}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

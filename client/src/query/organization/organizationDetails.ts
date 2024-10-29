@@ -13,6 +13,13 @@ export const GetOrganizationDetails = gql`
       id
       name
       updatedAt
+      User {
+        email
+        role {
+          name
+          userType
+        }
+      }
     }
   }
 `;

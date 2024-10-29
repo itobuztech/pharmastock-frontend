@@ -184,7 +184,6 @@ export default function Warehouse({
           refetchWarehouse={refetch}
           close={close}
           setNewWarehouseList={setNewWarehouseList}
-          // selectOrgItem={selectOrganizationItem}
           handleUserPermissions={handleUserPermissions}
         />
       </Modal>
