@@ -15,7 +15,7 @@ import {
 } from "interfaces/interfaces";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
-import { CreatePharmacyStockInput, PharmacyStock } from "gql/graphql";
+import { CreatePharmacyStockInput, PharmacyStock, UserRole } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
 import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 import useItemList from "Lib/customHooks/useItemList";
@@ -69,6 +69,7 @@ export default function PharmacyStockForm({
   const selectPharmaList = usePharmacyList();
   const selectItem = useItemList();
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user);
 
   const {
     handleSubmit,
@@ -190,28 +191,28 @@ export default function PharmacyStockForm({
           )}
         />
       </div>
-
-      <div className="mb-4">
-        <Controller
-          name="warehouseId"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              data={selectWarehouseItems}
-              label="Select Warehouse"
-              placeholder="Select Warehouse"
-              value={field.value}
-              onChange={(value) => {
-                handleParentChange(value!);
-                field.onChange(value);
-              }}
-              error={errors.warehouseId && "This field is required"}
-
-            />
-          )}
-        />
-      </div>
+      {user.role !== UserRole.Superadmin && (
+        <div className="mb-4">
+          <Controller
+            name="warehouseId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                data={selectWarehouseItems}
+                label="Select Warehouse"
+                placeholder="Select Warehouse"
+                value={field.value}
+                onChange={(value) => {
+                  handleParentChange(value!);
+                  field.onChange(value);
+                }}
+                error={errors.warehouseId && "This field is required"}
+              />
+            )}
+          />
+        </div>
+      )}
 
       {id && (
         <div className="mb-4">
@@ -230,67 +231,74 @@ export default function PharmacyStockForm({
       {!id && fields.length > 0 && <Divider my="lg" />}
 
       {fields.map((field, index) => (
-        <div key={field.id} className="mb-5 relative">
-          {!id && (
-            <Button
-              onClick={() => remove(index)}
-              variant="transparent"
-              color="red"
-              className="absolute -top-2 -right-4 z-10"
-            >
-              <CiCircleMinus className="w-6 h-6" />
-            </Button>
-          )}
-          <div className={`${!id && 'pt-2'}`}>
-            <Controller
-              name={`itemArr.${index}.itemId`}
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  data={id ? selectItem : selectItems}
-                  label="Select Product"
-                  placeholder="Select Product"
-                  value={field.value}
-                  onChange={(value) => {
-                    field.onChange(value);
-                  }}
-                  error={
-                    errors?.itemArr?.[index]?.itemId && "This field is required"
-                  }
-                  disabled={id ? true : false}
+        <div>
+          <div key={field.id} className={`${!id && "mt-5"} mb-5 relative`}>
+            {!id && (
+              <Button
+                onClick={() => remove(index)}
+                variant="transparent"
+                color="red"
+                className="absolute -top-4 -right-4 z-10"
+              >
+                <CiCircleMinus className="w-6 h-6" />
+              </Button>
+            )}
+            <div className={` flex gap-3`}>
+              <div className={`${user.role !==UserRole.Superadmin && 'w-1/2'} w-full`}>
+                <Controller
+                  name={`itemArr.${index}.itemId`}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      data={id ? selectItem : selectItems}
+                      label="Select Product"
+                      placeholder="Select Product"
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      error={
+                        errors?.itemArr?.[index]?.itemId &&
+                        "This field is required"
+                      }
+                      disabled={id ? true : false}
+                    />
+                  )}
                 />
-              )}
-            />
-          </div>
+              </div>
 
-          {handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.CREATE
-          ) && (
-            <div className="mt-4">
-              <Controller
-                name={`itemArr.${index}.qty`}
-                control={control}
-                render={({ field }) => (
-                  <NumberInput
-                    label="Add Quantity"
-                    placeholder="Qty"
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
-                    }}
-                    min={0}
-                    max={1000000}
-                    error={
-                      errors?.itemArr?.[index]?.qty && "This field is required"
-                    }
+              {handleUserPermissions(
+                permission,
+                USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
+                USER_PERMISSION_CAPABILITIES.CREATE
+              ) && (
+                <div className="w-1/2">
+                  <Controller
+                    name={`itemArr.${index}.qty`}
+                    control={control}
+                    render={({ field }) => (
+                      <NumberInput
+                        label="Add Quantity"
+                        placeholder="Qty"
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        min={0}
+                        max={1000000}
+                        error={
+                          errors?.itemArr?.[index]?.qty &&
+                          "This field is required"
+                        }
+                      />
+                    )}
                   />
-                )}
-              />
+                </div>
+              )}
             </div>
-          )}
+          </div>
+          {index < fields.length - 1 && <Divider />}
         </div>
       ))}
 
@@ -299,7 +307,7 @@ export default function PharmacyStockForm({
           onClick={() => append({ itemId: "", qty: 0 })}
           variant="outline"
         >
-          Add Item
+          Add Product
         </Button>
       )}
 

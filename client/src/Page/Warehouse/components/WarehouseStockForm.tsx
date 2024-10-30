@@ -202,7 +202,7 @@ export default function WarehouseStockForm({
         />
       </div>
 
-      <Divider />
+      {!params.id && fields.length > 0 && <Divider my="lg" />}
 
       {fields.map((item, index) => (
         <>
