@@ -2,16 +2,16 @@ import { useDebouncedState } from "@mantine/hooks";
 import { Flex, Space } from "@mantine/core";
 import { useState } from "react";
 
-import useGetStocksMovementLot from "./Hooks/useGetStocksMovementLot";
+import useGetStocksHistorytLot from "./Hooks/useGetStocksHistoryLot";
 import PageHeader from "Components/PageHeader";
 import Search from "Components/Search";
 import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 import EmptyList from "Components/EmptyList";
-import StocksMovementTable from "./Components/StocksMovementTable";
-import StockMovementFilter, { FilterData } from "./Components/StockMovementFilter";
+import StocksHistoryTable from "./Components/StocksHistoryTable";
+import StocksHistorytFilter, { FilterData } from "./Components/StocksHistoryFilter";
 import { ChildComponentProps } from "interfaces/interfaces";
 
-export default function StocksMovementList({
+export default function StocksHistoryList({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
   const [searchKeyword, setSearchKeyword] = useDebouncedState("", 700);
@@ -23,7 +23,7 @@ export default function StocksMovementList({
     activePage,
     setActivePage,
     totalCount,
-  } = useGetStocksMovementLot({
+  } = useGetStocksHistorytLot({
     searchKeyword: searchKeyword,
     warehouseId: filters?.warehouseId as string,
     transactionType: filters?.transactionType,
@@ -45,7 +45,7 @@ export default function StocksMovementList({
         <Space w="md" />
 
         {/* ==== Filter ==== */}
-        <StockMovementFilter
+        <StocksHistorytFilter
           setFilterData={setFilters}
           setSearchInput={setSearchKeyword}
         />
@@ -59,7 +59,7 @@ export default function StocksMovementList({
       {!loadingStateStockMovement &&
         stocksMovementList &&
         stocksMovementList.stockMovementsLot?.length > 0 && (
-          <StocksMovementTable
+          <StocksHistoryTable
             activePage={activePage}
             setActivePage={setActivePage}
             totalCount={totalCount}

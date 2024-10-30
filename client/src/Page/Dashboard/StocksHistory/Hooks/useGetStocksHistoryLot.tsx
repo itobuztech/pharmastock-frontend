@@ -18,6 +18,8 @@ export interface StockMovement {
   transactionType: StockMovementsType;
   warehouse: string | null;
   updatedAt: string;
+  pharmacy: string | null;
+  pharmacyClearance: string;
 }
 
 export interface PaginatedStockMovementsLot {
@@ -29,7 +31,7 @@ export interface StockMovementsResponse {
   stockMovementsLot: PaginatedStockMovementsLot;
 }
 
-export default function useGetStocksMovementLot({
+export default function useGetStocksHistorytLot({
   searchKeyword,
   warehouseId,
   transactionType,

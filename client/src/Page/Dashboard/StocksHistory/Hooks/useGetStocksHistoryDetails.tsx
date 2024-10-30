@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import appConfig from "Lib/appConfig";
 import { stockMovementsByLotName } from "query/stocksMovement/stocksMovementByLotName.query";
-import { StockMovement } from "./useGetStocksMovementLot";
+import { StockMovement } from "./useGetStocksHistoryLot";
 
 export interface StockMovementsResponse {
   stockMovementsByLotName: StockMovementsByLotName;
@@ -16,10 +16,10 @@ export interface StockMovementsByLotName {
   total: number;
 }
 
-export default function useGetStocksMovementDetails({
+export default function useGetStocksHistoryDetails({
   searchKeyword
 }: {
-  searchKeyword: string;
+  searchKeyword?: string;
 }) {
   const params = useParams();
   const [activePage, setActivePage] = useState(1);

@@ -21,8 +21,8 @@ export interface DashBoardRoutes {
   warehouseStockCreate: DefaultRoute;
   pharmaciesStock: DefaultRoute;
   pharmacyStockDetails: DefaultRoute;
-  stocksMovement: DefaultRoute;
-  stocksMovementDetails: DefaultRoute
+  stocksHistory: DefaultRoute;
+  stocksHistoryDetails: DefaultRoute
 }
 
 const dashboardPath = "/dashboard";
@@ -81,13 +81,13 @@ export const dashboardRoutes: DashBoardRoutes = {
     path: `${dashboardPath}/stocksWarehouse`,
     fullPath: `${dashboardPath}/stocksWarehouse`,
   },
-  stocksMovement: {
-    path: `${dashboardPath}/stocksMovement`,
-    fullPath: `${dashboardPath}/stocksMovement`,
+  stocksHistory: {
+    path: `${dashboardPath}/stocksHistory`,
+    fullPath: `${dashboardPath}/stocksHistory`,
   },
-  stocksMovementDetails: {
-    path: `${dashboardPath}/stocksMovement/:lotName`,
-    fullPath: `${dashboardPath}/stocksMovement/:lotName`,
+  stocksHistoryDetails: {
+    path: `${dashboardPath}/stocksHistory/:lotName`,
+    fullPath: `${dashboardPath}/stocksHistory/:lotName`,
   },
   users: {
     path: `${dashboardPath}/users`,

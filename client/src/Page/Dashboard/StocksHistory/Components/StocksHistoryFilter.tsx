@@ -17,7 +17,7 @@ export interface FilterData {
   endDate: Date | null;
 }
 
-export default function StockMovementFilter({
+export default function StocksHistorytFilter({
   setSearchInput,
   setFilterData,
 }: {

@@ -11,8 +11,8 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { Permissions } from "interfaces/interfaces";
-import StocksMovementList from "Page/Dashboard/StocksMovement/StocksMovementList";
-import StocksMovementDetails from "Page/Dashboard/StocksMovement/StocksMovementDetails";
+import StocksHistoryList from "Page/Dashboard/StocksHistory/StocksHistoryList";
+import StocksHistoryDetails from "Page/Dashboard/StocksHistory/StocksHistoryDetails";
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
@@ -312,12 +312,12 @@ export default function AppRoutes() {
 
             <Route path={routes.dashboard.path} element={<AuthGuard />}>
               <Route
-                path={routes.dashboard.stocksMovement.path}
-                element={<StocksMovementList handleUserPermissions={handleUserPermissions} />}
+                path={routes.dashboard.stocksHistory.path}
+                element={<StocksHistoryList handleUserPermissions={handleUserPermissions} />}
               />
                <Route
-                path={routes.dashboard.stocksMovementDetails.path}
-                element={<StocksMovementDetails handleUserPermissions={handleUserPermissions} />}
+                path={routes.dashboard.stocksHistoryDetails.path}
+                element={<StocksHistoryDetails handleUserPermissions={handleUserPermissions} />}
               />
             </Route>
 

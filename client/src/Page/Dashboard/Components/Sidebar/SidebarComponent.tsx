@@ -113,8 +113,8 @@ export default function SidebarComponent() {
           )}
            <MenuLink
               text="Stocks History"
-              activeMenuPaths={routes.dashboard.stocksMovement.path}
-              link={routes.dashboard.stocksMovement.path}
+              activeMenuPaths={routes.dashboard.stocksHistory.path}
+              link={routes.dashboard.stocksHistory.path}
             />
 
           {handleSliderOptionsVisible(
