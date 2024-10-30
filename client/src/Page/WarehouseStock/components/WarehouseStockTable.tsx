@@ -44,8 +44,8 @@ export default function WarehouseStockTable({
       <Table.Td>{item.item.name}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
-      <Table.Td>{item.totalWholesalePrice && '₹'} {item.totalWholesalePrice ?? 'N/A'}</Table.Td>
-      <Table.Td>{item.totalWholesalePrice && '₹'} {item.totalMrpBaseUnit ?? 'N/A'}</Table.Td>
+      <Table.Td>₹{item.totalWholesalePrice}</Table.Td>
+      <Table.Td>₹{item.totalMrpBaseUnit}</Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
