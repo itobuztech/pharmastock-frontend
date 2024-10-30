@@ -8,7 +8,7 @@ export default function PageHeader({
   onClick,
   showBackButton,
   showCreateButton,
-  buttonText,
+  buttonText
 }: {
   title: string;
   onClick?: () => void;

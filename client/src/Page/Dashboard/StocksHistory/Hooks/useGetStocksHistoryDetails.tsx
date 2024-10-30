@@ -16,26 +16,42 @@ export interface StockMovementsByLotName {
   total: number;
 }
 
+function removeDuplicates(stocksList: StockMovement[]) {
+  const seen = new Set();
+  return stocksList.filter((d) => {
+    const isDuplicate = seen.has(d.id);
+    seen.add(d.id);
+    return !isDuplicate;
+  });
+}
+
 export default function useGetStocksHistoryDetails({
-  searchKeyword
+  currentPage,
 }: {
-  searchKeyword?: string;
+  currentPage: number;
 }) {
   const params = useParams();
-  const [activePage, setActivePage] = useState(1);
-  const [totalCount, setTotalCount] = useState(1);
+  const [noOfPage, setNoOfPage] = useState(0);
   const [stocksMovementList, setStocksMovementList] =
     useState<StockMovementsByLotName>();
+
+  const skip = (Number(currentPage) - 1) * appConfig.pagination.defaultPage;
 
   const [getStocksMovementByLotName, { loading: loadingStateStockMovement }] =
     useLazyQuery<StockMovementsResponse>(stockMovementsByLotName, {
       onCompleted: (d) => {
         if (d.stockMovementsByLotName) {
-          const paginationCount = Math.ceil(
-            d?.stockMovementsByLotName?.total / 10
-          );
-          setTotalCount(paginationCount);
-          setStocksMovementList(d.stockMovementsByLotName);
+          if (noOfPage > 0) {
+            setStocksMovementList((prevStocks) => ({
+              stockMovementsByLotName: removeDuplicates([
+                ...(prevStocks?.stockMovementsByLotName || []),
+                ...d.stockMovementsByLotName.stockMovementsByLotName,
+              ]),
+              total: d.stockMovementsByLotName.total,
+            }));
+          } else {
+            setStocksMovementList(d.stockMovementsByLotName);
+          }
         }
       },
       onError: (err) => {
@@ -49,9 +65,8 @@ export default function useGetStocksHistoryDetails({
         variables: {
           paginationArgs: {
             take: appConfig.pagination.defaultPage,
-            skip: activePage * 10 - 10,
+            skip: noOfPage | 0,
           },
-          searchText: searchKeyword,
           lotStockMovementsInput: {
             lotName: params.lotName,
           },
@@ -60,13 +75,26 @@ export default function useGetStocksHistoryDetails({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePage, searchKeyword]);
+  }, [noOfPage]);
+
+  useEffect(() => {
+    // Adjust skip value if the list length is less than the pageSize
+    if (
+      stocksMovementList &&
+      stocksMovementList?.stockMovementsByLotName.length <
+        appConfig.pagination.defaultPage
+    ) {
+      setNoOfPage(0);
+    } else {
+      setNoOfPage(skip);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     loadingStateStockMovement,
-    setActivePage,
-    totalCount,
     stocksMovementList,
-    activePage,
+    setNoOfPage,
+    noOfPage
   };
 }

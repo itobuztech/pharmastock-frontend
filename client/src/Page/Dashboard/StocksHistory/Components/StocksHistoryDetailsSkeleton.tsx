@@ -7,6 +7,7 @@ export default function StockHistoryDetailsCardLoader({
 }) {
   return (
     <div className=" bg-white p-4">
+      <div className='p-3'><Skeleton height={30} width={'30%'} /></div>
       <Grid>
         {Array.from({ length: numOfRows }).map((_, index) => (
           <Grid.Col span={4}>

@@ -1,4 +1,3 @@
-import React from "react";
 import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
 import { Link } from "react-router-dom";
