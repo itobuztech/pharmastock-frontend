@@ -10,25 +10,17 @@ import { StockMovement } from "./useGetStocksHistoryLot";
 export interface StockMovementsResponse {
   stockMovementsByLotName: StockMovementsByLotName;
 }
-
 export interface StockMovementsByLotName {
   stockMovementsByLotName: StockMovement[];
   total: number;
 }
 
-function removeDuplicates(stocksList: StockMovement[]) {
-  const seen = new Set();
-  return stocksList.filter((d) => {
-    const isDuplicate = seen.has(d.id);
-    seen.add(d.id);
-    return !isDuplicate;
-  });
-}
-
 export default function useGetStocksHistoryDetails({
   currentPage,
+  searchKeyword
 }: {
   currentPage: number;
+  searchKeyword: string;
 }) {
   const params = useParams();
   const [noOfPage, setNoOfPage] = useState(0);
@@ -41,17 +33,7 @@ export default function useGetStocksHistoryDetails({
     useLazyQuery<StockMovementsResponse>(stockMovementsByLotName, {
       onCompleted: (d) => {
         if (d.stockMovementsByLotName) {
-          if (noOfPage > 0) {
-            setStocksMovementList((prevStocks) => ({
-              stockMovementsByLotName: removeDuplicates([
-                ...(prevStocks?.stockMovementsByLotName || []),
-                ...d.stockMovementsByLotName.stockMovementsByLotName,
-              ]),
-              total: d.stockMovementsByLotName.total,
-            }));
-          } else {
-            setStocksMovementList(d.stockMovementsByLotName);
-          }
+          setStocksMovementList(d.stockMovementsByLotName);
         }
       },
       onError: (err) => {
@@ -70,12 +52,13 @@ export default function useGetStocksHistoryDetails({
           lotStockMovementsInput: {
             lotName: params.lotName,
           },
+          searchText: searchKeyword
         },
       });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noOfPage]);
+  }, [noOfPage, searchKeyword]);
 
   useEffect(() => {
     // Adjust skip value if the list length is less than the pageSize
@@ -89,12 +72,12 @@ export default function useGetStocksHistoryDetails({
       setNoOfPage(skip);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchKeyword]);
 
   return {
     loadingStateStockMovement,
     stocksMovementList,
     setNoOfPage,
-    noOfPage
+    noOfPage,
   };
 }

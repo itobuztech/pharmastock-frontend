@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Card,
-  Flex,
-  Space,
-  Text,
-  Badge,
-  Group,
-  Button,
-  Divider,
-} from "@mantine/core";
+import { Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
 import {
@@ -18,10 +9,11 @@ import {
 import { Permissions } from "interfaces/interfaces";
 import { StockMovementsByLotName } from "../Hooks/useGetStocksHistoryDetails";
 import appConfig from "Lib/appConfig";
+import CustomPagination from "Components/CustomPagination/CustomPagination";
 
 interface StockMovementDetailsProps {
-  noOfPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  currentPage: number;
   setNoOfPage: React.Dispatch<React.SetStateAction<number>>;
   stocksMovementList: StockMovementsByLotName | null | undefined;
   loadingState: boolean;
@@ -33,132 +25,74 @@ interface StockMovementDetailsProps {
 }
 
 export default function StocksHistoryDetailsCards({
-  noOfPage,
   setCurrentPage,
   stocksMovementList,
   loadingState,
   setNoOfPage,
+  currentPage,
 }: Readonly<StockMovementDetailsProps>) {
-  const handlePageChange = () => {
-    setCurrentPage(noOfPage);
-    setNoOfPage(noOfPage + appConfig.pagination.defaultPage);
-  };
-
-  const cards =
+  const rows =
     stocksMovementList &&
-    stocksMovementList.stockMovementsByLotName.map((item) => (
-      <div className="p-2" key={item.id}>
-        <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Group className="flex justify-between items-center mb-2">
-            <Text className="text-lg font-bold capitalize text-gray-900">
-              {item.item}
-            </Text>
-            <Badge
-              color="blue"
-              variant="light"
-              size="md"
-              radius="md"
-              className="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-sm font-semibold"
-            >
-              {item.transactionType}
-            </Badge>
-          </Group>
-          <Divider />
+    stocksMovementList?.stockMovementsByLotName?.map((item, i) => {
+      return (
+        <Table.Tr key={item.id}>
+          <Table.Td>
+            {currentPage === 1 ? i + 1 : (currentPage - 1) * 10 + (i + 1)}
+          </Table.Td>
+          <Table.Td>{item.item}</Table.Td>
+          <Table.Td>{item.organisation}</Table.Td>
 
-          <div className="grid grid-cols-2 text-gray-800 mt-2">
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Organisation</Text>
-              <Text className="font-medium text-gray-700">
-                {item.organisation}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Warehouse</Text>
-              <Text className="font-medium text-gray-700">
-                {item.warehouse ?? "N/A"}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Pharmacy</Text>
-              <Text className="font-medium text-gray-700">
-                {item.pharmacy ?? "N/A"}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">
-                Pharmacy Clearance
-              </Text>
-              <Text className="font-medium text-gray-700">
-                {item.pharmacyClearance ?? "N/A"}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Qty</Text>
-              <Text className="font-medium text-gray-700">{item.qty}</Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Batch</Text>
-              <Text className="font-medium text-gray-700">
-                {item.batchName}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Created On</Text>
-              <Text className="font-medium text-gray-700">
-                {format(parseISO(item.createdAt), "MM/dd/yyyy")}
-              </Text>
-            </div>
-            <div className="p-2 border-b">
-              <Text className="font-bold text-gray-800">Updated On</Text>
-              <Text className="font-medium text-gray-700">
-                {format(parseISO(item.updatedAt), "MM/dd/yyyy")}
-              </Text>
-            </div>
+          <Table.Td>{item.warehouse ?? "N/A"}</Table.Td>
+          <Table.Td>{item.pharmacy ?? "N/A"}</Table.Td>
+          <Table.Td>{item.pharmacyClearance ?? "N/A"}</Table.Td>
+          <Table.Td>{item.batchName}</Table.Td>
+          <Table.Td>{item.qty}</Table.Td>
+          <Table.Td>
+            {item?.expiry
+              ? format(parseISO(item?.expiry as string), appConfig.dateFormat)
+              : "N/A"}
+          </Table.Td>
 
-            <div className="p-2">
-              <Text className="font-bold text-gray-800">Expiry Date</Text>
-              <Text className="font-medium text-gray-700">
-                {item.expiry
-                  ? format(parseISO(String(item.expiry)), "MM/dd/yyyy")
-                  : "N/A"}
-              </Text>
-            </div>
-          </div>
-        </Card>
-      </div>
-    ));
+          <Table.Td>{item.transactionType}</Table.Td>
+          <Table.Td>{item.totalLotItemsQty}</Table.Td>
+        </Table.Tr>
+      );
+    });
 
   return (
-    <div className="bg-white overflow-auto p-4">
-      <div className="p-3 text-gray-800 text-xl font-bold">{`Lot Name: ${stocksMovementList?.stockMovementsByLotName[0].lotName}`}</div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-        {cards && cards.length > 0 && cards}
-      </div>
-      <Space h="md" />
-      <Flex
-        mih={50}
-        gap="md"
-        justify="center"
-        align="center"
-        direction="row"
-        wrap="wrap"
+    <div className="bg-white overflow-auto">
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="md"
+        className="w-[800px] md:w-[1000px] lg:w-full"
       >
-        {!loadingState &&
-          Number(stocksMovementList?.total) > 0 &&
-          Number(stocksMovementList?.total) !==
-            stocksMovementList?.stockMovementsByLotName?.length && (
-            <div className="flex items-center pl-5 font-medium text-xl">
-              <Button
-                variant="transparent"
-                size="md"
-                onClick={handlePageChange}
-              >
-                Show more
-              </Button>
-            </div>
-          )}
-      </Flex>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Sl No.</Table.Th>
+            <Table.Th>Product</Table.Th>
+            <Table.Th>Organisation</Table.Th>
+            <Table.Th>Warehouse</Table.Th>
+            <Table.Th>Pharmacy</Table.Th>
+            <Table.Th>Pharmacy Clearance</Table.Th>
+            <Table.Th>Batch Name</Table.Th>
+            <Table.Th>Qty</Table.Th>
+            <Table.Th>Expiry Date</Table.Th>
+
+            <Table.Th>Transaction Type</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>{rows}</Table.Tbody>
+      </Table>
+      <Space h="md" />
+
+      <CustomPagination
+        loadingState={loadingState}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+        setNoOfPage={setNoOfPage}
+        listItem={stocksMovementList}
+      />
+
       <Space h="md" />
     </div>
   );
