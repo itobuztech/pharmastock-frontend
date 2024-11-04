@@ -229,7 +229,7 @@ export default function WarehouseStockForm({
                   onChange={(value) => {
                     field.onChange(value);
                     setWarehouseId(String(value));
-                    
+
                   }}
                   value={field.value}
                   withAsterisk
@@ -346,7 +346,7 @@ export default function WarehouseStockForm({
                 USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
                 USER_PERMISSION_CAPABILITIES.EDIT
               ) && (
-                <div className="flex-1 w-1/2">
+                <div className="flex-1">
                   <NumberInput
                     label="Add Quantity"
                     placeholder="Qty"
@@ -367,7 +367,7 @@ export default function WarehouseStockForm({
                 USER_PERMISSION_CAPABILITIES.EDIT
               ) &&
                 !params.id && (
-                  <div className="flex-1 w-1/2">
+                  <div className="flex-1">
                     <TextInput
                       label="Batch Name"
                       placeholder="Batch Name"
@@ -386,7 +386,7 @@ export default function WarehouseStockForm({
             ) && (
               <div className="flex flex-wrap gap-4 justify-between">
                 {params.id && (
-                  <div className="flex-1 w-1/2">
+                  <div className="flex-1">
                     <TextInput
                       label="Batch Name"
                       placeholder="Batch Name"
