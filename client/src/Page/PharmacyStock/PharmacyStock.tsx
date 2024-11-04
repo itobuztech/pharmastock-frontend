@@ -22,7 +22,6 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
-import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 import { SelectedPharmacyStock } from "./pharmacyStock.interface";
 import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 
@@ -130,11 +129,7 @@ export default function PharmacyStock({
           USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
           USER_PERMISSION_CAPABILITIES.CREATE
         ) && (
-          <Button
-            disabled={!selectedPharmacyStock.length}
-            ml="auto"
-            onClick={() => StockSoldModalOpen()}
-          >
+          <Button ml="auto" onClick={() => StockSoldModalOpen()}>
             Stock Clearance
           </Button>
         )}
@@ -179,15 +174,34 @@ export default function PharmacyStock({
         />
       </Modal>
 
+      <Modal
+        opened={StockSoldModalOpened}
+        onClose={StockSoldModalClose}
+        title="Pharmacy Stock Sold Out"
+        centered
+        zIndex={600}
+        overlayProps={{
+          zIndex: 500,
+        }}
+        size={"lg"}
+      >
+        <PharmacyStockForm
+          setNewPharmacyStockList={setNewPharmacyStockList}
+          close={close}
+          refetchItem={refetch}
+          handleUserPermissions={handleUserPermissions}
+        />
+      </Modal>
+
       {/* ==== Create PharmacyStock Sold Out Modal ==== */}
-      <PharmacyStockSoldForm
-        selectedItems={selectedPharmacyStock}
-        StockSoldModalOpened={StockSoldModalOpened}
-        StockSoldModalClose={StockSoldModalClose}
+      {/* <PharmacyStockForm
+        // selectedItems={selectedPharmacyStock}
+        // // StockSoldModalOpened={StockSoldModalOpened}
+        // StockSoldModalClose={StockSoldModalClose}
         refetchItem={refetch}
         setNewPharmacyStockList={setNewPharmacyStockList}
-        setSelectedPharmacyStock={setSelectedPharmacyStock}
-      />
+        // setSelectedPharmacyStock={setSelectedPharmacyStock}
+      /> */}
     </section>
   );
 }
