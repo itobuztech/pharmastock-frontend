@@ -12,5 +12,9 @@ const appConfig = {
     accessToken: "access_token",
     userData: "userData"
   },
+  pagination: {
+    defaultPage: 10
+  },
+ dateFormat: "MM/dd/yyyy"
 };
 export default appConfig;

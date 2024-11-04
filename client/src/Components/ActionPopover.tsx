@@ -16,7 +16,7 @@ interface ActionPopoverProps {
   showUserModal?: boolean;
   showDeleteModal?: boolean;
   showDeleteButton?: boolean;
-  handleUserPermissions: (
+  handleUserPermissions?: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
@@ -27,7 +27,6 @@ export default function ActionPopover({
   handleView,
   handleDelete,
   handleUserModal,
-  handleStockOutModal,
   showUserModal,
   showDeleteModal,
   showDeleteButton,
@@ -44,7 +43,7 @@ export default function ActionPopover({
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        {(handleUserPermissions(
+        {handleUserPermissions && (handleUserPermissions(
           permission,
           USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.VIEW
@@ -61,7 +60,7 @@ export default function ActionPopover({
         )}
         <div className="hidden">
           {showUserModal &&
-            handleUserPermissions(
+           handleUserPermissions && handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.CREATE
