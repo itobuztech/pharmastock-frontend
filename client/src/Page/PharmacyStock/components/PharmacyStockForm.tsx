@@ -140,7 +140,7 @@ export default function PharmacyStockForm({
   const handleParentChange = (value: string) => {
     fetchWarehouseStocksByWarehouse({
       variables: {
-        warehouseId: value,
+        warehouseId: value
       },
     });
   };
@@ -182,7 +182,6 @@ export default function PharmacyStockForm({
               placeholder="Select Pharmacy"
               value={field.value}
               onChange={(value) => {
-                console.log(value);
                 field.onChange(value);
               }}
               error={errors.pharmacyId && "This field is required"}
@@ -243,8 +242,12 @@ export default function PharmacyStockForm({
                 <CiCircleMinus className="w-6 h-6" />
               </Button>
             )}
-            <div className={` flex gap-3`}>
-              <div className={`${user.role !==UserRole.Superadmin && 'w-1/2'} w-full`}>
+            <div className={` sm:flex gap-3`}>
+              <div
+                className={`${
+                  user.role !== UserRole.Superadmin && "flex-1"
+                } w-full`}
+              >
                 <Controller
                   name={`itemArr.${index}.itemId`}
                   control={control}
@@ -262,6 +265,8 @@ export default function PharmacyStockForm({
                         errors?.itemArr?.[index]?.itemId &&
                         "This field is required"
                       }
+                      searchable
+                      nothingFoundMessage="Nothing found"
                       disabled={id ? true : false}
                     />
                   )}
@@ -273,7 +278,7 @@ export default function PharmacyStockForm({
                 USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
                 USER_PERMISSION_CAPABILITIES.CREATE
               ) && (
-                <div className="w-1/2">
+                <div className="mt-4 sm:mt-0 sm:w-1/2">
                   <Controller
                     name={`itemArr.${index}.qty`}
                     control={control}
