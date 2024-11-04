@@ -33,6 +33,7 @@ import routes from "Lib/Routes/Routes";
 
 const schema = yup
   .object({
+    warehouseId: yup.string().required("Warehouse is required"),
     warehouseStock: yup.array().of(
       yup.object({
         warehouseId: yup.string().required("Warehouse is required"),
@@ -105,6 +106,7 @@ export default function WarehouseStockForm({
       return updatedQty;
     });
     setValue(`warehouseStock.${index}.qty`, value);
+    setValue(`warehouseStock.${index}.warehouseId`, getValues("warehouseId"));
   };
 
   const [createWarehouseStock, { loading }] = useMutation(
@@ -177,6 +179,10 @@ export default function WarehouseStockForm({
   useEffect(() => {
     if (warehouseStockDetails?.warehouseStock) {
       setQtyValue(warehouseStockDetails.warehouseStock.finalQty);
+      setValue(
+        "warehouseId",
+        warehouseStockDetails?.warehouseStock.warehouse.id
+      );
       const itemArray = [
         {
           warehouseId: warehouseStockDetails?.warehouseStock.warehouse.id,
@@ -193,20 +199,56 @@ export default function WarehouseStockForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-6">
-        <TextInput
-          label="Organization"
-          placeholder="Name"
-          defaultValue={user?.organization?.name}
-          disabled
-        />
+      <div className="flex flex-wrap gap-4 justify-between">
+        <div className="flex-1">
+          <TextInput
+            label="Organization"
+            placeholder="Name"
+            defaultValue={user?.organization?.name}
+            disabled
+          />
+        </div>
+        <div className="flex-1">
+          {id ? (
+            <TextInput
+              label="Warehouse"
+              placeholder="Warehouse"
+              name="warehouseId"
+              disabled={id ? true : false}
+              error={errors?.warehouseId?.message}
+            />
+          ) : (
+            <Controller
+              name="warehouseId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  label="Select Warehouse"
+                  placeholder="Select Warehouse"
+                  onChange={(value) => {
+                    field.onChange(value);
+                    setWarehouseId(String(value));
+                    
+                  }}
+                  value={field.value}
+                  withAsterisk
+                  data={selectWarehouseItem || selectWarehouseItems}
+                  maxDropdownHeight={300}
+                  error={errors?.warehouseId?.message}
+                  disabled={id || warehouseStockId ? true : false}
+                />
+              )}
+            />
+          )}
+        </div>
       </div>
 
       {!params.id && fields.length > 0 && <Divider my="lg" />}
 
       {fields.map((item, index) => (
         <>
-          <div key={item.id} className="mt-5 relative">
+          <div key={item.id} className=" relative">
             {!params.id && (
               <Button
                 onClick={() => remove(index)}
@@ -220,48 +262,9 @@ export default function WarehouseStockForm({
 
             <div
               className={`${
-                params.id ? "pt-0 mb-6" : "pt-4 mb-4"
+                params.id ? "pt-6 mb-6" : "pt-3 mb-4"
               } flex flex-wrap gap-4 justify-between`}
             >
-              <div className="flex-1">
-                {id ? (
-                  <TextInput
-                    label="Warehouse"
-                    placeholder="Warehouse"
-                    name={`warehouseStock.${index}.warehouseId`}
-                    disabled={id ? true : false}
-                    error={
-                      errors?.warehouseStock?.[index]?.warehouseId?.message
-                    }
-                  />
-                ) : (
-                  <Controller
-                    name={`warehouseStock.${index}.warehouseId`}
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        label="Select Warehouse"
-                        placeholder="Select Warehouse"
-                        onChange={(value) => {
-                          field.onChange(value);
-                          setWarehouseId(String(value));
-                          setValue(`warehouseStock.${index}.itemId`, "");
-                          setValue(`warehouseStock.${index}.sku`, "");
-                        }}
-                        value={field.value}
-                        withAsterisk
-                        data={selectWarehouseItem || selectWarehouseItems}
-                        maxDropdownHeight={300}
-                        error={
-                          errors?.warehouseStock?.[index]?.warehouseId?.message
-                        }
-                        disabled={id || warehouseStockId ? true : false}
-                      />
-                    )}
-                  />
-                )}
-              </div>
               <div className="flex-1">
                 <Controller
                   name={`warehouseStock.${index}.itemId`}
@@ -272,33 +275,32 @@ export default function WarehouseStockForm({
                       label="Select Product"
                       placeholder="Select Product"
                       withAsterisk
-                      onChange={async (value) => {
-                        const res = await fetchSku({
+                      onChange={(value) => {
+                        fetchSku({
                           variables: {
                             generateSkuNameInput: {
                               organizationId:
                                 warehouseDetails?.warehouse.organization?.id ||
                                 user?.organization.id,
-                              warehouseId: id
-                                ? id
-                                : getValues(
-                                    `warehouseStock.${index}.warehouseId`
-                                  ),
+                              warehouseId: id ? id : getValues(`warehouseId`),
                               itemId: value,
                             },
                           },
+                          onCompleted: (data) => {
+                            setValue(
+                              `warehouseStock.${index}.sku`,
+                              data?.generateSKU.sku as string
+                            );
+                          },
                         });
                         setValue(
-                          `warehouseStock.${index}.sku`,
-                          res.data?.generateSKU.sku as string
+                          `warehouseStock.${index}.itemId`,
+                          String(value)
                         );
+
                         field.onChange(value);
                       }}
-                      value={
-                        getValues(`warehouseStock.${index}.warehouseId`)
-                          ? field.value
-                          : null
-                      }
+                      value={field.value}
                       data={selectItem}
                       maxDropdownHeight={300}
                       error={errors?.warehouseStock?.[index]?.itemId?.message}
@@ -309,12 +311,6 @@ export default function WarehouseStockForm({
                   )}
                 />
               </div>
-            </div>
-            <div
-              className={`${
-                params.id ? "mb-6" : "mb-4"
-              } flex flex-wrap gap-4 justify-between`}
-            >
               <div className="flex-1">
                 <TextInput
                   label="SKU"
@@ -325,6 +321,13 @@ export default function WarehouseStockForm({
                   disabled={warehouseStockId ? true : false}
                 />
               </div>
+            </div>
+
+            <div
+              className={`${
+                params.id ? "mb-6" : "mb-4"
+              } flex flex-wrap gap-4 justify-between`}
+            >
               {params.id && (
                 <div className="flex-1">
                   <NumberInput
@@ -338,13 +341,12 @@ export default function WarehouseStockForm({
                   />
                 </div>
               )}
-
               {handleUserPermissions(
                 permission,
                 USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
                 USER_PERMISSION_CAPABILITIES.EDIT
               ) && (
-                <div className="flex-1">
+                <div className="flex-1 w-1/2">
                   <NumberInput
                     label="Add Quantity"
                     placeholder="Qty"
@@ -358,24 +360,44 @@ export default function WarehouseStockForm({
                   />
                 </div>
               )}
-            </div>
 
+              {handleUserPermissions(
+                permission,
+                USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
+                USER_PERMISSION_CAPABILITIES.EDIT
+              ) &&
+                !params.id && (
+                  <div className="flex-1 w-1/2">
+                    <TextInput
+                      label="Batch Name"
+                      placeholder="Batch Name"
+                      {...register(`warehouseStock.${index}.batchName`)}
+                      error={
+                        errors?.warehouseStock?.[index]?.batchName?.message
+                      }
+                    />
+                  </div>
+                )}
+            </div>
             {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-              <div className="flex flex-wrap gap-4 justify-between mb-6">
-                <div className="flex-1">
-                  <TextInput
-                    label="Batch Name"
-                    placeholder="Batch Name"
-                    {...register(`warehouseStock.${index}.batchName`)}
-                    error={errors?.warehouseStock?.[index]?.batchName?.message}
-                  />
-                </div>
-
-                <div className="flex-1 datePicker">
+              <div className="flex flex-wrap gap-4 justify-between">
+                {params.id && (
+                  <div className="flex-1 w-1/2">
+                    <TextInput
+                      label="Batch Name"
+                      placeholder="Batch Name"
+                      {...register(`warehouseStock.${index}.batchName`)}
+                      error={
+                        errors?.warehouseStock?.[index]?.batchName?.message
+                      }
+                    />
+                  </div>
+                )}
+                <div className="flex-1 datePicker mb-6">
                   <span className="block text-sm font-medium leading-[23px]">
                     Expiry Date
                   </span>
