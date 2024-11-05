@@ -230,8 +230,8 @@ export default function PharmacyStockForm({
       {!id && fields.length > 0 && <Divider my="lg" />}
 
       {fields.map((field, index) => (
-        <div>
-          <div key={field.id} className={`${!id && "mt-5"} mb-5 relative`}>
+        <div key={field.id}>
+          <div className={`${!id ? "mt-5" : ""} mb-5 relative`}>
             {!id && (
               <Button
                 onClick={() => remove(index)}
@@ -242,7 +242,7 @@ export default function PharmacyStockForm({
                 <CiCircleMinus className="w-6 h-6" />
               </Button>
             )}
-            <div className={` sm:flex gap-3`}>
+            <div className='sm:flex gap-3'>
               <div
                 className={`${
                   user.role !== UserRole.Superadmin && "flex-1"
