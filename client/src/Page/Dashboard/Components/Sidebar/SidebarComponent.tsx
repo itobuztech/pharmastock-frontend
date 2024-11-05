@@ -1,4 +1,3 @@
-import React from "react";
 import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
 import { Link } from "react-router-dom";
@@ -111,6 +110,11 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmaciesStock.path}
             />
           )}
+           <MenuLink
+              text="Stocks History"
+              activeMenuPaths={routes.dashboard.stocksHistory.path}
+              link={routes.dashboard.stocksHistory.path}
+            />
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.USER_MANAGEMENT
