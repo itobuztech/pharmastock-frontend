@@ -108,6 +108,7 @@ export type CreateStockMovementInput = {
   pharmacyStockClearanceId?: InputMaybe<Scalars['String']['input']>;
   pharmacyStockId?: InputMaybe<Scalars['String']['input']>;
   qty: Scalars['Float']['input'];
+  transactionType?: InputMaybe<Scalars['String']['input']>;
   warehouseId?: InputMaybe<Scalars['String']['input']>;
   warehouseStockId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -194,6 +195,8 @@ export type FilterPharmacyStockInputs = {
 export type FilterStockMovementsInputs = {
   endDate?: InputMaybe<Scalars['DateTime']['input']>;
   startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  transactionType?: InputMaybe<StockMovementsType>;
+  warehouseId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type FilterWarehouseStockInputs = {
@@ -556,6 +559,18 @@ export type PaginatedStockMovementsByBatch = {
   total: Scalars['Float']['output'];
 };
 
+export type PaginatedStockMovementsByLotName = {
+  __typename?: 'PaginatedStockMovementsByLotName';
+  stockMovementsByLotName: Array<StockMovementsByLotName>;
+  total: Scalars['Float']['output'];
+};
+
+export type PaginatedStockMovementsLot = {
+  __typename?: 'PaginatedStockMovementsLot';
+  stockMovementsLot: Array<StockMovementsByLot>;
+  total: Scalars['Float']['output'];
+};
+
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   total: Scalars['Float']['output'];
@@ -627,8 +642,8 @@ export type Query = {
   stockMovements?: Maybe<PaginatedStockMovements>;
   stockMovementsByBatch?: Maybe<PaginatedStockMovementsByBatch>;
   stockMovementsByLot?: Maybe<PaginatedStockMovementsByBatch>;
-  stockMovementsByLotName?: Maybe<PaginatedStockMovementsByBatch>;
-  stockMovementsLot?: Maybe<PaginatedStockMovements>;
+  stockMovementsByLotName?: Maybe<PaginatedStockMovementsByLotName>;
+  stockMovementsLot?: Maybe<PaginatedStockMovementsLot>;
   user: User;
   userById: User;
   users?: Maybe<PaginatedUsers>;
@@ -744,7 +759,6 @@ export type QueryStockMovementsByLotArgs = {
 
 
 export type QueryStockMovementsByLotNameArgs = {
-  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
   lotStockMovementsInput: LotStockMovementsInput;
   paginationArgs?: InputMaybe<PaginationArgs>;
   searchText?: InputMaybe<Scalars['String']['input']>;
@@ -859,6 +873,7 @@ export type StockMovement = {
   lotName: Scalars['String']['output'];
   organisation?: Maybe<Scalars['String']['output']>;
   qty: Scalars['Float']['output'];
+  transactionType: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   warehouse?: Maybe<Scalars['String']['output']>;
 };
@@ -875,9 +890,49 @@ export type StockMovementsByBatch = {
   pharmacy?: Maybe<Scalars['String']['output']>;
   pharmacyClearance?: Maybe<Scalars['String']['output']>;
   qty: Scalars['Float']['output'];
+  transactionType: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   warehouse?: Maybe<Scalars['String']['output']>;
 };
+
+export type StockMovementsByLot = {
+  __typename?: 'StockMovementsByLot';
+  batchName?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  expiry?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  item?: Maybe<Scalars['String']['output']>;
+  lotName: Scalars['String']['output'];
+  organisation?: Maybe<Scalars['String']['output']>;
+  qty: Scalars['Float']['output'];
+  totalLotItemsQty: Scalars['Float']['output'];
+  transactionType: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  warehouse?: Maybe<Scalars['String']['output']>;
+};
+
+export type StockMovementsByLotName = {
+  __typename?: 'StockMovementsByLotName';
+  batchName?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  expiry?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['String']['output'];
+  item?: Maybe<Scalars['String']['output']>;
+  lotName: Scalars['String']['output'];
+  organisation?: Maybe<Scalars['String']['output']>;
+  pharmacy?: Maybe<Scalars['String']['output']>;
+  pharmacyClearance?: Maybe<Scalars['String']['output']>;
+  qty: Scalars['Float']['output'];
+  transactionType: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  warehouse?: Maybe<Scalars['String']['output']>;
+};
+
+export enum StockMovementsType {
+  Entry = 'ENTRY',
+  Exit = 'EXIT',
+  Movement = 'MOVEMENT'
+}
 
 export type TokenConfirmationInput = {
   token: Scalars['String']['input'];
@@ -1247,6 +1302,24 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
+export type StockMovementsLotQueryVariables = Exact<{
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+  filterArgs?: InputMaybe<FilterStockMovementsInputs>;
+}>;
+
+
+export type StockMovementsLotQuery = { __typename?: 'Query', stockMovementsLot?: { __typename?: 'PaginatedStockMovementsLot', total: number, stockMovementsLot: Array<{ __typename?: 'StockMovementsByLot', batchName?: string | null, createdAt: any, expiry?: any | null, id: string, item?: string | null, lotName: string, organisation?: string | null, qty: number, totalLotItemsQty: number, transactionType: string, warehouse?: string | null, updatedAt?: any | null }> } | null };
+
+export type StockMovementsByLotNameQueryVariables = Exact<{
+  lotStockMovementsInput: LotStockMovementsInput;
+  paginationArgs?: InputMaybe<PaginationArgs>;
+  searchText?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type StockMovementsByLotNameQuery = { __typename?: 'Query', stockMovementsByLotName?: { __typename?: 'PaginatedStockMovementsByLotName', total: number, stockMovementsByLotName: Array<{ __typename?: 'StockMovementsByLotName', batchName?: string | null, createdAt: any, expiry?: any | null, id: string, item?: string | null, lotName: string, organisation?: string | null, pharmacy?: string | null, pharmacyClearance?: string | null, qty: number, transactionType: string, updatedAt?: any | null, warehouse?: string | null }> } | null };
+
 export type MutationMutationVariables = Exact<{
   tokenConfirmationInput: TokenConfirmationInput;
 }>;
@@ -1415,6 +1488,8 @@ export const PharmacyStocksDocument = {"kind":"Document","definitions":[{"kind":
 export const AccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"emailConfirmationToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailConfirmed"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userType"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AccountQuery, AccountQueryVariables>;
 export const UpdateprofileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Updateprofile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateProfileInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateProfileInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateprofile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateProfileInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateProfileInput"}}}]}]}}]} as unknown as DocumentNode<UpdateprofileMutation, UpdateprofileMutationVariables>;
 export const ResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResetPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ResetPasswordInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resetPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"resetPasswordInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordInput"}}}]}]}}]} as unknown as DocumentNode<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const StockMovementsLotDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"StockMovementsLot"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterStockMovementsInputs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stockMovementsLot"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}},{"kind":"Argument","name":{"kind":"Name","value":"filterArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filterArgs"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"stockMovementsLot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"batchName"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiry"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"}},{"kind":"Field","name":{"kind":"Name","value":"lotName"}},{"kind":"Field","name":{"kind":"Name","value":"organisation"}},{"kind":"Field","name":{"kind":"Name","value":"qty"}},{"kind":"Field","name":{"kind":"Name","value":"totalLotItemsQty"}},{"kind":"Field","name":{"kind":"Name","value":"transactionType"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<StockMovementsLotQuery, StockMovementsLotQueryVariables>;
+export const StockMovementsByLotNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"StockMovementsByLotName"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"lotStockMovementsInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LotStockMovementsInput"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationArgs"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stockMovementsByLotName"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"lotStockMovementsInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"lotStockMovementsInput"}}},{"kind":"Argument","name":{"kind":"Name","value":"paginationArgs"},"value":{"kind":"Variable","name":{"kind":"Name","value":"paginationArgs"}}},{"kind":"Argument","name":{"kind":"Name","value":"searchText"},"value":{"kind":"Variable","name":{"kind":"Name","value":"searchText"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stockMovementsByLotName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"batchName"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiry"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"}},{"kind":"Field","name":{"kind":"Name","value":"lotName"}},{"kind":"Field","name":{"kind":"Name","value":"organisation"}},{"kind":"Field","name":{"kind":"Name","value":"pharmacy"}},{"kind":"Field","name":{"kind":"Name","value":"pharmacyClearance"}},{"kind":"Field","name":{"kind":"Name","value":"qty"}},{"kind":"Field","name":{"kind":"Name","value":"transactionType"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"warehouse"}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<StockMovementsByLotNameQuery, StockMovementsByLotNameQueryVariables>;
 export const MutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Mutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tokenConfirmationInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TokenConfirmationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tokenConfirmation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tokenConfirmationInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tokenConfirmationInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access_token"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"emailConfirmationToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailConfirmed"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}}]}}]} as unknown as DocumentNode<MutationMutation, MutationMutationVariables>;
 export const InviteUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InviteUsers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"inviteUsersInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"InviteUsersInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"inviteUsers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"inviteUsersInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"inviteUsersInput"}}}]}]}}]} as unknown as DocumentNode<InviteUsersMutation, InviteUsersMutationVariables>;
 export const CreateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Create"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateUserInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"create"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createUserInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createUserInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"emailConfirmationToken"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailConfirmed"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"organization"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"userType"}}]}}]}}]}}]} as unknown as DocumentNode<CreateMutation, CreateMutationVariables>;
