@@ -79,7 +79,7 @@ export default function WarehouseStock({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function screenSwitch(id: string) {
+  function screenSwitch() {
     navigate(`${routes.dashboard.warehouseStockCreate.path}`);
   }
 
@@ -92,7 +92,7 @@ export default function WarehouseStock({
           USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.CREATE
         )}
-        onClick={() => screenSwitch('1')}
+        onClick={() => screenSwitch()}
         buttonText="Add Warehouse Stock"
       />
 
