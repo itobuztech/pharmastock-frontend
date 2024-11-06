@@ -60,7 +60,6 @@ export default function WarehouseStockForm({
 }: Readonly<WarehouseStockFormProps>) {
   const params = useParams();
   const [qtyValue, setQtyValue] = useState<string | number>("");
-  const [startDate, setStartDate] = useState<Date>(new Date());
   const [warehouseList, setWarehouseList] = useState<Warehouses>();
   const selectItem = useItemList();
   const permission = useAppSelector((state) => state.user.permission);
@@ -97,7 +96,8 @@ export default function WarehouseStockForm({
     name: "warehouseStock",
   });
 
-  const [qtyValues, setQtyValues] = useState(fields.map(() => 0));
+  const [qtyValues, setQtyValues] = useState<Number[]>([]);
+  const [dateValues, setDateValues] = useState<Date[]>([]);
 
   const handleQtyChange = (index: number, value: number) => {
     setQtyValues((prevQty) => {
@@ -199,7 +199,7 @@ export default function WarehouseStockForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-wrap gap-4 justify-between">
+      <div className="sm:flex flex-wrap gap-4 justify-between">
         <div className="flex-1">
           <TextInput
             label="Organization"
@@ -208,7 +208,7 @@ export default function WarehouseStockForm({
             disabled
           />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 mt-4 sm:mt-0">
           {id ? (
             <TextInput
               label="Warehouse"
@@ -229,7 +229,6 @@ export default function WarehouseStockForm({
                   onChange={(value) => {
                     field.onChange(value);
                     setWarehouseId(String(value));
-
                   }}
                   value={field.value}
                   withAsterisk
@@ -263,7 +262,7 @@ export default function WarehouseStockForm({
             <div
               className={`${
                 params.id ? "pt-6 mb-6" : "pt-3 mb-4"
-              } flex flex-wrap gap-4 justify-between`}
+              } sm:flex flex-wrap gap-4 justify-between`}
             >
               <div className="flex-1">
                 <Controller
@@ -311,7 +310,7 @@ export default function WarehouseStockForm({
                   )}
                 />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 mt-4 sm:mt-0">
                 <TextInput
                   label="SKU"
                   withAsterisk
@@ -326,7 +325,7 @@ export default function WarehouseStockForm({
             <div
               className={`${
                 params.id ? "mb-6" : "mb-4"
-              } flex flex-wrap gap-4 justify-between`}
+              } sm:flex flex-wrap gap-4 justify-between z-0`}
             >
               {params.id && (
                 <div className="flex-1">
@@ -351,7 +350,7 @@ export default function WarehouseStockForm({
                     label="Add Quantity"
                     placeholder="Qty"
                     {...register(`warehouseStock.${index}.qty`)}
-                    value={qtyValues[index]}
+                    value={qtyValues[index] as any}
                     onChange={(value) => handleQtyChange(index, Number(value))}
                     min={0}
                     max={10000}
@@ -367,7 +366,7 @@ export default function WarehouseStockForm({
                 USER_PERMISSION_CAPABILITIES.EDIT
               ) &&
                 !params.id && (
-                  <div className="flex-1">
+                  <div className="flex-1 mt-4 sm:mt-0">
                     <TextInput
                       label="Batch Name"
                       placeholder="Batch Name"
@@ -397,7 +396,7 @@ export default function WarehouseStockForm({
                     />
                   </div>
                 )}
-                <div className="flex-1 datePicker mb-6">
+                <div className="flex-1 datePicker">
                   <span className="block text-sm font-medium leading-[23px]">
                     Expiry Date
                   </span>
@@ -406,9 +405,13 @@ export default function WarehouseStockForm({
                     control={control}
                     render={({ field }) => (
                       <DatePicker
-                        selected={startDate}
+                        selected={dateValues[index]}
                         onChange={(date) => {
-                          setStartDate(date as Date);
+                          setDateValues((prevDate) => {
+                            const updatedDate = [...prevDate];
+                            updatedDate[index] = date as any;
+                            return updatedDate;
+                          });
                           const dateV = date?.toISOString();
                           setValue(
                             `warehouseStock.${index}.expiry`,
@@ -419,7 +422,7 @@ export default function WarehouseStockForm({
                         minDate={new Date()}
                         dateFormat="MMMM d, yyyy"
                         placeholderText="Select expiry date"
-                        className="form-control text-sm text-black w-full h-9 rounded border border-x-gray-300 border-y-gray-300 px-3"
+                        className="form-control text-sm text-gray-600 w-full h-9 rounded border border-gray-300 px-3 placeholder:text-gray-400"
                       />
                     )}
                   />
@@ -433,12 +436,13 @@ export default function WarehouseStockForm({
             )}
           </div>
 
-          {index < fields.length - 1 && <Divider />}
+          {index < fields.length - 1 && <Divider my="lg" />}
         </>
       ))}
 
       {!params.id && (
         <Button
+          className="mt-4"
           type="button"
           variant="outline"
           onClick={() =>
