@@ -5,21 +5,20 @@ import {
   TextInput,
   Divider,
   Select,
-  ActionIcon,
+  Button,
 } from "@mantine/core";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
-import { RxCross2 } from "react-icons/rx";
-import { useDebouncedState } from "@mantine/hooks";
 
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetClearancePharmacyStock } from "query/pharmacyStock/clearancePharmacyStock";
 import { CreatePharmacyStockInput } from "gql/graphql";
 import { ClearancePharmacyStockInput } from "../pharmacyStock.interface";
 import { PharmacyStocksProduct } from "query/pharmacyStock/pharmacyStocksProduct";
+import { CiCircleMinus } from "react-icons/ci";
 interface PharmacyStockProduct {
   id: string;
   name: string;
@@ -33,7 +32,7 @@ const pharmacyStockClearanceSchema = yup
   .object({
     items: yup.array().of(
       yup.object({
-        itemId: yup.string(),
+        itemId: yup.string().required(),
         qty: yup.number().required().min(1),
       })
     ),
@@ -59,16 +58,18 @@ export default function PharmacyStockSoldForm({
 }) {
   const [pharmacyProducts, setPharmacyProducts] =
     useState<PaginatedPharmacyStockProducts>();
-  const [productSearch, setProductSearch] = useDebouncedState("", 300);
-  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
   const {
     handleSubmit,
     control,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: yupResolver(pharmacyStockClearanceSchema),
+    defaultValues: {
+      items: [{ itemId: "", qty: 0 }],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -95,13 +96,9 @@ export default function PharmacyStockSoldForm({
   );
 
   useEffect(() => {
-    fetchPharmacyStocksProduct({
-      variables: {
-        searchText: productSearch,
-      },
-    });
+    fetchPharmacyStocksProduct();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productSearch]);
+  }, [pharmacyId]);
 
   const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
     clearPharmacyStock({
@@ -113,9 +110,8 @@ export default function PharmacyStockSoldForm({
         setNewPharmacyStockList && setNewPharmacyStockList(d);
         StockSoldModalClose();
         toast.success("Pharmacy Stock Cleared Successfully");
-        reset({ items: [] });
+        reset({ items: [{ itemId: "", qty: 0 }] });
         refetchItem();
-        setSelectedProduct(null);
       },
     });
   };
@@ -125,26 +121,16 @@ export default function PharmacyStockSoldForm({
     label: item.name,
   }));
 
-  const addSelectedProduct = () => {
-    const product = pharmacyProducts?.items.find(
-      (item) => item.id === selectedProduct
-    );
-    if (product) {
-      append({
-        itemId: product.id,
-        qty: 0,
-      });
-    }
-    setSelectedProduct(null);
-  };
+  const availableProducts = pharmacyProductsList?.filter(
+    (product) => !fields.some((field) => field.itemId === product.value)
+  );
 
   return (
     <Modal
       opened={StockSoldModalOpened}
       onClose={() => {
         StockSoldModalClose();
-        setSelectedProduct(null); 
-        reset({ items: [] });
+        reset({ items: [{ itemId: "", qty: 0 }] });
       }}
       title="Pharmacy Stock Sold Out"
       centered
@@ -161,86 +147,84 @@ export default function PharmacyStockSoldForm({
           />
         </div>
 
-        <div className="mb-4 flex items-center gap-4">
-          <div className="flex-1">
-            <Select
-              data={pharmacyProductsList?.filter(
-                (product) =>
-                  !fields.some((field) => field.itemId === product.value)
-              )}
-              label="Select Product"
-              placeholder="Select Product"
-              value={selectedProduct}
-              onChange={setSelectedProduct}
-              searchable
-              onSearchChange={setProductSearch}
-              nothingFoundMessage="Nothing found..."
-            />
-          </div>
-          <div className="flex-2 mt-6">
-            <ButtonComponent
-              type="button"
-              variant="outline"
-              onClick={addSelectedProduct}
-            >
-              Add Product
-            </ButtonComponent>
-          </div>
-        </div>
-
+        {fields.length > 0 && <Divider my="lg" />}
         {fields.map((field, index) => (
           <div key={field.id}>
-            <div className="flex gap-3 items-center">
-              <div className="mb-4 w-1/2">
-                <TextInput
-                  label="Product"
-                  defaultValue={
-                    pharmacyProductsList?.find(
-                      (item) => item.value === field.itemId
-                    )?.label
-                  }
-                  disabled
-                />
-              </div>
+            <div className="mb-5 relative">
+              <Button
+                onClick={() => remove(index)}
+                variant="transparent"
+                color="red"
+                className="absolute -top-4 -right-4 z-10"
+              >
+                <CiCircleMinus className="w-6 h-6" />
+              </Button>
+              <div className="sm:flex gap-3">
+                <div className="flex-1 ">
+                  <Controller
+                    name={`items.${index}.itemId`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        data={availableProducts}
+                        label="Select Product"
+                        placeholder="Select Product"
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          setValue(`items.${index}.itemId`, value as string);
+                        }}
+                        error={
+                          errors?.items?.[index]?.itemId &&
+                          "This field is required"
+                        }
+                        searchable
+                        nothingFoundMessage="Nothing found"
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className="mb-4 w-1/2">
-                <Controller
-                  name={`items.${index}.qty`}
-                  control={control}
-                  render={({ field }) => (
-                    <NumberInput
-                      label="Add Qty"
-                      placeholder="Qty"
-                      value={field.value}
-                      onChange={(value) => field.onChange(value)}
-                      min={0}
-                      max={1000000}
-                      error={
-                        errors?.items?.[index]?.qty && "This field is required"
-                      }
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="mt-2.5">
-                <ActionIcon
-                  color="red"
-                  onClick={() => remove(index)}
-                  title="Remove item"
-                >
-                  <RxCross2 />
-                </ActionIcon>
+                <div className="flex-1 ">
+                  <Controller
+                    name={`items.${index}.qty`}
+                    control={control}
+                    render={({ field }) => (
+                      <NumberInput
+                        label="Add Quantity"
+                        placeholder="Qty"
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        min={0}
+                        max={1000000}
+                        error={
+                          errors?.items?.[index]?.qty &&
+                          "This field is required"
+                        }
+                      />
+                    )}
+                  />
+                </div>
               </div>
             </div>
-
-            {index < fields.length - 1 && <Divider my="xs" />}
+            {index < fields.length - 1 && <Divider my="lg" />}
           </div>
         ))}
-
-        <ButtonComponent type="submit" loading={loading} className="mt-4">
-          Sold
-        </ButtonComponent>
+        <Button
+          onClick={() => append({ itemId: "", qty: 0 })}
+          variant="outline"
+          disabled={availableProducts?.length === 0 ? true : false}
+        >
+          Add Product
+        </Button>
+        <div className="text-right">
+          <ButtonComponent type="submit" loading={loading} className="mt-4">
+            Sold
+          </ButtonComponent>
+        </div>
       </form>
     </Modal>
   );
