@@ -24,6 +24,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
 import { SelectedPharmacyStock } from "./pharmacyStock.interface";
 import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
+import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -174,34 +175,18 @@ export default function PharmacyStock({
         />
       </Modal>
 
-      <Modal
-        opened={StockSoldModalOpened}
-        onClose={StockSoldModalClose}
-        title="Pharmacy Stock Sold Out"
-        centered
-        zIndex={600}
-        overlayProps={{
-          zIndex: 500,
-        }}
-        size={"lg"}
-      >
-        <PharmacyStockForm
-          setNewPharmacyStockList={setNewPharmacyStockList}
-          close={close}
-          refetchItem={refetch}
-          handleUserPermissions={handleUserPermissions}
-        />
-      </Modal>
-
-      {/* ==== Create PharmacyStock Sold Out Modal ==== */}
-      {/* <PharmacyStockForm
-        // selectedItems={selectedPharmacyStock}
-        // // StockSoldModalOpened={StockSoldModalOpened}
-        // StockSoldModalClose={StockSoldModalClose}
+      <PharmacyStockSoldForm
+        pharmacyName={
+          pharmacyStocksList?.pharmacyStocks[0].pharmacy.name as string
+        }
+        pharmacyId={pharmacyStocksList?.pharmacyStocks[0].pharmacy.id as string}
+        StockSoldModalOpened={StockSoldModalOpened}
+        StockSoldModalClose={StockSoldModalClose}
         refetchItem={refetch}
         setNewPharmacyStockList={setNewPharmacyStockList}
-        // setSelectedPharmacyStock={setSelectedPharmacyStock}
-      /> */}
+      />
+
+      {/* ==== Create PharmacyStock Sold Out Modal ==== */}
     </section>
   );
 }
