@@ -8,7 +8,8 @@ import { DatePickerInput } from "@mantine/dates";
 
 import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-import { StockMovementsType } from "gql/graphql";
+import { StockMovementsType, UserRole } from "gql/graphql";
+import { useAppSelector } from "Lib/Store/hooks";
 
 export interface FilterData {
   warehouseId: string | null;
@@ -17,7 +18,7 @@ export interface FilterData {
   endDate: Date | null;
 }
 
-export default function StocksHistorytFilter({
+export default function StocksHistoryFilter({
   setSearchInput,
   setFilterData,
 }: {
@@ -32,6 +33,7 @@ export default function StocksHistorytFilter({
     null,
   ]);
   const [warehouseId, setWarehouseId] = useState("");
+  const user = useAppSelector((state) => state.user);
 
   const onSubmit = () => {
     setFilterData({
@@ -128,23 +130,24 @@ export default function StocksHistorytFilter({
             maxDropdownHeight={300}
           />
         </div>
-
-        <div className="mt-4">
-          <Select
-            label="Transaction Type"
-            placeholder="Select Transaction Type"
-            onChange={(value) =>
-              setTransactionType(value as StockMovementsType)
-            }
-            value={transactionType || undefined}
-            data={[
-              { value: StockMovementsType.Entry, label: "Entry" },
-              { value: StockMovementsType.Exit, label: "Exit" },
-              { value: StockMovementsType.Movement, label: "Movement" },
-            ]}
-            maxDropdownHeight={150}
-          />
-        </div>
+        {user.role !== UserRole.Staff && (
+          <div className="mt-4">
+            <Select
+              label="Transaction Type"
+              placeholder="Select Transaction Type"
+              onChange={(value) =>
+                setTransactionType(value as StockMovementsType)
+              }
+              value={transactionType || undefined}
+              data={[
+                { value: StockMovementsType.Entry, label: "Entry" },
+                { value: StockMovementsType.Exit, label: "Exit" },
+                { value: StockMovementsType.Movement, label: "Movement" },
+              ]}
+              maxDropdownHeight={150}
+            />
+          </div>
+        )}
 
         <Button type="submit" fullWidth className="mt-8" onClick={onSubmit}>
           Apply filter
