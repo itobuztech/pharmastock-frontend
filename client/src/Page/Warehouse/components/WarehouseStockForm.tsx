@@ -261,8 +261,8 @@ export default function WarehouseStockForm({
 
             <div
               className={`${
-                params.id ? "pt-6 mb-6" : "pt-3 mb-4"
-              } sm:flex flex-wrap gap-4 justify-between`}
+                params.id ? "pt-4 " : "pt-3"
+              } sm:flex flex-wrap gap-4 mb-4 justify-between`}
             >
               <div className="flex-1">
                 <Controller
@@ -323,12 +323,10 @@ export default function WarehouseStockForm({
             </div>
 
             <div
-              className={`${
-                params.id ? "mb-6" : "mb-4"
-              } sm:flex flex-wrap gap-4 justify-between z-0`}
+              className={`sm:flex flex-wrap gap-4 justify-between mb-4 z-0 ${!params.id ? 'mb-4' : 'sm:mb-0'}`}
             >
               {params.id && (
-                <div className="flex-1">
+                <div className="flex-1 mb-4">
                   <NumberInput
                     label="Total Quantity"
                     placeholder="Qty"
@@ -383,9 +381,9 @@ export default function WarehouseStockForm({
               USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
-              <div className="flex flex-wrap gap-4 justify-between">
+              <div className="sm:flex flex-wrap gap-4 justify-between">
                 {params.id && (
-                  <div className="flex-1">
+                  <div className="flex-1 mb-4 sm:mb-0">
                     <TextInput
                       label="Batch Name"
                       placeholder="Batch Name"

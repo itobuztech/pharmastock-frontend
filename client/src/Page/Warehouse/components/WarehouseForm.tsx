@@ -138,7 +138,7 @@ export default function WarehouseForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
+      <div className="sm:flex flex-wrap gap-4 justify-between mb-4">
         {id && (
           <div className="flex-1">
             <div className="mb-4">
@@ -164,8 +164,8 @@ export default function WarehouseForm({
           </Text>
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-6">
-        <div className="flex-1">
+      <div className="sm:flex flex-wrap gap-4 justify-between mb-6">
+        <div className="flex-1 mb-4 sm:mb-0">
           <TextInput
             label="Location"
             placeholder="Location"

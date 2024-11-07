@@ -24,7 +24,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
 import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 import { SelectedPharmacyStock } from "./pharmacyStock.interface";
-import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
+import PharmacyTableSkeleton from "Page/Pharmacy/components/PharmacyTableSkeleton";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -141,7 +141,7 @@ export default function PharmacyStock({
       </Flex>
 
       {/* ==== Loading State ==== */}
-      {loading && <ProductTableSkeleton numOfRows={6} />}
+      {loading && <PharmacyTableSkeleton numOfRows={6} />}
 
       {/* ==== PharmacyStocks List Empty List and List ==== */}
 
