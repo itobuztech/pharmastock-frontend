@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-import React from "react";
 import { Link } from "react-router-dom";
 import { Burger } from "@mantine/core";
 
@@ -22,13 +20,14 @@ export default function HeaderComponent({
                 </span>
               </Link>
             </div>
-
-            <div className="-mr-2 flex lg:hidden">
-              <Burger
-                opened={sidebarOpened || false}
-                onClick={handleMobileDrawer}
-              />
-            </div>
+            {!sidebarOpened && (
+              <div className="-mr-2 flex lg:hidden">
+                <Burger
+                  opened={sidebarOpened || false}
+                  onClick={handleMobileDrawer}
+                />
+              </div>
+            )}
           </div>
         </div>
       </nav>

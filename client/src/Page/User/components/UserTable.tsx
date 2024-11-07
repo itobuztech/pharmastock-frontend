@@ -83,7 +83,7 @@ export default function UserTable({
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
-
+      
       <Space h="md" />
 
       <Flex

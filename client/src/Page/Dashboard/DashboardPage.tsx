@@ -1,9 +1,10 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import HeaderComponent from "../../Components/Header/HeaderComponent";
-import SidebarComponent from "./Components/Sidebar/SidebarComponent";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { Drawer, Skeleton } from "@mantine/core";
+
+import HeaderComponent from "../../Components/Header/HeaderComponent";
+import SidebarComponent from "./Components/Sidebar/SidebarComponent";
 import "./_dashboardPage.scoped.scss";
 
 function DashboardLoadingUi() {

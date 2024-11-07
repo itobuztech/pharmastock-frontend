@@ -3,12 +3,11 @@ import { useQuery } from "@apollo/client";
 import { GetOrganizationDetails } from "query/organization/organizationDetails";
 import { useParams } from "react-router-dom";
 import { Organization, UserRole } from "gql/graphql";
-import { Title, Skeleton } from "@mantine/core";
+import { Title, Skeleton, Card } from "@mantine/core";
 
 import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
 import { ChildComponentProps } from "interfaces/interfaces";
-
 
 export default function OrganizationDetails({
   handleUserPermissions,
@@ -54,38 +53,38 @@ export default function OrganizationDetails({
               {orgDetails?.organization?.User?.some(
                 (user) => user.role?.userType === UserRole.Admin
               ) && (
-                <div className="bg-white rounded-md py-6 px-6 shadow-sm mb-3">
+                <Card className="mb-4">
                   <div className="mb-4">
                     <Title size="sm">Admin Emails</Title>
-                    <ul>
+                    <ul className="w-full list-disc list-inside">
                       {orgDetails?.organization.User?.filter(
                         (user) => user.role?.userType === UserRole.Admin
                       ).map((user, index) => (
-                        <li key={index} className="text-gray-700">
+                        <li key={index} className="text-gray-700 truncate">
                           {user.email}
                         </li>
                       ))}
                     </ul>
                   </div>
-                </div>
+                </Card>
               )}
               {orgDetails?.organization?.User?.some(
                 (user) => user.role?.userType === UserRole.Staff
               ) && (
-                <div className="bg-white rounded-md py-6 px-6 shadow-sm mt-3">
+                <Card radius="md">
                   <div className="mb-4">
                     <Title size="sm">Staff Emails</Title>
-                    <ul>
+                    <ul className="w-full list-disc list-inside">
                       {orgDetails?.organization.User?.filter(
                         (user) => user.role?.userType === UserRole.Staff
                       ).map((user, index) => (
-                        <li key={index} className="text-gray-700">
+                        <li key={index} className="text-gray-700 truncate">
                           {user.email}
                         </li>
                       ))}
                     </ul>
                   </div>
-                </div>
+                </Card>
               )}
             </>
           )}
