@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Group, Popover, Slider, Text } from "@mantine/core";
+import { Checkbox, Group, Slider, Text } from "@mantine/core";
 import { BaseUnit } from "gql/graphql";
 import { Controller, useForm } from "react-hook-form";
-import { BiFilter } from "react-icons/bi";
 import {
   LazyQueryExecFunction,
   OperationVariables,
   useQuery,
 } from "@apollo/client";
+
 import { ItemLists, MaxPriceData } from "interfaces/interfaces";
 import { GetItemMaxPrice } from "query/item/itemMaxPrice";
+import CustomPopover from "CustomPopover.tsx/CustomPopover";
 
 const baseUnitArray = Object.values(BaseUnit);
 
@@ -38,7 +39,6 @@ export default function ProductFilter({
 }) {
   const { handleSubmit, control, reset } = useForm();
   const [opened, setOpened] = useState(false);
-  const [filterValue, setFilterValue] = useState(false);
 
   const handleSliderChange = (value: number) => {
     setSliderValue(value);
@@ -53,7 +53,7 @@ export default function ProductFilter({
     setSelectedUnit(unit);
   };
 
-  const onSubmit = () => {
+  const handleApplyFilter = () => {
     fetchItemList({
       variables: {
         filterArgs: {
@@ -70,7 +70,6 @@ export default function ProductFilter({
       },
     });
     setOpened(false);
-    setFilterValue(true);
   };
 
   const handleClearFilters = () => {
@@ -103,116 +102,77 @@ export default function ProductFilter({
 
   const { data: maxPrice } = useQuery<MaxPriceData>(GetItemMaxPrice);
 
-  const handlePopoverClose = () => {
-    if (!filterValue) {
-      setSelectedUnit([]);
-      setSliderValue(0);
-      setSliderValueMrp(0);
-      reset({
-        endDate: null,
-        qty: null,
-        startDate: null,
-      });
-    }
-  };
-
   return (
-    <Popover
-      width={300}
-      position="bottom-start"
-      withArrow
-      shadow="md"
-      opened={opened}
-      onChange={setOpened}
-      onClose={handlePopoverClose}
+    <CustomPopover
+      popoverOpened={opened}
+      setPopoverOpened={setOpened}
+      handleApplyFilter={handleApplyFilter}
+      handleClearFilters={handleClearFilters}
     >
-      <Popover.Target>
-        <Button
-          leftSection={<BiFilter size={24} />}
-          onClick={() => setOpened((o) => !o)}
-        >
-          Filter
-        </Button>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleApplyFilter)}>
+        <Text size="md" fw={700} className="mb-4">
+          Base Unit
+        </Text>
+        <Controller
+          name="baseUnit"
+          control={control}
+          render={({ field }) => (
+            <Checkbox.Group
+              {...field}
+              value={selectedUnit}
+              onChange={handleUnitChange}
+            >
+              <Group mt="xs">
+                {baseUnitArray.map((item) => (
+                  <div key={item} className="w-full">
+                    <Checkbox value={item} label={item} />
+                  </div>
+                ))}
+              </Group>
+            </Checkbox.Group>
+          )}
+        />
+
+        <div className="mt-4">
           <Text size="md" fw={700} className="mb-4">
-            Base Unit
+            MRP Base Unit Price
           </Text>
           <Controller
-            name="baseUnit"
+            name="mrpBaseUnit"
             control={control}
             render={({ field }) => (
-              <Checkbox.Group
-                {...field}
-                value={selectedUnit}
-                onChange={handleUnitChange}
-              >
-                <Group mt="xs">
-                  {baseUnitArray.map((item) => (
-                    <div key={item} className="w-full">
-                      <Checkbox value={item} label={item} />
-                    </div>
-                  ))}
-                </Group>
-              </Checkbox.Group>
+              <Slider
+                value={sliderValueMrp}
+                min={0}
+                max={maxPrice?.maxPrice.mrpBaseUnit}
+                step={1}
+                onChange={handleMrpSliderChange}
+                onChangeEnd={(val) => field.onChange(val)}
+              />
             )}
           />
+        </div>
 
-          <div className="mt-4">
-            <Text size="md" fw={700} className="mb-4">
-              MRP Base Unit Price
-            </Text>
-            <Controller
-              name="mrpBaseUnit"
-              control={control}
-              render={({ field }) => (
-                <Slider
-                  value={sliderValueMrp}
-                  min={0}
-                  max={maxPrice?.maxPrice.mrpBaseUnit}
-                  step={1}
-                  onChange={handleMrpSliderChange}
-                  onChangeEnd={(val) => field.onChange(val)}
-                />
-              )}
-            />
-          </div>
-
-          <div className="mt-4">
-            <Text size="md" fw={700} className="mb-4">
-              Wholesale Price
-            </Text>
-            <Controller
-              name="wholesalePrice"
-              control={control}
-              render={({ field }) => (
-                <Slider
-                  value={sliderValue}
-                  min={0}
-                  max={maxPrice?.maxPrice.wholesalePrice}
-                  step={1}
-                  onChange={handleSliderChange}
-                  onChangeEnd={(val) => field.onChange(val)}
-                />
-              )}
-            />
-          </div>
-
-          <Button type="submit" fullWidth className="mt-8">
-            Apply filter
-          </Button>
-          <Button
-            type="submit"
-            className="mt-3"
-            fullWidth
-            variant="outline"
-            onClick={handleClearFilters}
-          >
-            Clear
-          </Button>
-        </form>
-      </Popover.Dropdown>
-    </Popover>
+        <div className="mt-4">
+          <Text size="md" fw={700} className="mb-4">
+            Wholesale Price
+          </Text>
+          <Controller
+            name="wholesalePrice"
+            control={control}
+            render={({ field }) => (
+              <Slider
+                value={sliderValue}
+                min={0}
+                max={maxPrice?.maxPrice.wholesalePrice}
+                step={1}
+                onChange={handleSliderChange}
+                onChangeEnd={(val) => field.onChange(val)}
+              />
+            )}
+          />
+        </div>
+      </form>
+    </CustomPopover>
   );
 }
