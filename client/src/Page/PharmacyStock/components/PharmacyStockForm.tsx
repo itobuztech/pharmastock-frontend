@@ -92,7 +92,14 @@ export default function PharmacyStockForm({
   // Pharmacy Stock create query
   const [pharmacyStockCreate, { loading }] = useMutation(PharmacyStockCreate, {
     onError: (err) => {
-      toast.error(err.message);
+      const errorMessages = err.message.split(". ").filter((line) => line);
+      toast.error(
+        <div>
+          {errorMessages.map((msg, index) => (
+            <p key={index}>{msg}</p>
+          ))}
+        </div>
+      );
     },
   });
 
@@ -140,7 +147,7 @@ export default function PharmacyStockForm({
   const handleParentChange = (value: string) => {
     fetchWarehouseStocksByWarehouse({
       variables: {
-        warehouseId: value
+        warehouseId: value,
       },
     });
   };
@@ -242,7 +249,7 @@ export default function PharmacyStockForm({
                 <CiCircleMinus className="w-6 h-6" />
               </Button>
             )}
-            <div className='sm:flex gap-3'>
+            <div className="sm:flex gap-3">
               <div
                 className={`${
                   user.role !== UserRole.Superadmin && "flex-1"
