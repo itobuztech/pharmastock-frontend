@@ -22,9 +22,9 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "./components/StockFilter";
-import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 import { SelectedPharmacyStock } from "./pharmacyStock.interface";
 import PharmacyTableSkeleton from "Page/Pharmacy/components/PharmacyTableSkeleton";
+import PharmacyStockSoldForm from "./components/PharmacyStockSoldForm";
 
 export default function PharmacyStock({
   handleUserPermissions,
@@ -130,11 +130,7 @@ export default function PharmacyStock({
           USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
           USER_PERMISSION_CAPABILITIES.CREATE
         ) && (
-          <Button
-            disabled={!selectedPharmacyStock.length}
-            ml="auto"
-            onClick={() => StockSoldModalOpen()}
-          >
+          <Button ml="auto" onClick={() => StockSoldModalOpen()}>
             Stock Clearance
           </Button>
         )}
@@ -179,15 +175,18 @@ export default function PharmacyStock({
         />
       </Modal>
 
-      {/* ==== Create PharmacyStock Sold Out Modal ==== */}
       <PharmacyStockSoldForm
-        selectedItems={selectedPharmacyStock}
+        pharmacyName={
+          pharmacyStocksList?.pharmacyStocks[0].pharmacy.name as string
+        }
+        pharmacyId={pharmacyStocksList?.pharmacyStocks[0].pharmacy.id as string}
         StockSoldModalOpened={StockSoldModalOpened}
         StockSoldModalClose={StockSoldModalClose}
         refetchItem={refetch}
         setNewPharmacyStockList={setNewPharmacyStockList}
-        setSelectedPharmacyStock={setSelectedPharmacyStock}
       />
+
+      {/* ==== Create PharmacyStock Sold Out Modal ==== */}
     </section>
   );
 }

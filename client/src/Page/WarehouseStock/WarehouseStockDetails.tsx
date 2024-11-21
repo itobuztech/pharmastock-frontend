@@ -1,4 +1,3 @@
-import React from "react";
 import PageHeader from "Components/PageHeader";
 import WarehouseStockForm from "Page/Warehouse/components/WarehouseStockForm";
 import { useQuery } from "@apollo/client";
