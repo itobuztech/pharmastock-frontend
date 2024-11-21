@@ -272,6 +272,7 @@ export interface Item {
   wholesalePrice: number;
   Category: CategoryItem[];
   name: string;
+  currency: string;
 }
 
 export interface GenerateSkuData {
@@ -301,6 +302,7 @@ export interface WarehouseStock {
   totalWholesalePrice?: number | null;
   updatedAt: string;
   warehouse: WarehouseItem;
+  currency: string;
 }
 
 export interface Sku {
