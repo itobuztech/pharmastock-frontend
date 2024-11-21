@@ -211,30 +211,6 @@ export interface Pharmacy {
   updatedAt: Date;
 }
 
-// ---------------------- For Item category ------------------------//
-// export interface CreateItemCategoryInput {
-//   name: string;
-//   parentCategoryId: string;
-// }
-// export interface CreateItemCategoryResponse {
-//   id: string;
-//   name: string;
-// }
-// export interface ItemCategoryCreationError {
-//   em: string;
-// }
-
-// export interface ItemCategoryCreationSucc {
-//   sm: string;
-// }
-
-// export interface ItemCategory {
-//   id: string;
-//   name: string;
-//   parentCategoryId: string | null;
-//   createdAt: string;
-// }
-
 export interface PaginationArgs {
   take: number;
   skip: number;
@@ -256,11 +232,6 @@ export interface CategoryItem {
   updatedAt: string;
   Item?: Item[];
 }
-
-// export interface Item {
-//   id: string;
-// }
-
 export interface CreateWarehouses {
   warehouses: Warehouses;
 }
@@ -301,6 +272,7 @@ export interface Item {
   wholesalePrice: number;
   Category: CategoryItem[];
   name: string;
+  currency: string;
 }
 
 export interface GenerateSkuData {
@@ -330,6 +302,7 @@ export interface WarehouseStock {
   totalWholesalePrice?: number | null;
   updatedAt: string;
   warehouse: WarehouseItem;
+  currency: string;
 }
 
 export interface Sku {

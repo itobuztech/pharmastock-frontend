@@ -112,5 +112,5 @@ export const dashboardRoutes: DashBoardRoutes = {
   pharmacyStockDetails: {
     path: `${dashboardPath}/stocksPharmacies/:id`,
     fullPath: `${dashboardPath}/stocksPharmacies/:id`,
-  },
+  }
 };
