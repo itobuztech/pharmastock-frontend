@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Checkbox, Flex, Pagination, Space, Table } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { Flex, Pagination, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
 import ActionPopover from "Components/ActionPopover";
@@ -35,71 +35,18 @@ export default function PharmacyStockTable({
   pharmaciesStockList,
   totalCount,
   handleUserPermissions,
-  selectedPharmacyStock,
-  setSelectedPharmacyStock,
 }: Readonly<PharmacyStockTableProps>) {
   const navigate = useNavigate();
-  const permission = useAppSelector((state) => state.user.permission);
   const user = useAppSelector((state) => state.user);
-  const params = useParams();
-
-  const handlePharmacyStockClearance = (
-    pharmacyId: string,
-    itemId: string,
-    pharmacyName: string,
-    itemName: string,
-    checked: boolean
-  ) => {
-    setSelectedPharmacyStock((prevSelectedItems) => {
-      if (checked) {
-        return [
-          ...prevSelectedItems,
-          { pharmacyId, itemId, pharmacyName, itemName },
-        ];
-      } else {
-        return prevSelectedItems.filter(
-          (item) => !(item.pharmacyId === pharmacyId && item.itemId === itemId)
-        );
-      }
-    });
-  };
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.pharmaciesStock.path}/${id}`);
   }
 
   const rows = pharmaciesStockList?.pharmacyStocks?.map((item, i) => {
-    const isChecked = selectedPharmacyStock?.some(
-      (selectedItem) =>
-        selectedItem.pharmacyId === item.pharmacy.id &&
-        selectedItem.itemId === item.item.id
-    );
-    const isQtyAbsent = !item.finalQty || item.finalQty <= 0;
 
     return (
       <Table.Tr key={item.id}>
-        {handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) &&
-          !params.id && (
-            <Table.Td>
-              <Checkbox
-                checked={isChecked}
-                disabled={isQtyAbsent}
-                onChange={(e) => {
-                  handlePharmacyStockClearance(
-                    item.pharmacy.id,
-                    item.item.id,
-                    item?.pharmacy?.name,
-                    item?.item?.name,
-                    e.target.checked
-                  );
-                }}
-              />
-            </Table.Td>
-          )}
         <Table.Td>{i + 1}</Table.Td>
         <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
@@ -126,11 +73,7 @@ export default function PharmacyStockTable({
       >
         <Table.Thead>
           <Table.Tr>
-            {handleUserPermissions(
-              permission,
-              USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
-              USER_PERMISSION_CAPABILITIES.CREATE
-            ) && <Table.Th></Table.Th>}
+          
             <Table.Th>Sl No.</Table.Th>
             <Table.Th>Date</Table.Th>
             <Table.Th>Product</Table.Th>
