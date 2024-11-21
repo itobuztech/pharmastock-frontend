@@ -153,7 +153,7 @@ export default function ProductList({
        <ProductTableSkeleton numOfRows={6} />
       )}
 
-      {loading && itemList?.items.length === 0 && <EmptyList />}
+      {!loading && itemList?.items.length === 0 && <EmptyList />}
 
       {!loading && Number(itemList?.items.length) > 0 && (
         <ProductTable
