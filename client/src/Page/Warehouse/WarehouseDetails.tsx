@@ -141,7 +141,6 @@ export default function WarehouseDetails({
             totalCount={totalCount}
             warehouseStocksList={warehouseStocksList}
             handleUserPermissions={handleUserPermissions}
-            // handleDelete={handleDelete}
           />
         )}
       </div>

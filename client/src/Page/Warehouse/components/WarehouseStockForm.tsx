@@ -248,7 +248,7 @@ export default function WarehouseStockForm({
       {fields.map((item, index) => (
         <>
           <div key={item.id} className=" relative">
-            {!params.id && (
+            {!params.id && fields.length > 1 && (
               <Button
                 onClick={() => remove(index)}
                 variant="transparent"

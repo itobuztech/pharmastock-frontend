@@ -49,9 +49,9 @@ export default function ProductTable({
       <Table.Td>{item.name}</Table.Td>
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
-      <Table.Td>{item.instructions}</Table.Td>
-      <Table.Td>₹ {item.wholesalePrice}</Table.Td>
-      <Table.Td>₹ {item.mrpBaseUnit}</Table.Td>
+      <Table.Td>{item.instructions === 'null' ? 'N/A' : item.instructions || 'N/A'}</Table.Td>
+      <Table.Td>{item.currency} {item.wholesalePrice}</Table.Td>
+      <Table.Td>{item.currency} {item.mrpBaseUnit}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}

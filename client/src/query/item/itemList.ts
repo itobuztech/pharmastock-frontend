@@ -27,6 +27,7 @@ export const GetItemLists = gql`
           id
           name
         }
+        currency
       }
       total
     }

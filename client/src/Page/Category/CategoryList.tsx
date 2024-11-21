@@ -144,7 +144,7 @@ export default function CategoryList({
 
       {/* ==== Item Category Empty List and List ==== */}
 
-      {loading && itemCategoryList?.itemCategories.length === 0 && (
+      {!loading && itemCategoryList?.itemCategories.length === 0 && (
         <EmptyList />
       )}
 
