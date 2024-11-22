@@ -15,10 +15,11 @@ import { toast } from "react-toastify";
 
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetClearancePharmacyStock } from "query/pharmacyStock/clearancePharmacyStock";
-import { CreatePharmacyStockInput } from "gql/graphql";
+import { CreatePharmacyStockInput, UserRole } from "gql/graphql";
 import { ClearancePharmacyStockInput } from "../pharmacyStock.interface";
 import { PharmacyStocksProduct } from "query/pharmacyStock/pharmacyStocksProduct";
 import { CiCircleMinus } from "react-icons/ci";
+import { useAppSelector } from "Lib/Store/hooks";
 interface PharmacyStockProduct {
   id: string;
   name: string;
@@ -56,6 +57,8 @@ export default function PharmacyStockSoldForm({
   pharmacyName: string;
   pharmacyId: string;
 }) {
+  const user = useAppSelector((state) => state.user);
+  const isStaff = user.role === UserRole.Staff;
   const [pharmacyProducts, setPharmacyProducts] =
     useState<PaginatedPharmacyStockProducts>();
 
@@ -96,9 +99,12 @@ export default function PharmacyStockSoldForm({
   );
 
   useEffect(() => {
-    fetchPharmacyStocksProduct();
+    if (isStaff) {
+      fetchPharmacyStocksProduct();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pharmacyId]);
+  }, [isStaff]);
 
   const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
     clearPharmacyStock({
