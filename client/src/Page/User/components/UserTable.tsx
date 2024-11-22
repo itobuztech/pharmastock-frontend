@@ -46,11 +46,11 @@ export default function UserTable({
       <Table.Td>
         {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
       </Table.Td>
-      <Table.Td>{item.username ?? 'N/A'}</Table.Td>
-      <Table.Td>{item.name ?? 'N/A'}</Table.Td>
-      <Table.Td>{item.email ?? 'N/A'}</Table.Td>
-      <Table.Td>{item.organization?.name ?? 'N/A'}</Table.Td>
-      <Table.Td>{item.role.userType ?? 'N/A'}</Table.Td>
+      <Table.Td>{item.username ?? "N/A"}</Table.Td>
+      <Table.Td>{item.name ?? "N/A"}</Table.Td>
+      <Table.Td>{item.email ?? "N/A"}</Table.Td>
+      <Table.Td>{item.organization?.name ?? "N/A"}</Table.Td>
+      <Table.Td>{item.role.userType ?? "N/A"}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -64,46 +64,49 @@ export default function UserTable({
   ));
 
   return (
-    <div className=" bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[600px] md:w-[800px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Username</Table.Th>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Email</Table.Th>
-            <Table.Th>Organization Name</Table.Th>
-            <Table.Th>Role</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+    <div>
+      <div className=" bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[600px] md:w-[800px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Username</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Email</Table.Th>
+              <Table.Th>Organization Name</Table.Th>
+              <Table.Th>Role</Table.Th>
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
 
-      <Space h="md" />
+        <Space h="md" />
 
+     
+      </div>
       <Flex
-        mih={50}
-        gap="md"
-        justify="center"
-        align="center"
-        direction="row"
-        wrap="wrap"
-      >
-        {
-          <Pagination
-            total={totalCount}
-            value={activePage}
-            onChange={setActivePage}
-            mt="sm"
-          />
-        }
-      </Flex>
-      <Space h="md" />
+          mih={50}
+          gap="md"
+          justify="center"
+          align="center"
+          direction="row"
+          wrap="wrap"
+        >
+          {
+            <Pagination
+              total={totalCount}
+              value={activePage}
+              onChange={setActivePage}
+              mt="lg"
+            />
+          }
+        </Flex>
+        <Space h="md" />
     </div>
   );
 }

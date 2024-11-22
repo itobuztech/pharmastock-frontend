@@ -67,29 +67,31 @@ export default function StocksHistoryTable({
     });
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[800px] md:w-[1000px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Lot Name</Table.Th>
-            <Table.Th>Product</Table.Th>
-            <Table.Th>Warehouse</Table.Th>
-            <Table.Th>Organisation</Table.Th>
-            <Table.Th>Transaction Type</Table.Th>
-            <Table.Th>Total Lot Item Qty</Table.Th>
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[800px] md:w-[1000px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Date</Table.Th>
+              <Table.Th>Lot Name</Table.Th>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Warehouse</Table.Th>
+              <Table.Th>Organisation</Table.Th>
+              <Table.Th>Transaction Type</Table.Th>
+              <Table.Th>Total Lot Item Qty</Table.Th>
 
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -102,7 +104,7 @@ export default function StocksHistoryTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="sm"
+          mt="lg"
         />
       </Flex>
       <Space h="md" />

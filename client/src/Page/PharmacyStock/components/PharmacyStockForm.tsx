@@ -239,7 +239,7 @@ export default function PharmacyStockForm({
       {fields.map((field, index) => (
         <div key={field.id}>
           <div className={`${!id ? "mt-5" : ""} mb-5 relative`}>
-            {!id && (
+            {!id && fields.length > 1 && (
               <Button
                 onClick={() => remove(index)}
                 variant="transparent"

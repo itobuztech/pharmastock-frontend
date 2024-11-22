@@ -109,7 +109,7 @@ export default function WarehouseDetails({
         buttonText="Add Warehouse Stock"
       />
 
-      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 bg-white rounded-md py-6 px-6">
         <WarehouseForm
           editForm={editForm}
           setEditForm={setEditForm}

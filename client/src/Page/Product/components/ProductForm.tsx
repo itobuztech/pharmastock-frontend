@@ -33,8 +33,7 @@ export default function ProductForm({
   itemId,
   itemDetail,
   setNewItemList,
-  refetchItem,
-  handleUserPermissions,
+  refetchItem
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -148,8 +147,8 @@ export default function ProductForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-wrap gap-4 justify-between mb-4">
-        <div className="flex-1">
+      <div className="sm:flex flex-wrap gap-4 justify-between mb-4">
+        <div className="flex-1 mb-4 sm:mb-0">
           <TextInput
             label="Name"
             placeholder="Name"
@@ -182,8 +181,8 @@ export default function ProductForm({
           </Text>
         </div>
       </div>
-      <div className="flex flex-wrap gap-4 justify-between mb-4">
-        <div className="flex-1">
+      <div className="sm:flex flex-wrap gap-4 justify-between mb-4">
+        <div className="flex-1 mb-4 sm:mb-0">
           <TextInput
             label="HSN Code"
             placeholder="HSN Code"
@@ -219,8 +218,8 @@ export default function ProductForm({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 justify-between mb-4">
-        <div className="flex-1">
+      <div className="sm:flex flex-wrap gap-4 justify-between mb-4">
+        <div className="flex-1 mb-4">
           <TextInput
             label="Wholesale Price"
             placeholder="Wholesale Price"

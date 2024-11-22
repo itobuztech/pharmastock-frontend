@@ -44,8 +44,12 @@ export default function WarehouseStockTable({
       <Table.Td>{item.item.name}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
-      <Table.Td>{item.currency} {item.totalWholesalePrice}</Table.Td>
-      <Table.Td>{item.currency} {item.totalMrpBaseUnit}</Table.Td>
+      <Table.Td>
+        {item.currency} {item.totalWholesalePrice}
+      </Table.Td>
+      <Table.Td>
+        {item.currency} {item.totalMrpBaseUnit}
+      </Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
@@ -58,28 +62,30 @@ export default function WarehouseStockTable({
   ));
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[700px] md:w-[1000px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Product</Table.Th>
-            <Table.Th>Warehouse</Table.Th>
-            <Table.Th>Qty</Table.Th>
-            <Table.Th>Total Wholesale Price</Table.Th>
-            <Table.Th>Total MRP BaseUnit</Table.Th>
-            <Table.Th>SKU</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[700px] md:w-[1000px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Date</Table.Th>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Warehouse</Table.Th>
+              <Table.Th>Qty</Table.Th>
+              <Table.Th>Total Wholesale Price</Table.Th>
+              <Table.Th>Total MRP BaseUnit</Table.Th>
+              <Table.Th>SKU</Table.Th>
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -92,7 +98,7 @@ export default function WarehouseStockTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="sm"
+          mt="lg"
         />
       </Flex>
       <Space h="md" />

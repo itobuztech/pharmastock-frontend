@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
+
 import routes from "Lib/Routes/Routes";
 import MenuLink from "./MenuLink";
-import { Link } from "react-router-dom";
 import { useAppSelector } from "Lib/Store/hooks";
 import { USER_PERMISSION_FIELDS } from "enums/enums";
 import { UserRole } from "gql/graphql";
@@ -17,20 +18,17 @@ export default function SidebarComponent() {
   const user = useAppSelector((state) => state.user);
 
   return (
-    <div
-      className="flex flex-col sm:flex-row sm:justify-around"
-      data-test-id="dashboard-sidebar"
-    >
-      <div className="w-72 h-screen">
+    <div className="flex flex-col" data-test-id="dashboard-sidebar">
+      <div className="lg:w-72">
         <Link
-          className="flex items-center justify-start mx-6 mt-10 no-underline"
+          className="flex items-center justify-start mx-6 mt-5 lg:mt-10 no-underline"
           to={routes.dashboard.profile.path}
         >
           <span className="text-black  ml-4 text-2xl font-bold">
             Pharma Stock
           </span>
         </Link>
-        <nav className="mt-10 px-6 ">
+        <nav className="mt-7 lg:mt-10 px-6 ">
           <MenuLink
             text="Profile"
             activeMenuPaths={routes.dashboard.profile.path}
@@ -58,25 +56,25 @@ export default function SidebarComponent() {
             />
           )}
 
-          {(handleSliderOptionsVisible(
-            USER_PERMISSION_FIELDS.ITEM_MANAGEMENT
-          ) && user.role !== UserRole.Staff) && (
-            <MenuLink
-              text="Products"
-              activeMenuPaths={routes.dashboard.productList.path}
-              link={routes.dashboard.productList.path}
-            />
-          )}
+          {handleSliderOptionsVisible(USER_PERMISSION_FIELDS.ITEM_MANAGEMENT) &&
+            user.role !== UserRole.Staff && (
+              <MenuLink
+                text="Products"
+                activeMenuPaths={routes.dashboard.productList.path}
+                link={routes.dashboard.productList.path}
+              />
+            )}
 
-          {(handleSliderOptionsVisible(
+          {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT
-          ) && user.role !== UserRole.Staff) && (
-            <MenuLink
-              text="Warehouses"
-              activeMenuPaths={routes.dashboard.warehouseList.path}
-              link={routes.dashboard.warehouseList.path}
-            />
-          )}
+          ) &&
+            user.role !== UserRole.Staff && (
+              <MenuLink
+                text="Warehouses"
+                activeMenuPaths={routes.dashboard.warehouseList.path}
+                link={routes.dashboard.warehouseList.path}
+              />
+            )}
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
@@ -90,13 +88,14 @@ export default function SidebarComponent() {
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT
-          ) && user.role !== UserRole.Staff && (
-            <MenuLink
-              text="Pharmacies"
-              activeMenuPaths={routes.dashboard.pharmacies.path}
-              link={routes.dashboard.pharmacies.path}
-            />
-          )}
+          ) &&
+            user.role !== UserRole.Staff && (
+              <MenuLink
+                text="Pharmacies"
+                activeMenuPaths={routes.dashboard.pharmacies.path}
+                link={routes.dashboard.pharmacies.path}
+              />
+            )}
 
           {(handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_ADMIN
@@ -110,11 +109,11 @@ export default function SidebarComponent() {
               link={routes.dashboard.pharmaciesStock.path}
             />
           )}
-           <MenuLink
-              text="Stocks History"
-              activeMenuPaths={routes.dashboard.stocksHistory.path}
-              link={routes.dashboard.stocksHistory.path}
-            />
+          <MenuLink
+            text="Stocks History"
+            activeMenuPaths={routes.dashboard.stocksHistory.path}
+            link={routes.dashboard.stocksHistory.path}
+          />
 
           {handleSliderOptionsVisible(
             USER_PERMISSION_FIELDS.USER_MANAGEMENT

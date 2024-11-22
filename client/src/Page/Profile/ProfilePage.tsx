@@ -75,7 +75,7 @@ export default function ProfilePage() {
 
       <h1 className="text-black">{admin?.account.role}</h1>
 
-      <div className="w-full lg:w-4/6 xl:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 bg-white rounded-md py-6 px-6">
         <h2 className="m-0 mb-4">Account</h2>
         <div className="mb-4">
           <TextInput
