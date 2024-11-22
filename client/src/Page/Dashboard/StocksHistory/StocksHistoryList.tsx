@@ -8,8 +8,9 @@ import Search from "Components/Search";
 import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 import EmptyList from "Components/EmptyList";
 import StocksHistoryTable from "./Components/StocksHistoryTable";
-import StocksHistorytFilter, { FilterData } from "./Components/StocksHistoryFilter";
+import { FilterData } from "./Components/StocksHistoryFilter";
 import { ChildComponentProps } from "interfaces/interfaces";
+import StocksHistoryFilter from "./Components/StocksHistoryFilter";
 
 export default function StocksHistoryList({
   handleUserPermissions,
@@ -45,7 +46,7 @@ export default function StocksHistoryList({
         <Space w="md" />
 
         {/* ==== Filter ==== */}
-        <StocksHistorytFilter
+        <StocksHistoryFilter
           setFilterData={setFilters}
           setSearchInput={setSearchKeyword}
         />

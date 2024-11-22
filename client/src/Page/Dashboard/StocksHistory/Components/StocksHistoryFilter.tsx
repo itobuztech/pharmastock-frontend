@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Popover, Select, Text, ActionIcon } from "@mantine/core";
-import { BiFilter } from "react-icons/bi";
-import { IoClose } from "react-icons/io5";
+import { Select, Text } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { DatePickerInput } from "@mantine/dates";
 
 import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
-import { StockMovementsType } from "gql/graphql";
+import { StockMovementsType, UserRole } from "gql/graphql";
+import { useAppSelector } from "Lib/Store/hooks";
+import CustomPopover from "CustomPopover.tsx/CustomPopover";
 
 export interface FilterData {
   warehouseId: string | null;
@@ -17,7 +17,7 @@ export interface FilterData {
   endDate: Date | null;
 }
 
-export default function StocksHistorytFilter({
+export default function StocksHistoryFilter({
   setSearchInput,
   setFilterData,
 }: {
@@ -32,8 +32,9 @@ export default function StocksHistorytFilter({
     null,
   ]);
   const [warehouseId, setWarehouseId] = useState("");
+  const user = useAppSelector((state) => state.user);
 
-  const onSubmit = () => {
+  const handleApplyFilter = () => {
     setFilterData({
       warehouseId: warehouseId || null,
       transactionType: transactionType || null,
@@ -77,58 +78,39 @@ export default function StocksHistorytFilter({
   }));
 
   return (
-    <Popover
-      width={300}
-      position="bottom-start"
-      withArrow
-      shadow="md"
-      opened={popOverOpened}
+    <CustomPopover
+      popoverOpened={popOverOpened}
+      setPopoverOpened={setPopOverOpened}
+      handleApplyFilter={handleApplyFilter}
+      handleClearFilters={handleClearFilters}
     >
-      <Popover.Target>
-        <Button
-          leftSection={<BiFilter size={24} />}
-          onClick={() => setPopOverOpened((o) => !o)}
-        >
-          Filter
-        </Button>
-      </Popover.Target>
-      <Popover.Dropdown className="popOver">
-        <div className="flex justify-end">
-          <ActionIcon
-            variant="transparent"
-            onClick={() => setPopOverOpened(false)}
-            aria-label="Close popover"
-          >
-            <IoClose size={23} />
-          </ActionIcon>
-        </div>
+      <Text size="md" fw={700}>
+        Select Date
+      </Text>
 
-        <Text size="md" fw={700}>
-          Select Date
-        </Text>
+      <div className="flex-1 datePicker mt-2">
+        <DatePickerInput
+          name="date"
+          type="range"
+          placeholder="Pick dates range"
+          value={dateRange}
+          onChange={setDateRange}
+          popoverProps={{ withinPortal: false }}
+        />
+      </div>
 
-        <div className="flex-1 datePicker mt-2">
-          <DatePickerInput
-            name="date"
-            type="range"
-            placeholder="Pick dates range"
-            value={dateRange}
-            onChange={setDateRange}
-            popoverProps={{ withinPortal: false }}
-          />
-        </div>
+      <div className="mt-4">
+        <Select
+          label="Select Warehouse"
+          placeholder="Select Warehouse"
+          onChange={(value) => setWarehouseId(String(value))}
+          value={warehouseId}
+          data={selectWarehouseItems}
+          maxDropdownHeight={300}
+        />
+      </div>
 
-        <div className="mt-4">
-          <Select
-            label="Select Warehouse"
-            placeholder="Select Warehouse"
-            onChange={(value) => setWarehouseId(String(value))}
-            value={warehouseId}
-            data={selectWarehouseItems}
-            maxDropdownHeight={300}
-          />
-        </div>
-
+      {user.role !== UserRole.Staff && (
         <div className="mt-4">
           <Select
             label="Transaction Type"
@@ -145,20 +127,7 @@ export default function StocksHistorytFilter({
             maxDropdownHeight={150}
           />
         </div>
-
-        <Button type="submit" fullWidth className="mt-8" onClick={onSubmit}>
-          Apply filter
-        </Button>
-        <Button
-          type="button"
-          className="mt-3"
-          fullWidth
-          variant="outline"
-          onClick={handleClearFilters}
-        >
-          Clear
-        </Button>
-      </Popover.Dropdown>
-    </Popover>
+      )}
+    </CustomPopover>
   );
 }
