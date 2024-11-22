@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { Button, Flex, Modal, Space } from "@mantine/core";
+import { Button, Modal } from "@mantine/core";
 
 import PharmacyStockTable from "./components/PharmacyStockTable";
 import PageHeader from "Components/PageHeader";
@@ -110,11 +110,13 @@ export default function PharmacyStock({
         onClick={open}
       />
 
-      <Flex wrap="wrap">
+      <div className="sm:flex">
         {/* ==== Search ==== */}
-        <Search onChange={(e: string) => setSearchKeyword(e)} />
-        <Space w="md" />
-
+        <div className="flex w-full gap-3">
+        <Search
+          className="mb-0 pb-4 sm:pb-0 sm:mb-8"
+          onChange={(e: string) => setSearchKeyword(e)}
+        />
         {/* ==== Filter ==== */}
         <StockFilter
           sliderValue={sliderValue}
@@ -124,17 +126,20 @@ export default function PharmacyStock({
           fetchStockList={fetchPharmaciesStockList}
           activePage={activePage}
         />
-
-        {handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) && (
-          <Button ml="auto" onClick={() => StockSoldModalOpen()}>
-            Stock Clearance
-          </Button>
-        )}
-      </Flex>
+        </div>
+    
+        <div className="sm:flex flex-wrap pb-4 sm:pb-0 justify-end">
+          {handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+            USER_PERMISSION_CAPABILITIES.CREATE
+          ) && (
+            <Button onClick={() => StockSoldModalOpen()}>
+              Stock Clearance
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* ==== Loading State ==== */}
       {loading && <PharmacyTableSkeleton numOfRows={6} />}

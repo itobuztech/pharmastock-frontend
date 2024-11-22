@@ -44,7 +44,6 @@ export default function PharmacyStockTable({
   }
 
   const rows = pharmaciesStockList?.pharmacyStocks?.map((item, i) => {
-
     return (
       <Table.Tr key={item.id}>
         <Table.Td>{i + 1}</Table.Td>
@@ -52,41 +51,43 @@ export default function PharmacyStockTable({
         <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
-        {user.role !== UserRole.Staff &&
-        <Table.Td className="text-right">
-          <ActionPopover
-            handleView={() => screenSwitch(item.id)}
-            showDeleteModal={false}
-            handleUserPermissions={handleUserPermissions}
-          />
-        </Table.Td>}
+        {user.role !== UserRole.Staff && (
+          <Table.Td className="text-right">
+            <ActionPopover
+              handleView={() => screenSwitch(item.id)}
+              showDeleteModal={false}
+              handleUserPermissions={handleUserPermissions}
+            />
+          </Table.Td>
+        )}
       </Table.Tr>
     );
   });
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[800px] md:w-[1000px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-          
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Date</Table.Th>
-            <Table.Th>Product</Table.Th>
-            <Table.Th>Pharmacy</Table.Th>
-            <Table.Th>Qty</Table.Th>
-            {user.role !== UserRole.Staff && (
-              <Table.Th className="text-right pr-8">Action</Table.Th>
-            )}
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[800px] md:w-[1000px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Date</Table.Th>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Pharmacy</Table.Th>
+              <Table.Th>Qty</Table.Th>
+              {user.role !== UserRole.Staff && (
+                <Table.Th className="text-right pr-8">Action</Table.Th>
+              )}
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -99,7 +100,7 @@ export default function PharmacyStockTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="sm"
+          mt="lg"
         />
       </Flex>
       <Space h="md" />
