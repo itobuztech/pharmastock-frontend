@@ -92,7 +92,14 @@ export default function PharmacyStockForm({
   // Pharmacy Stock create query
   const [pharmacyStockCreate, { loading }] = useMutation(PharmacyStockCreate, {
     onError: (err) => {
-      toast.error(err.message);
+      const errorMessages = err.message.split(". ").filter((line) => line);
+      toast.error(
+        <div>
+          {errorMessages.map((msg, index) => (
+            <p key={index}>{msg}</p>
+          ))}
+        </div>
+      );
     },
   });
 
