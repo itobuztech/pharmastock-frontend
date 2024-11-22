@@ -140,7 +140,7 @@ export default function PharmacyStockForm({
   const handleParentChange = (value: string) => {
     fetchWarehouseStocksByWarehouse({
       variables: {
-        warehouseId: value
+        warehouseId: value,
       },
     });
   };
@@ -232,7 +232,7 @@ export default function PharmacyStockForm({
       {fields.map((field, index) => (
         <div key={field.id}>
           <div className={`${!id ? "mt-5" : ""} mb-5 relative`}>
-            {!id && (
+            {!id && fields.length > 1 && (
               <Button
                 onClick={() => remove(index)}
                 variant="transparent"
@@ -242,7 +242,7 @@ export default function PharmacyStockForm({
                 <CiCircleMinus className="w-6 h-6" />
               </Button>
             )}
-            <div className='sm:flex gap-3'>
+            <div className="sm:flex gap-3">
               <div
                 className={`${
                   user.role !== UserRole.Superadmin && "flex-1"

@@ -37,6 +37,7 @@ export const GetWarehouseStocks = gql`
             name
           }
         }
+        currency
       }
     }
   }

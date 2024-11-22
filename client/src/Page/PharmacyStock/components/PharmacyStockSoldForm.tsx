@@ -1,25 +1,38 @@
-import { useEffect } from "react";
-import { Modal, NumberInput, TextInput, Divider } from "@mantine/core";
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  NumberInput,
+  TextInput,
+  Divider,
+  Select,
+  Button,
+} from "@mantine/core";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { GetClearancePharmacyStock } from "query/pharmacyStock/clearancePharmacyStock";
 import { CreatePharmacyStockInput } from "gql/graphql";
-import {
-  ClearancePharmacyStockInput,
-  SelectedPharmacyStock,
-} from "../pharmacyStock.interface";
+import { ClearancePharmacyStockInput } from "../pharmacyStock.interface";
+import { PharmacyStocksProduct } from "query/pharmacyStock/pharmacyStocksProduct";
+import { CiCircleMinus } from "react-icons/ci";
+interface PharmacyStockProduct {
+  id: string;
+  name: string;
+}
+interface PaginatedPharmacyStockProducts {
+  items: PharmacyStockProduct[];
+  total: number;
+}
 
 const pharmacyStockClearanceSchema = yup
   .object({
     items: yup.array().of(
       yup.object({
-        pharmacyId: yup.string(),
-        itemId: yup.string(),
+        itemId: yup.string().required(),
         qty: yup.number().required().min(1),
       })
     ),
@@ -29,22 +42,50 @@ const pharmacyStockClearanceSchema = yup
 export default function PharmacyStockSoldForm({
   StockSoldModalOpened,
   StockSoldModalClose,
-  selectedItems,
   refetchItem,
   setNewPharmacyStockList,
-  setSelectedPharmacyStock,
+  pharmacyName,
+  pharmacyId,
 }: {
   StockSoldModalOpened: boolean;
   StockSoldModalClose: () => void;
-  selectedItems: SelectedPharmacyStock[];
   refetchItem: () => void;
   setNewPharmacyStockList?: React.Dispatch<
     React.SetStateAction<CreatePharmacyStockInput | undefined>
   >;
-  setSelectedPharmacyStock?: React.Dispatch<
-    React.SetStateAction<SelectedPharmacyStock[]>
-  >;
+  pharmacyName: string;
+  pharmacyId: string;
 }) {
+  const [pharmacyProducts, setPharmacyProducts] =
+    useState<PaginatedPharmacyStockProducts>();
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(pharmacyStockClearanceSchema),
+    defaultValues: {
+      items: [{ itemId: "", qty: 0 }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  const [fetchPharmacyStocksProduct] = useLazyQuery(PharmacyStocksProduct, {
+    onCompleted: (d) => {
+      setPharmacyProducts(d.pharmacyStocksItems);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
   const [clearPharmacyStock, { loading }] = useMutation(
     GetClearancePharmacyStock,
     {
@@ -54,112 +95,136 @@ export default function PharmacyStockSoldForm({
     }
   );
 
-  const {
-    setValue,
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(pharmacyStockClearanceSchema),
-    defaultValues: {
-      items: selectedItems?.map((item) => ({
-        pharmacyId: item.pharmacyId,
-        itemId: item.itemId,
-        qty: 0,
-      })),
-    },
-  });
-
-  const { fields } = useFieldArray({
-    control,
-    name: "items",
-  });
+  useEffect(() => {
+    fetchPharmacyStocksProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pharmacyId]);
 
   const onSubmit = (data: { items?: ClearancePharmacyStockInput[] }) => {
-    console.log("data", data.items);
     clearPharmacyStock({
       variables: {
         clearancePharmacyStockInput: data.items,
+        pharmacyId: pharmacyId,
       },
       onCompleted: (d) => {
         setNewPharmacyStockList && setNewPharmacyStockList(d);
-        setSelectedPharmacyStock && setSelectedPharmacyStock([]);
         StockSoldModalClose();
         toast.success("Pharmacy Stock Cleared Successfully");
-        reset();
+        reset({ items: [{ itemId: "", qty: 0 }] });
         refetchItem();
       },
     });
   };
 
-  useEffect(() => {
-    if (selectedItems) {
-      const formattedSelectedItems = selectedItems?.map((item) => ({
-        pharmacyId: item.pharmacyId,
-        itemId: item.itemId,
-        qty: 0,
-      }));
-      setValue("items", formattedSelectedItems);
-    }
+  const pharmacyProductsList = pharmacyProducts?.items?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedItems.length]);
+  const availableProducts = pharmacyProductsList?.filter(
+    (product) => !fields.some((field) => field.itemId === product.value)
+  );
 
   return (
     <Modal
       opened={StockSoldModalOpened}
-      onClose={StockSoldModalClose}
+      onClose={() => {
+        StockSoldModalClose();
+        reset({ items: [{ itemId: "", qty: 0 }] });
+      }}
       title="Pharmacy Stock Sold Out"
       centered
-      zIndex={600}
-      overlayProps={{
-        zIndex: 500,
-      }}
       size={"lg"}
+      closeOnClickOutside={false}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4">
+          <TextInput
+            label="Pharmacy"
+            placeholder="Pharmacy"
+            value={pharmacyName}
+            disabled
+          />
+        </div>
+
+        {fields.length > 0 && <Divider my="lg" />}
         {fields.map((field, index) => (
           <div key={field.id}>
-            <div className="flex gap-3">
-              <div className="mb-4 w-1/2">
-                <TextInput
-                  label="Item"
-                  defaultValue={selectedItems[index]?.itemName}
-                  disabled
-                />
-              </div>
+            <div className="mb-5 relative">
+              <Button
+                onClick={() => remove(index)}
+                variant="transparent"
+                color="red"
+                className="absolute -top-4 -right-4 z-10"
+              >
+                <CiCircleMinus className="w-6 h-6" />
+              </Button>
+              <div className="sm:flex gap-3">
+                <div className="flex-1 ">
+                  <Controller
+                    name={`items.${index}.itemId`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        data={availableProducts}
+                        label="Select Product"
+                        placeholder="Select Product"
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          setValue(`items.${index}.itemId`, value as string);
+                        }}
+                        error={
+                          errors?.items?.[index]?.itemId &&
+                          "This field is required"
+                        }
+                        searchable
+                        nothingFoundMessage="Nothing found"
+                      />
+                    )}
+                  />
+                </div>
 
-              <div className="mb-4 w-1/2">
-                <Controller
-                  name={`items.${index}.qty`}
-                  control={control}
-                  render={({ field }) => (
-                    <NumberInput
-                      label="Add Quantity"
-                      placeholder="Qty"
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                      }}
-                      min={0}
-                      max={1000000}
-                      error={
-                        errors?.items?.[index]?.qty && "This field is required"
-                      }
-                    />
-                  )}
-                />
+                <div className="flex-1 ">
+                  <Controller
+                    name={`items.${index}.qty`}
+                    control={control}
+                    render={({ field }) => (
+                      <NumberInput
+                        label="Add Quantity"
+                        placeholder="Qty"
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                        }}
+                        min={0}
+                        max={1000000}
+                        error={
+                          errors?.items?.[index]?.qty &&
+                          "This field is required"
+                        }
+                      />
+                    )}
+                  />
+                </div>
               </div>
             </div>
-
-            {index < fields.length - 1 && <Divider my="xs" />}
+            {index < fields.length - 1 && <Divider my="lg" />}
           </div>
         ))}
-
-        <ButtonComponent type="submit" loading={loading}>
-          Sold
-        </ButtonComponent>
+        <Button
+          onClick={() => append({ itemId: "", qty: 0 })}
+          variant="outline"
+          disabled={availableProducts?.length === 0 ? true : false}
+        >
+          Add Product
+        </Button>
+        <div className="text-right">
+          <ButtonComponent type="submit" loading={loading} className="mt-4">
+            Sold
+          </ButtonComponent>
+        </div>
       </form>
     </Modal>
   );
