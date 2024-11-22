@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import { Button, Popover, Slider, Text } from "@mantine/core";
+import { Slider, Text } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
-import { BiFilter } from "react-icons/bi";
 import {
   LazyQueryExecFunction,
   OperationVariables,
   useQuery,
 } from "@apollo/client";
+import { DatePickerInput } from "@mantine/dates";
+
 import {
   PharmacyStockQty,
   PharmacyStocksLists,
   WarehouseStockQty,
   WarehouseStocksData,
 } from "interfaces/interfaces";
-import { DatePickerInput } from "@mantine/dates";
 import { GetPharmacyStockQty } from "query/pharmacyStock/pharmacyStockQty";
 import { GetWarehouseStockQty } from "query/warehouse/warehouseStockQty";
+import CustomPopover from "CustomPopover.tsx/CustomPopover";
 
 export default function StockFilter({
   sliderValue,
@@ -43,13 +44,12 @@ export default function StockFilter({
     null,
   ]);
   const [startDate, endDate] = dateRange;
-  const [filterValue, setFilterValue] = useState(false);
 
   const handleSliderChange = (value: number) => {
     setSliderValue(value);
   };
 
-  const onSubmit = () => {
+  const handleApplyFilter = () => {
     fetchStockList({
       variables: {
         filterArgs: {
@@ -66,7 +66,6 @@ export default function StockFilter({
       },
     });
     setPopOverOpened(false);
-    setFilterValue(true);
   };
 
   const handleClearFilters = () => {
@@ -104,38 +103,15 @@ export default function StockFilter({
   const { data: warehouseStockQty } =
     useQuery<WarehouseStockQty>(GetWarehouseStockQty);
 
-  const handlePopoverClose = () => {
-    if (!filterValue) {
-      setDateRange([null, null]);
-      setSliderValue(0);
-      reset({
-        endDate: null,
-        qty: null,
-        startDate: null,
-      });
-    }
-  };
-
   return (
-    <Popover
-      width={300}
-      position="bottom-start"
-      withArrow
-      shadow="md"
-      opened={popOverOpened}
-      onChange={setPopOverOpened}
-      onClose={handlePopoverClose}
-    >
-      <Popover.Target>
-        <Button
-          leftSection={<BiFilter size={24} />}
-          onClick={() => setPopOverOpened((o) => !o)}
-        >
-          Filter
-        </Button>
-      </Popover.Target>
-      <Popover.Dropdown className="popOver">
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <>
+      <CustomPopover
+        popoverOpened={popOverOpened}
+        setPopoverOpened={setPopOverOpened}
+        handleApplyFilter={handleApplyFilter}
+        handleClearFilters={handleClearFilters}
+      >
+        <form onSubmit={handleSubmit(handleApplyFilter)}>
           <div className="flex-1 datePicker">
             <Text size="md" fw={700} className="mb-2">
               Select Date
@@ -173,20 +149,8 @@ export default function StockFilter({
               )}
             />
           </div>
-          <Button type="submit" fullWidth className="mt-8">
-            Apply filter
-          </Button>
-          <Button
-            type="submit"
-            className="mt-3"
-            fullWidth
-            variant="outline"
-            onClick={handleClearFilters}
-          >
-            Clear
-          </Button>
         </form>
-      </Popover.Dropdown>
-    </Popover>
+      </CustomPopover>
+    </>
   );
 }
