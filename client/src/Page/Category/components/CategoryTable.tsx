@@ -61,23 +61,25 @@ export default function CategoryTable({
   ));
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[700px] md:w-[900px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Products</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[700px] md:w-[900px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Products</Table.Th>
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -90,7 +92,7 @@ export default function CategoryTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="sm"
+          mt="lg"
         />
       </Flex>
       <Space h="md" />

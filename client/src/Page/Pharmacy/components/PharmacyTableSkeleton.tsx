@@ -1,6 +1,6 @@
 import { Skeleton, Table } from "@mantine/core";
 
-export default function WarehouseTableSkeleton({
+export default function PharmacyTableSkeleton({
   numOfRows,
 }: {
   numOfRows: number;
@@ -12,14 +12,11 @@ export default function WarehouseTableSkeleton({
           key={index}
           horizontalSpacing="md"
           verticalSpacing="md"
-          className="w-[900px] md:w-[1000px] lg:w-full"
+          className="w-[700px] md:w-[1000px] lg:w-full"
         >
           <Table.Tr key={index}>
             <Table.Td>
               <Skeleton height={20} width={30} />
-            </Table.Td>
-            <Table.Td>
-              <Skeleton height={20} width={80} />
             </Table.Td>
             <Table.Td>
               <Skeleton height={20} width={120} />
@@ -28,16 +25,10 @@ export default function WarehouseTableSkeleton({
               <Skeleton height={20} width={100} />
             </Table.Td>
             <Table.Td>
-              <Skeleton height={20} width={50} />
-            </Table.Td>
-            <Table.Td>
               <Skeleton height={20} width={80} />
             </Table.Td>
             <Table.Td>
-              <Skeleton height={20} width={80} />
-            </Table.Td>
-            <Table.Td>
-              <Skeleton height={20} width={70} />
+              <Skeleton height={20} width={100} />
             </Table.Td>
             <Table.Td></Table.Td>
           </Table.Tr>

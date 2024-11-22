@@ -5,12 +5,12 @@ import { useState } from "react";
 import useGetStocksHistorytLot from "./Hooks/useGetStocksHistoryLot";
 import PageHeader from "Components/PageHeader";
 import Search from "Components/Search";
-import ProductTableSkeleton from "Page/Product/components/ProductTableSkeleton";
 import EmptyList from "Components/EmptyList";
 import StocksHistoryTable from "./Components/StocksHistoryTable";
-import { FilterData } from "./Components/StocksHistoryFilter";
+import StocksHistoryFilter, { FilterData } from "./Components/StocksHistoryFilter";
 import { ChildComponentProps } from "interfaces/interfaces";
-import StocksHistoryFilter from "./Components/StocksHistoryFilter";
+import StockHistoryTableSkeleton from "./Components/StockHistoryTableSkeleton";
+// StocksHistoryFilter is already imported in the provided context
 
 export default function StocksHistoryList({
   handleUserPermissions,
@@ -53,7 +53,7 @@ export default function StocksHistoryList({
       </Flex>
 
       {/* ==== Loading State ==== */}
-      {loadingStateStockMovement && <ProductTableSkeleton numOfRows={6} />}
+      {loadingStateStockMovement && <StockHistoryTableSkeleton numOfRows={6} />}
 
       {/* ==== PharmacyStocks List Empty List and List ==== */}
 

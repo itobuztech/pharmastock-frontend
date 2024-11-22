@@ -64,27 +64,28 @@ export default function OrganizationTable({
   ));
 
   return (
-    <div className=" bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[600px] md:w-[800px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Description</Table.Th>
-            <Table.Th>City</Table.Th>
-            <Table.Th>Address</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+    <div>
+      <div className=" bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[600px] md:w-[800px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Description</Table.Th>
+              <Table.Th>City</Table.Th>
+              <Table.Th>Address</Table.Th>
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
 
-      <Space h="md" />
-
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -98,7 +99,7 @@ export default function OrganizationTable({
             total={totalCount}
             value={activePage}
             onChange={setActivePage}
-            mt="sm"
+            mt="lg"
           />
         }
       </Flex>

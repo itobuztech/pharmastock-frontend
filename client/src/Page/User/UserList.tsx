@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GetUsersList } from "query/user/usersList";

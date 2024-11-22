@@ -60,31 +60,32 @@ export default function StocksHistoryDetailsCards({
     });
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[800px] md:w-[1000px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Product</Table.Th>
-            <Table.Th>Organisation</Table.Th>
-            <Table.Th>Warehouse</Table.Th>
-            <Table.Th>Pharmacy</Table.Th>
-            <Table.Th>Pharmacy Clearance</Table.Th>
-            <Table.Th>Batch Name</Table.Th>
-            <Table.Th>Qty</Table.Th>
-            <Table.Th>Expiry Date</Table.Th>
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[800px] md:w-[1000px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Product</Table.Th>
+              <Table.Th>Organisation</Table.Th>
+              <Table.Th>Warehouse</Table.Th>
+              <Table.Th>Pharmacy</Table.Th>
+              <Table.Th>Pharmacy Clearance</Table.Th>
+              <Table.Th>Batch Name</Table.Th>
+              <Table.Th>Qty</Table.Th>
+              <Table.Th>Expiry Date</Table.Th>
 
-            <Table.Th>Transaction Type</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
-
+              <Table.Th>Transaction Type</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <CustomPagination
         loadingState={loadingState}
         setCurrentPage={setCurrentPage}

@@ -1,4 +1,4 @@
-import { Table } from "@mantine/core";
+import { Skeleton, Table } from "@mantine/core";
 
 export default function OrganizationTableSkeleton({
   numOfRows,
@@ -14,25 +14,23 @@ export default function OrganizationTableSkeleton({
           verticalSpacing="md"
           className="w-[600px] md:w-[800px] lg:w-full"
         >
-          <Table.Tr>
+          <Table.Tr key={index}>
             <Table.Td>
-              <div className="h-4 w-10 bg-gray-200 animate-pulse" />
+              <Skeleton height={16} width={40} />
             </Table.Td>
             <Table.Td>
-              <div className="h-4 w-32 bg-gray-200 animate-pulse" />
+              <Skeleton height={16} width={128} />
             </Table.Td>
             <Table.Td className="w-auto lg:w-2/5">
-              <div className="h-4 w-full bg-gray-200 animate-pulse" />
+              <Skeleton height={16} width="100%" />
             </Table.Td>
             <Table.Td>
-              <div className="h-4 w-24 bg-gray-200 animate-pulse" />
+              <Skeleton height={16} width={96} />
             </Table.Td>
             <Table.Td>
-              <div className="h-4 w-40 bg-gray-200 animate-pulse" />
+              <Skeleton height={16} width={160} />
             </Table.Td>
-            <Table.Td className="flex justify-end">
-              <div className="h-4 w-20 bg-gray-200 animate-pulse" />
-            </Table.Td>
+            <Table.Td></Table.Td>
           </Table.Tr>
         </Table>
       ))}

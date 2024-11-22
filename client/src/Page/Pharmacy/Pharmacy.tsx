@@ -18,7 +18,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
-import WarehouseTableSkeleton from "Page/Warehouse/components/WarehouseTableSkeleton";
+import PharmacyTableSkeleton from "./components/PharmacyTableSkeleton";
 
 export default function Pharmacy({
   handleUserPermissions,
@@ -142,7 +142,7 @@ export default function Pharmacy({
       <Search onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
-      {loading && <WarehouseTableSkeleton numOfRows={6} />}
+      {loading && <PharmacyTableSkeleton numOfRows={6} />}
 
       {/* ==== Pharmacy List Empty List and List ==== */}
 

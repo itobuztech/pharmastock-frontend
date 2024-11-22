@@ -27,7 +27,7 @@ export default function ProductDetails({ handleUserPermissions }:Readonly<ChildC
         showCreateButton={false}
       />
 
-      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 bg-white rounded-md py-6 px-6">
         <ProductForm
           editForm={editForm}
           setEditForm={setEditForm}

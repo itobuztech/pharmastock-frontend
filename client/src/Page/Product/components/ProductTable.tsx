@@ -49,9 +49,15 @@ export default function ProductTable({
       <Table.Td>{item.name}</Table.Td>
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
-      <Table.Td>{item.instructions === 'null' ? 'N/A' : item.instructions || 'N/A'}</Table.Td>
-      <Table.Td>{item.currency} {item.wholesalePrice}</Table.Td>
-      <Table.Td>{item.currency} {item.mrpBaseUnit}</Table.Td>
+      <Table.Td>
+        {item.instructions === "null" ? "N/A" : item.instructions || "N/A"}
+      </Table.Td>
+      <Table.Td>
+        {item.currency} {item.wholesalePrice}
+      </Table.Td>
+      <Table.Td>
+        {item.currency} {item.mrpBaseUnit}
+      </Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -65,27 +71,29 @@ export default function ProductTable({
   ));
 
   return (
-    <div className="bg-white overflow-auto">
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="md"
-        className="w-[900px] md:w-[1000px] lg:w-full"
-      >
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Sl No.</Table.Th>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Base Unit</Table.Th>
-            <Table.Th>HSN Code</Table.Th>
-            <Table.Th>Instructions</Table.Th>
-            <Table.Th>Wholesale Price</Table.Th>
-            <Table.Th>MRP Base unit</Table.Th>
-            <Table.Th className="text-right pr-8">Action</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Space h="md" />
+    <div>
+      <div className="bg-white overflow-auto">
+        <Table
+          horizontalSpacing="md"
+          verticalSpacing="md"
+          className="w-[900px] md:w-[1000px] lg:w-full"
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Sl No.</Table.Th>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Base Unit</Table.Th>
+              <Table.Th>HSN Code</Table.Th>
+              <Table.Th>Instructions</Table.Th>
+              <Table.Th>Wholesale Price</Table.Th>
+              <Table.Th>MRP Base unit</Table.Th>
+              <Table.Th className="text-right pr-8">Action</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+        <Space h="md" />
+      </div>
       <Flex
         mih={50}
         gap="md"
@@ -98,7 +106,7 @@ export default function ProductTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="sm"
+          mt="lg"
         />
       </Flex>
       <Space h="md" />
