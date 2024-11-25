@@ -67,7 +67,7 @@ export default function AppRoutes() {
       <Suspense fallback={<></>}>
         <Routes>
           <Route path={routes.home.path} element={<IndexPage />} />
-          {/* <Route path={routes.register.path} element={<RegisterPage />} /> */}
+          
           <Route path={routes.login.path} element={<LoginPage />} />
           <Route
             path={routes.forgetPassword.path}
