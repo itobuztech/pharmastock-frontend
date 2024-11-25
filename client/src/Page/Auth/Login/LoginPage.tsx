@@ -125,7 +125,7 @@ export default function LoginPage() {
             </div>
           </form>
         </div>
-        <div className="flex items-center justify-center mt-6">
+        {/* <div className="flex items-center justify-center mt-6">
           <span className="inline-flex items-center text-xs text-center text-gray-500">
             You don&#x27;t have an account yet?&nbsp;
             <Link
@@ -135,7 +135,7 @@ export default function LoginPage() {
               Sign Up
             </Link>
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
