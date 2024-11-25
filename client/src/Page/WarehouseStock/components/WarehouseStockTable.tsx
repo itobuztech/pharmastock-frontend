@@ -6,6 +6,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { Permissions, WarehouseStocks } from "interfaces/interfaces";
+import { CurrencyType, getCurrencySymbol } from "Lib/getCurrencySymbol";
 import routes from "Lib/Routes/Routes";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,10 +46,12 @@ export default function WarehouseStockTable({
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
       <Table.Td>
-        {item.currency} {item.totalWholesalePrice}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {item.totalWholesalePrice}
       </Table.Td>
       <Table.Td>
-        {item.currency} {item.totalMrpBaseUnit}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {item.totalMrpBaseUnit}
       </Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">
