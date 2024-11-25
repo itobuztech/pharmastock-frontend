@@ -182,9 +182,9 @@ export default function PharmacyStock({
 
       <PharmacyStockSoldForm
         pharmacyName={
-          pharmacyStocksList?.pharmacyStocks[0].pharmacy.name as string
+          pharmacyStocksList?.pharmacyStocks[0]?.pharmacy?.name as string
         }
-        pharmacyId={pharmacyStocksList?.pharmacyStocks[0].pharmacy.id as string}
+        pharmacyId={pharmacyStocksList?.pharmacyStocks[0]?.pharmacy?.id as string}
         StockSoldModalOpened={StockSoldModalOpened}
         StockSoldModalClose={StockSoldModalClose}
         refetchItem={refetch}
