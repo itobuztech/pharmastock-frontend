@@ -15,10 +15,7 @@ export default function OrganizationTableSkeleton({
           className="w-[600px] md:w-[800px] lg:w-full"
         >
           <Table.Tr key={index}>
-            <Table.Td>
-              <Skeleton height={16} width={40} />
-            </Table.Td>
-            <Table.Td>
+            <Table.Td className="pl-8">
               <Skeleton height={16} width={128} />
             </Table.Td>
             <Table.Td className="w-auto lg:w-2/5">

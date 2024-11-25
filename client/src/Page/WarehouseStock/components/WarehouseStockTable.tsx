@@ -37,10 +37,7 @@ export default function WarehouseStockTable({
 
   const rows = warehouseStocksList?.warehouseStocks.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
+      <Table.Td className="pl-8">{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
       <Table.Td>{item.item.name}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{item.finalQty}</Table.Td>
@@ -71,8 +68,7 @@ export default function WarehouseStockTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Date</Table.Th>
+              <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
               <Table.Th>Warehouse</Table.Th>
               <Table.Th>Qty</Table.Th>

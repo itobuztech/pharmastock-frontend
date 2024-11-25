@@ -46,8 +46,7 @@ export default function PharmacyStockTable({
   const rows = pharmaciesStockList?.pharmacyStocks?.map((item, i) => {
     return (
       <Table.Tr key={item.id}>
-        <Table.Td>{i + 1}</Table.Td>
-        <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
+        <Table.Td className="pl-8">{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{item.finalQty}</Table.Td>
@@ -74,8 +73,7 @@ export default function PharmacyStockTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Date</Table.Th>
+              <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
               <Table.Th>Pharmacy</Table.Th>
               <Table.Th>Qty</Table.Th>

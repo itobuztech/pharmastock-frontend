@@ -14,10 +14,7 @@ export default function CategoriesTableSkeleton({
           className="w-[700px] md:w-[900px] lg:w-full"
         >
           <Table.Tr key={index}>
-            <Table.Td>
-              <Skeleton height={16} width={40} />
-            </Table.Td>
-            <Table.Td>
+            <Table.Td className="pl-8">
               <Skeleton height={16} width={128} />
             </Table.Td>
             <Table.Td>

@@ -43,10 +43,7 @@ export default function UserTable({
 
   const rows = userList?.users?.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{item.username ?? "N/A"}</Table.Td>
+      <Table.Td className="pl-8">{item.username ?? "N/A"}</Table.Td>
       <Table.Td>{item.name ?? "N/A"}</Table.Td>
       <Table.Td>{item.email ?? "N/A"}</Table.Td>
       <Table.Td>{item.organization?.name ?? "N/A"}</Table.Td>
@@ -73,8 +70,7 @@ export default function UserTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Username</Table.Th>
+              <Table.Th className="pl-8">Username</Table.Th>
               <Table.Th>Name</Table.Th>
               <Table.Th>Email</Table.Th>
               <Table.Th>Organization Name</Table.Th>

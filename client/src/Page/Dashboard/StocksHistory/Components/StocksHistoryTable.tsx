@@ -43,10 +43,7 @@ export default function StocksHistoryTable({
     stocksMovementList?.stockMovementsLot?.map((item, i) => {
       return (
         <Table.Tr key={item.id}>
-          <Table.Td>
-            {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-          </Table.Td>
-          <Table.Td>
+          <Table.Td className="pl-8">
             {format(parseISO(item.updatedAt), appConfig.dateFormat)}
           </Table.Td>
           <Table.Td>{item.lotName}</Table.Td>
@@ -76,8 +73,7 @@ export default function StocksHistoryTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Date</Table.Th>
+              <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Lot Name</Table.Th>
               <Table.Th>Product</Table.Th>
               <Table.Th>Warehouse</Table.Th>
