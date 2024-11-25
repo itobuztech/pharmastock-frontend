@@ -16,7 +16,6 @@ import StocksHistoryDetails from "Page/Dashboard/StocksHistory/StocksHistoryDeta
 
 const NotFound = React.lazy(() => import("Page/NotFoundPage"));
 const IndexPage = React.lazy(() => import("Page/Index"));
-const RegisterPage = React.lazy(() => import("Page/Auth/Register/Register"));
 const LoginPage = React.lazy(() => import("Page/Auth/Login/LoginPage"));
 const ForgetPassword = React.lazy(
   () => import("Page/Auth/ForgetPassword/ForgetPassword")
@@ -68,7 +67,7 @@ export default function AppRoutes() {
       <Suspense fallback={<></>}>
         <Routes>
           <Route path={routes.home.path} element={<IndexPage />} />
-          <Route path={routes.register.path} element={<RegisterPage />} />
+          
           <Route path={routes.login.path} element={<LoginPage />} />
           <Route
             path={routes.forgetPassword.path}
