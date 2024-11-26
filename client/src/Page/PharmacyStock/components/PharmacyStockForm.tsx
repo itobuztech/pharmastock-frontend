@@ -23,9 +23,9 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { PharmacyStockFormValues } from "../pharmacy.interface";
-import useWarehouseItems from "Lib/CustomHooks/useWarehouseItems";
-import usePharmacyList from "Lib/CustomHooks/usePharmacyLists";
-import useItemList from "Lib/CustomHooks/useItemList";
+import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
+import useItemList from "Lib/customHooks/useItemList";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 import messagesData from "Lib/messages";
 
