@@ -13,12 +13,9 @@ import {
   Permissions,
   WarehouseStocksByWarehouse,
 } from "interfaces/interfaces";
-import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import { GetWarehouseStocksByWarehouse } from "query/warehouse/warehouseStocksByWarehouse";
 import { CreatePharmacyStockInput, PharmacyStock, UserRole } from "gql/graphql";
 import { PharmacyStockCreate } from "query/pharmacyStock/pharmacyStockCreate";
-import usePharmacyList from "Lib/customHooks/usePharmacyLists";
-import useItemList from "Lib/customHooks/useItemList";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
@@ -26,16 +23,21 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { PharmacyStockFormValues } from "../pharmacy.interface";
+import useWarehouseItems from "Lib/CustomHooks/useWarehouseItems";
+import usePharmacyList from "Lib/CustomHooks/usePharmacyLists";
+import useItemList from "Lib/CustomHooks/useItemList";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
+import messagesData from "Lib/messages";
 
 const pharmacyStockCreateSchema = yup.object().shape({
   itemArr: yup.array().of(
     yup.object().shape({
-      itemId: yup.string().required(),
+      itemId: yup.string().required(messagesData.pharmacyStock.product),
       qty: yup.number().required().min(1),
     })
   ),
-  pharmacyId: yup.string().required(),
-  warehouseId: yup.string().required(),
+  pharmacyId: yup.string().required(messagesData.pharmacyStock.pharmacy),
+  warehouseId: yup.string().required(messagesData.pharmacyStock.warehouse),
 });
 
 export default function PharmacyStockForm({
@@ -191,11 +193,12 @@ export default function PharmacyStockForm({
               onChange={(value) => {
                 field.onChange(value);
               }}
-              error={errors.pharmacyId && "This field is required"}
               disabled={id || pharmacyId ? true : false}
             />
           )}
         />
+
+        <ErrorMessage message={errors.pharmacyId?.message} />
       </div>
       {user.role !== UserRole.Superadmin && (
         <div className="mb-4">
@@ -213,10 +216,10 @@ export default function PharmacyStockForm({
                   handleParentChange(value!);
                   field.onChange(value);
                 }}
-                error={errors.warehouseId && "This field is required"}
               />
             )}
           />
+          <ErrorMessage message={errors.warehouseId?.message} />
         </div>
       )}
 
@@ -268,15 +271,14 @@ export default function PharmacyStockForm({
                       onChange={(value) => {
                         field.onChange(value);
                       }}
-                      error={
-                        errors?.itemArr?.[index]?.itemId &&
-                        "This field is required"
-                      }
                       searchable
                       nothingFoundMessage="Nothing found"
                       disabled={id ? true : false}
                     />
                   )}
+                />
+                <ErrorMessage
+                  message={errors?.itemArr?.[index]?.itemId?.message}
                 />
               </div>
 
@@ -299,13 +301,12 @@ export default function PharmacyStockForm({
                         }}
                         min={0}
                         max={1000000}
-                        error={
-                          errors?.itemArr?.[index]?.qty &&
-                          "This field is required"
-                        }
                       />
                     )}
                   />
+                  {errors?.itemArr?.[index]?.qty && (
+                    <ErrorMessage message={messagesData.pharmacyStock.qty} />
+                  )}
                 </div>
               )}
             </div>

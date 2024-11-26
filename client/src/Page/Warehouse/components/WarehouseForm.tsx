@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, TextInput, Text } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -21,6 +21,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import messagesData from "Lib/messages";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 export default function WarehouseForm({
   close,
@@ -159,9 +160,7 @@ export default function WarehouseForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.name?.message}
-          </Text>
+          {errors?.name && <ErrorMessage message={errors?.name?.message} />}
         </div>
       </div>
       <div className="sm:flex flex-wrap gap-4 justify-between mb-6">
@@ -173,9 +172,9 @@ export default function WarehouseForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.location?.message}
-          </Text>
+          {errors?.location && (
+            <ErrorMessage message={errors?.location?.message} />
+          )}
         </div>
         <div className="flex-1">
           <TextInput
@@ -185,29 +184,26 @@ export default function WarehouseForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.area?.message}
-          </Text>
+          {errors?.area && <ErrorMessage message={errors?.area?.message} />}
         </div>
       </div>
 
       <div className="text-right">
         {id ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
-
             {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
               <>
-               <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-            >
-              Cancel
-            </Button>
+                <Button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
                 {editForm ? (
                   <ButtonComponent type="submit" loading={updateLoading}>
                     Update
