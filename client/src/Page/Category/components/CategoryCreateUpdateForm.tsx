@@ -15,6 +15,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ItemCategoryUpdate } from "query/category/categoryUpdate";
 import { useAppSelector } from "Lib/Store/hooks";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
+import messagesData from "Lib/messages";
 
 export default function CategoryCreateUpdateForm({
   editForm,
@@ -60,7 +62,7 @@ export default function CategoryCreateUpdateForm({
       onError: (err) => {
         toast.error(err.message);
       },
-      onCompleted: (d) => {
+      onCompleted: () => {
         toast.success("Category Created Successfully");
         if (close) {
           close();
@@ -121,8 +123,10 @@ export default function CategoryCreateUpdateForm({
           placeholder="Name"
           {...register("name")}
           disabled={!editForm}
-          error={errors.name && "This field is required"}
         />
+        {errors.name && (
+          <ErrorMessage message={messagesData.organization.name.required} />
+        )}
       </div>
       <div
         className={`text-right ${
