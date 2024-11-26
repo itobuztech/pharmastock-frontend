@@ -7,6 +7,7 @@ import {
 } from "enums/enums";
 import { Permissions, WarehouseStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
+import { formatPriceWithComma } from "Page/Product/ProductList";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -43,12 +44,12 @@ export default function WarehouseStockTable({
       <Table.Td>{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
       <Table.Td>{item.item.name}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
-      <Table.Td>{item.finalQty}</Table.Td>
+      <Table.Td>{formatPriceWithComma(item.finalQty)}</Table.Td>
       <Table.Td>
-        {item.currency} {item.totalWholesalePrice}
+        {item.currency} {formatPriceWithComma(item.totalWholesalePrice as number)}
       </Table.Td>
       <Table.Td>
-        {item.currency} {item.totalMrpBaseUnit}
+        {item.currency} {formatPriceWithComma(item.totalMrpBaseUnit as number)}
       </Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">
