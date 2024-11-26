@@ -17,6 +17,9 @@ export const messagesData = {
     role: {
       required: "Role is a required field",
     },
+    pharmacy: {
+      required: "Pharmacy is a required field"
+    },
     email: {
       required: "Email is a required field",
       matches: "Email must be a valid email",
@@ -47,7 +50,7 @@ export const messagesData = {
       required: "Description is a required field",
     },
     adminEmail: {
-      required: "Admin Email is a required field"
+      required: "Admin Email is a required field",
     },
     address: {
       required: "Address is a required field",
@@ -83,6 +86,14 @@ export const messagesData = {
       required: "Organization is a required field",
     },
   },
+  warehouseStock: {
+    warehouse: "Warehouse is a required field",
+    product: "Product is a required field",
+    batchName: "Batch name is a required field",
+    qty: "Qty must be at least 1",
+    sku: "SKU is a required field",
+    expiry: "Expiry date is a required field",
+  },
   pharmacy: {
     name: {
       required: "Name is a required field",
@@ -101,6 +112,12 @@ export const messagesData = {
     organization: {
       required: "Organization is a required field",
     },
+  },
+  pharmacyStock: {
+    pharmacy: "Pharmacy is a required field",
+    warehouse: "Warehouse is a required field",
+    product: "Product is a required field",
+    qty: "Qty must be at least 1",
   },
   item: {
     name: {

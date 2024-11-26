@@ -4,8 +4,7 @@ import {
   MultiSelect,
   Select,
   Textarea,
-  TextInput,
-  Text,
+  TextInput
 } from "@mantine/core";
 import { Item, Permissions } from "interfaces/interfaces";
 import React, { useEffect } from "react";
@@ -17,7 +16,6 @@ import { BaseUnit, CreateItemInput, UpdateItemInput } from "gql/graphql";
 import { toast } from "react-toastify";
 import { GetItemUpdate } from "query/item/itemUpdate";
 import { useNavigate } from "react-router-dom";
-import useItemCatList from "Lib/customHooks/useItemCategoryList";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
@@ -25,6 +23,8 @@ import {
 import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
 import { useAppSelector } from "Lib/Store/hooks";
+import useItemCatList from "Lib/CustomHooks/useItemCategoryList";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 export default function ProductForm({
   close,
@@ -33,7 +33,7 @@ export default function ProductForm({
   itemId,
   itemDetail,
   setNewItemList,
-  refetchItem
+  refetchItem,
 }: Readonly<{
   close?: () => void;
   editForm?: boolean;
@@ -156,9 +156,7 @@ export default function ProductForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.name?.message}
-          </Text>
+          {errors.name && <ErrorMessage message={errors.name?.message} />}
         </div>
         <div className="flex-1">
           <Controller
@@ -176,9 +174,9 @@ export default function ProductForm({
               />
             )}
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.baseUnit?.message}
-          </Text>
+          {errors.baseUnit && (
+            <ErrorMessage message={errors.baseUnit?.message} />
+          )}
         </div>
       </div>
       <div className="sm:flex flex-wrap gap-4 justify-between mb-4">
@@ -190,9 +188,7 @@ export default function ProductForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.hsnCode?.message}
-          </Text>
+          {errors.hsnCode && <ErrorMessage message={errors.hsnCode?.message} />}
         </div>
         <div className="flex-1">
           <Controller
@@ -212,9 +208,9 @@ export default function ProductForm({
               />
             )}
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.category?.message}
-          </Text>
+          {errors.category && (
+            <ErrorMessage message={errors.category?.message} />
+          )}
         </div>
       </div>
 
@@ -227,9 +223,9 @@ export default function ProductForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.wholesalePrice && messagesData.item.wholesalePrice.required}
-          </Text>
+          {errors.wholesalePrice && (
+            <ErrorMessage message={messagesData.item.wholesalePrice.required} />
+          )}
         </div>
         <div className="flex-1">
           <TextInput
@@ -239,9 +235,9 @@ export default function ProductForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.mrpBaseUnit && messagesData.item.mrpBaseUnit.required}
-          </Text>
+          {errors.mrpBaseUnit && (
+            <ErrorMessage message={messagesData.item.mrpBaseUnit.required} />
+          )}
         </div>
       </div>
       <div className="mb-8">
@@ -252,12 +248,16 @@ export default function ProductForm({
           disabled={!editForm}
           withAsterisk
         />
-        <Text size="sm" mt={5} c="red.6">
-          {errors.instructions?.message}
-        </Text>
+        {errors.instructions && (
+          <ErrorMessage message={errors.instructions?.message} />
+        )}
       </div>
 
-      <div className={`text-right ${permission.ITEM_MANAGEMENT?.CAPABILITIES.EDIT ? '' : 'hidden'}`}>
+      <div
+        className={`text-right ${
+          permission.ITEM_MANAGEMENT?.CAPABILITIES.EDIT ? "" : "hidden"
+        }`}
+      >
         {itemId ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
             <Button
@@ -267,16 +267,16 @@ export default function ProductForm({
             >
               Cancel
             </Button>
-          
-                {editForm ? (
-                  <ButtonComponent type="submit" loading={updateLoading}>
-                    Update
-                  </ButtonComponent>
-                ) : (
-                  <Button type="button" onClick={() => setEditForm(true)}>
-                    Edit
-                  </Button>
-                )}
+
+            {editForm ? (
+              <ButtonComponent type="submit" loading={updateLoading}>
+                Update
+              </ButtonComponent>
+            ) : (
+              <Button type="button" onClick={() => setEditForm(true)}>
+                Edit
+              </Button>
+            )}
           </div>
         ) : (
           <ButtonComponent type="submit" loading={addLoading}>
