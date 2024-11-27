@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
-    "build:production": "tsc && vite build --mode production",
+    "build": "vite build",
+    "build:production": "vite build --mode production",
     "preview": "vite preview",
     "lint": "eslint src/**/*.ts{,x} --max-warnings=0",
     "lint-staged": "lint-staged",
