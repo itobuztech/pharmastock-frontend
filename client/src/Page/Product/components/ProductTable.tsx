@@ -11,6 +11,7 @@ import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { formatPriceWithComma } from "../ProductList";
 
 interface ItemTableProps {
   activePage: number;
@@ -55,11 +56,11 @@ export default function ProductTable({
       </Table.Td>
       <Table.Td>
         {getCurrencySymbol(item.currency as CurrencyType)}
-        {item.wholesalePrice}
+        {formatPriceWithComma(item.wholesalePrice)}
       </Table.Td>
       <Table.Td>
         {getCurrencySymbol(item.currency as CurrencyType)}
-        {item.mrpBaseUnit}
+        {formatPriceWithComma(item.mrpBaseUnit)}
       </Table.Td>
       <Table.Td className="text-right">
         <ActionPopover

@@ -13,6 +13,7 @@ import routes from "Lib/Routes/Routes";
 import { SelectedPharmacyStock } from "../pharmacyStock.interface";
 import { useAppSelector } from "Lib/Store/hooks";
 import { UserRole } from "gql/graphql";
+import { formatPriceWithComma } from "Page/Product/ProductList";
 interface PharmacyStockTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -50,7 +51,7 @@ export default function PharmacyStockTable({
         <Table.Td>{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
-        <Table.Td>{item.finalQty}</Table.Td>
+        <Table.Td>{formatPriceWithComma(item.finalQty)}</Table.Td>
         {user.role !== UserRole.Staff && (
           <Table.Td className="text-right">
             <ActionPopover

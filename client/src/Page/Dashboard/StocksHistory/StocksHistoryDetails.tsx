@@ -7,7 +7,7 @@ import { ChildComponentProps } from "interfaces/interfaces";
 import useGetStocksHistoryDetails from "./Hooks/useGetStocksHistoryDetails";
 import StocksMovementDetailsTable from "./Components/StocksHistoryDetailsCard";
 import Search from "Components/Search";
-import WarehouseStockSkeleton from "Page/WarehouseStock/components/WarehouseStockSkeletopn";
+import WarehouseStockSkeleton from "Page/WarehouseStock/components/WarehouseStockSkeleton";
 
 export default function StocksHistoryDetails({
   handleUserPermissions,

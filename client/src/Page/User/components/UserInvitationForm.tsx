@@ -4,8 +4,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 
 import useUserInvitation from "../Hooks/useUserInvitation";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import { UserRole } from "interfaces/interfaces";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
+import messagesData from "Lib/messages";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 
 export default function UserInvitationForm({
@@ -39,12 +41,10 @@ export default function UserInvitationForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <TextInput
-          label="Email"
-          placeholder="Email"
-          {...register("email")}
-          error={errors.email && "This field is required"}
-        />
+        <TextInput label="Email" placeholder="Email" {...register("email")} />
+        {errors.email && (
+          <ErrorMessage message={messagesData.register.email.required} />
+        )}
       </div>
 
       <div className="mb-4">
@@ -60,8 +60,12 @@ export default function UserInvitationForm({
               setValue("organizationId", value);
             }
           }}
-          error={errors.organizationId && "This field is required"}
         />
+        {errors.organizationId && (
+          <ErrorMessage
+            message={messagesData.register.organizationId.required}
+          />
+        )}
       </div>
       <div className="mb-4">
         <Select
@@ -81,8 +85,10 @@ export default function UserInvitationForm({
               setIsStaff(value === UserRole.Staff ? true : false);
             }
           }}
-          error={errors.role && "This field is required"}
         />
+        {errors.role && (
+          <ErrorMessage message={messagesData.register.role.required} />
+        )}
       </div>
 
       {isStaff && (
@@ -101,10 +107,12 @@ export default function UserInvitationForm({
                 onChange={(value) => {
                   field.onChange(value);
                 }}
-                error={errors.pharmacyId && "This field is required"}
               />
             )}
           />
+          {errors.pharmacyId && (
+            <ErrorMessage message={messagesData.register.pharmacy.required} />
+          )}
         </div>
       )}
       <Button loading={loadingStateForInvite} mt="lg" mb="sm" type="submit">

@@ -12,6 +12,7 @@ import {
 } from "enums/enums";
 import { Permissions } from "interfaces/interfaces";
 import appConfig from "Lib/appConfig";
+import { formatPriceWithComma } from "Page/Product/ProductList";
 
 interface StocksMovementTableProps {
   activePage: number;
@@ -54,7 +55,7 @@ export default function StocksHistoryTable({
           <Table.Td>{item.warehouse ?? "N/A"}</Table.Td>
           <Table.Td>{item.organisation}</Table.Td>
           <Table.Td>{item.transactionType}</Table.Td>
-          <Table.Td>{item.totalLotItemsQty}</Table.Td>
+          <Table.Td>{formatPriceWithComma(item.totalLotItemsQty)}</Table.Td>
           <Table.Td className="text-right">
             <ActionPopover
               handleView={() => screenSwitch(item.lotName)}
