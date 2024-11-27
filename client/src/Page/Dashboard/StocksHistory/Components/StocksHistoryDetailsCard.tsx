@@ -10,6 +10,7 @@ import { Permissions } from "interfaces/interfaces";
 import { StockMovementsByLotName } from "../Hooks/useGetStocksHistoryDetails";
 import appConfig from "Lib/appConfig";
 import CustomPagination from "Components/CustomPagination/CustomPagination";
+import { formatPriceWithComma } from "Page/Product/ProductList";
 
 interface StockMovementDetailsProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
@@ -43,7 +44,7 @@ export default function StocksHistoryDetailsCards({
           <Table.Td>{item.pharmacy ?? "N/A"}</Table.Td>
           <Table.Td>{item.pharmacyClearance ?? "N/A"}</Table.Td>
           <Table.Td>{item.batchName}</Table.Td>
-          <Table.Td>{item.qty}</Table.Td>
+          <Table.Td>{formatPriceWithComma(item.qty)}</Table.Td>
           <Table.Td>
             {item?.expiry
               ? format(parseISO(item?.expiry as string), appConfig.dateFormat)

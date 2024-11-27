@@ -20,6 +20,8 @@ import { ClearancePharmacyStockInput } from "../pharmacyStock.interface";
 import { PharmacyStocksProduct } from "query/pharmacyStock/pharmacyStocksProduct";
 import { CiCircleMinus } from "react-icons/ci";
 import { useAppSelector } from "Lib/Store/hooks";
+import messagesData from "Lib/messages";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
 interface PharmacyStockProduct {
   id: string;
   name: string;
@@ -33,8 +35,8 @@ const pharmacyStockClearanceSchema = yup
   .object({
     items: yup.array().of(
       yup.object({
-        itemId: yup.string().required(),
-        qty: yup.number().required().min(1),
+        itemId: yup.string().required(messagesData.pharmacyStock.product),
+        qty: yup.number().required(messagesData.pharmacyStock.qty).min(1),
       })
     ),
   })
@@ -181,15 +183,16 @@ export default function PharmacyStockSoldForm({
                           field.onChange(value);
                           setValue(`items.${index}.itemId`, value as string);
                         }}
-                        error={
-                          errors?.items?.[index]?.itemId &&
-                          "This field is required"
-                        }
                         searchable
                         nothingFoundMessage="Nothing found"
                       />
                     )}
                   />
+                  {errors?.items?.[index]?.itemId && (
+                    <ErrorMessage
+                      message={errors?.items?.[index]?.itemId.message}
+                    />
+                  )}
                 </div>
 
                 <div className="flex-1 ">
@@ -206,13 +209,14 @@ export default function PharmacyStockSoldForm({
                         }}
                         min={0}
                         max={1000000}
-                        error={
-                          errors?.items?.[index]?.qty &&
-                          "This field is required"
-                        }
                       />
                     )}
                   />
+                  {errors?.items?.[index]?.qty && (
+                    <ErrorMessage
+                      message={messagesData.pharmacyStock.qty}
+                    />
+                  )}
                 </div>
               </div>
             </div>

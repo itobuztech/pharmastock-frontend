@@ -19,7 +19,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import StockFilter from "Page/PharmacyStock/components/StockFilter";
-import WarehouseStockSkeleton from "./components/WarehouseStockSkeletopn";
+import WarehouseStockSkeleton from "./components/WarehouseStockSkeleton";
 import { useNavigate } from "react-router-dom";
 import routes from "Lib/Routes/Routes";
 

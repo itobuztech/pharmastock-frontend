@@ -1,15 +1,6 @@
 import { useMutation } from "@apollo/client";
-import {
-  Button,
-  Select,
-  Textarea,
-  TextInput,
-  Text
-} from "@mantine/core";
-import {
-  createOrganizationInput,
-  Permissions,
-} from "interfaces/interfaces";
+import { Button, Select, Textarea, TextInput } from "@mantine/core";
+import { createOrganizationInput, Permissions } from "interfaces/interfaces";
 import { CreateOrganization } from "query/organization/organizationCreate";
 import React, { useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
@@ -27,6 +18,7 @@ import {
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
 import messagesData from "Lib/messages";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 export default function OrganizationForm({
   close,
@@ -177,9 +169,7 @@ export default function OrganizationForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.name?.message}
-          </Text>
+          {errors.name && <ErrorMessage message={errors.name?.message} />}
         </div>
 
         <div className="mb-4">
@@ -190,9 +180,9 @@ export default function OrganizationForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.description?.message}
-          </Text>
+          {errors.description && (
+            <ErrorMessage message={errors.description?.message} />
+          )}
         </div>
 
         {!orgId && (
@@ -203,9 +193,9 @@ export default function OrganizationForm({
               {...register("adminEmail")}
               withAsterisk
             />
-            <Text size="sm" mt={5} c="red.6">
-              {errors.adminEmail?.message}
-            </Text>
+            {errors.adminEmail && (
+              <ErrorMessage message={errors.adminEmail?.message} />
+            )}
           </div>
         )}
 
@@ -217,9 +207,7 @@ export default function OrganizationForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.address?.message}
-          </Text>
+          {errors.address && <ErrorMessage message={errors.address?.message} />}
         </div>
 
         <div className="mb-4">
@@ -230,9 +218,7 @@ export default function OrganizationForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.contact?.message}
-          </Text>
+          {errors.contact && <ErrorMessage message={errors.contact?.message} />}
         </div>
 
         <div className="mb-4">
@@ -243,9 +229,7 @@ export default function OrganizationForm({
             disabled={!editForm}
             withAsterisk
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.city?.message}
-          </Text>
+          {errors.city && <ErrorMessage message={errors.city?.message} />}
         </div>
 
         <div className="mb-4">
@@ -266,9 +250,7 @@ export default function OrganizationForm({
               />
             )}
           />
-          <Text size="sm" mt={5} c="red.6">
-            {errors.country?.message}
-          </Text>
+          {errors.country && <ErrorMessage message={errors.country?.message} />}
         </div>
 
         <div className="text-right">

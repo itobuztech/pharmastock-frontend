@@ -16,6 +16,12 @@ import ProductFilter from "./components/ProductFilter";
 import { useAppSelector } from "Lib/Store/hooks";
 import ProductTableSkeleton from "./components/ProductTableSkeleton";
 
+export const formatPriceWithComma = (value: number): string => {
+  return Math.floor(value)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export default function ProductList({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {

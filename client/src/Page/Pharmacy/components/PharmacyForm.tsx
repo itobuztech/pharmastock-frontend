@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, TextInput, Text } from "@mantine/core";
+import { Button, TextInput } from "@mantine/core";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 export default function PharmacyForm({
   close,
@@ -167,9 +168,7 @@ export default function PharmacyForm({
           disabled={!editForm}
           withAsterisk
         />
-        <Text size="sm" mt={5} c="red.6">
-          {errors.name?.message}
-        </Text>
+        {errors.name && <ErrorMessage message={errors.name?.message} />}
       </div>
 
       <div className="mb-4">
@@ -180,9 +179,9 @@ export default function PharmacyForm({
           withAsterisk
           disabled={!editForm}
         />
-        <Text size="sm" mt={5} c="red.6">
-          {errors.contactInfo?.message}
-        </Text>
+        {errors.contactInfo && (
+          <ErrorMessage message={errors.contactInfo?.message} />
+        )}
       </div>
 
       <div className="mb-4">
@@ -193,28 +192,25 @@ export default function PharmacyForm({
           withAsterisk
           disabled={!editForm}
         />
-        <Text size="sm" mt={5} c="red.6">
-          {errors.location?.message}
-        </Text>
+        {errors.location && <ErrorMessage message={errors.location?.message} />}
       </div>
 
       <div className="text-right">
         {id ? (
           <div className="flex flex-wrap gap-4 justify-end mb-6 mt-8">
-            
             {handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.PHARMACY_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.EDIT
             ) && (
               <>
-              <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-            >
-              Cancel
-            </Button>
+                <Button
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
                 {editForm ? (
                   <ButtonComponent
                     type="submit"
