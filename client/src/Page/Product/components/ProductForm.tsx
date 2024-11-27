@@ -23,7 +23,7 @@ import {
 import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
 import { useAppSelector } from "Lib/Store/hooks";
-import useItemCatList from "Lib/CustomHooks/useItemCategoryList";
+import useItemCatList from "Lib/customHooks/useItemCategoryList";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 export default function ProductForm({
@@ -110,7 +110,7 @@ export default function ProductForm({
     },
   });
 
-  const onSubmit = async (data: CreateItemInput | UpdateItemInput) => {
+  const onSubmit = async (data: any) => {
     if (itemId) {
       updateItem({
         variables: { updateItemInput: { ...data, id: itemId } },
