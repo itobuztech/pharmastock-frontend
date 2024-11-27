@@ -6,6 +6,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { Permissions, WarehouseStocks } from "interfaces/interfaces";
+import { CurrencyType, getCurrencySymbol } from "Lib/getCurrencySymbol";
 import routes from "Lib/Routes/Routes";
 import { formatPriceWithComma } from "Page/Product/ProductList";
 import React from "react";
@@ -43,10 +44,12 @@ export default function WarehouseStockTable({
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{formatPriceWithComma(item.finalQty)}</Table.Td>
       <Table.Td>
-        {item.currency} {formatPriceWithComma(item.totalWholesalePrice as number)}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {formatPriceWithComma(item.totalWholesalePrice as number)}
       </Table.Td>
       <Table.Td>
-        {item.currency} {formatPriceWithComma(item.totalMrpBaseUnit as number)}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {formatPriceWithComma(item.totalMrpBaseUnit as number)}
       </Table.Td>
       <Table.Td>{item.SKU.sku}</Table.Td>
       <Table.Td className="text-right">

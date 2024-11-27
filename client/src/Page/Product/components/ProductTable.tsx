@@ -6,6 +6,7 @@ import {
 } from "enums/enums";
 import { UserRole } from "gql/graphql";
 import { Items, Permissions } from "interfaces/interfaces";
+import { CurrencyType, getCurrencySymbol } from "Lib/getCurrencySymbol";
 import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
@@ -51,10 +52,12 @@ export default function ProductTable({
         {item.instructions === "null" ? "N/A" : item.instructions || "N/A"}
       </Table.Td>
       <Table.Td>
-        {item.currency} {formatPriceWithComma(item.wholesalePrice)}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {formatPriceWithComma(item.wholesalePrice)}
       </Table.Td>
       <Table.Td>
-        {item.currency} {formatPriceWithComma(item.mrpBaseUnit)}
+        {getCurrencySymbol(item.currency as CurrencyType)}
+        {formatPriceWithComma(item.mrpBaseUnit)}
       </Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
