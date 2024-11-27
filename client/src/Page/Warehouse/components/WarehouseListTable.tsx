@@ -40,10 +40,7 @@ export default function WarehouseListTable({
 
   const rows = warehouseList?.warehouses.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{item.name}</Table.Td>
+      <Table.Td className="pl-8">{item.name}</Table.Td>
       <Table.Td>{item.location}</Table.Td>
       <Table.Td>{item.area}</Table.Td>
       <Table.Td>{item.organization.name}</Table.Td>
@@ -69,8 +66,7 @@ export default function WarehouseListTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Name</Table.Th>
+              <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Location</Table.Th>
               <Table.Th>Area</Table.Th>
               <Table.Th>Organization</Table.Th>

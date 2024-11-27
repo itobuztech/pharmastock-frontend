@@ -15,10 +15,7 @@ export default function PharmacyTableSkeleton({
           className="w-[700px] md:w-[1000px] lg:w-full"
         >
           <Table.Tr key={index}>
-            <Table.Td>
-              <Skeleton height={20} width={30} />
-            </Table.Td>
-            <Table.Td>
+            <Table.Td className="pl-8">
               <Skeleton height={20} width={120} />
             </Table.Td>
             <Table.Td>

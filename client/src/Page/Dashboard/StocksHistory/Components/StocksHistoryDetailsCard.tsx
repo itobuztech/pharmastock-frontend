@@ -37,10 +37,7 @@ export default function StocksHistoryDetailsCards({
     stocksMovementList?.stockMovementsByLotName?.map((item, i) => {
       return (
         <Table.Tr key={item.id}>
-          <Table.Td>
-            {currentPage === 1 ? i + 1 : (currentPage - 1) * 10 + (i + 1)}
-          </Table.Td>
-          <Table.Td>{item.item}</Table.Td>
+          <Table.Td className="pl-8">{item.item}</Table.Td>
           <Table.Td>{item.organisation}</Table.Td>
 
           <Table.Td>{item.warehouse ?? "N/A"}</Table.Td>
@@ -70,8 +67,7 @@ export default function StocksHistoryDetailsCards({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Product</Table.Th>
+              <Table.Th className="pl-8">Product</Table.Th>
               <Table.Th>Organisation</Table.Th>
               <Table.Th>Warehouse</Table.Th>
               <Table.Th>Pharmacy</Table.Th>

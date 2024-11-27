@@ -42,10 +42,7 @@ export default function OrganizationTable({
 
   const rows = organizationList?.organizations?.map((org, i) => (
     <Table.Tr key={org.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{org.name}</Table.Td>
+      <Table.Td className="pl-8">{org.name}</Table.Td>
       <Table.Td className="w-auto lg:w-2/5">{org.description}</Table.Td>
       <Table.Td>{org.city}</Table.Td>
       <Table.Td>{org.address}</Table.Td>
@@ -73,8 +70,7 @@ export default function OrganizationTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Name</Table.Th>
+              <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Description</Table.Th>
               <Table.Th>City</Table.Th>
               <Table.Th>Address</Table.Th>

@@ -43,10 +43,7 @@ export default function CategoryTable({
 
   const rows = itemCategoryList?.itemCategories.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{item.name}</Table.Td>
+      <Table.Td className="pl-8">{item.name}</Table.Td>
       <Table.Td>{item.Item?.length}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
@@ -70,8 +67,7 @@ export default function CategoryTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Name</Table.Th>
+              <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Products</Table.Th>
               <Table.Th className="text-right pr-8">Action</Table.Th>
             </Table.Tr>
