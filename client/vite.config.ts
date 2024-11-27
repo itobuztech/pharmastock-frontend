@@ -23,6 +23,11 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      Lib: '/src/Lib', // Adjust based on your project structure
+    },
+  },
   server: {
     // this ensures that the browser opens upon server start
     open: true,
