@@ -44,10 +44,7 @@ export default function ProductTable({
 
   const rows = itemList?.items.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td>
-        {activePage === 1 ? i + 1 : (activePage - 1) * 10 + (i + 1)}
-      </Table.Td>
-      <Table.Td>{item.name}</Table.Td>
+      <Table.Td className="pl-8">{item.name}</Table.Td>
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
       <Table.Td>
@@ -81,8 +78,7 @@ export default function ProductTable({
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Sl No.</Table.Th>
-              <Table.Th>Name</Table.Th>
+              <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Base Unit</Table.Th>
               <Table.Th>HSN Code</Table.Th>
               <Table.Th>Instructions</Table.Th>
