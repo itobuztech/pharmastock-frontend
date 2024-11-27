@@ -1,8 +1,11 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import appConfig from "Lib/appConfig";
+
+const apiURL = localStorage.getItem(appConfig.storage.apiURL);
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_PHARMA_STOCK_API_URL, // Replace with your GraphQL endpoint
+  uri: apiURL ? apiURL : appConfig.api.graphql, // Replace with your GraphQL endpoint
 });
 
 const authLink = setContext((_, { headers }) => {
