@@ -7,8 +7,8 @@ import useUserInvitation from "../Hooks/useUserInvitation";
 import { UserRole } from "interfaces/interfaces";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 import messagesData from "Lib/messages";
-import useOrganizationList from "Lib/CustomHooks/useOrganizationList";
-import usePharmacyList from "Lib/CustomHooks/usePharmacyLists";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 
 export default function UserInvitationForm({
   closeModal,

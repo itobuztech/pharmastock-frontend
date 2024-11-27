@@ -30,7 +30,7 @@ import {
 } from "../warehouse.interface";
 import routes from "Lib/Routes/Routes";
 import messagesData from "Lib/messages";
-import useItemList from "Lib/CustomHooks/useItemList";
+import useItemList from "Lib/customHooks/useItemList";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 
 const schema = yup
