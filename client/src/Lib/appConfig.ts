@@ -10,10 +10,14 @@ const appConfig = {
     user: "app_user",
     store: "app_store",
     accessToken: "access_token",
-    userData: "userData"
+    userData: "userData",
+    apiURL: 'api_url'
   },
   pagination: {
     defaultPage: 10
+  },
+  api: {
+    graphql: import.meta.env.VITE_PHARMA_STOCK_API_URL
   },
  dateFormat: "MM/dd/yyyy"
 };

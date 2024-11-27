@@ -14,6 +14,7 @@ export default function LogoutPage() {
     dispatch(logout())
     localStorage.removeItem(appConfig.storage.store);
     localStorage.removeItem(appConfig.storage.accessToken);
+    localStorage.setItem(appConfig.storage.apiURL, '');
     localStorage.removeItem("userData");
     navigate(`${routes.login.path}`);
   }
