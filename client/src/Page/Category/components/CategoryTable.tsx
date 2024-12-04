@@ -50,7 +50,19 @@ export default function CategoryTable({
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
           showDeleteModal={user === UserRole.Superadmin ? true : false}
-          handleUserPermissions={handleUserPermissions}
+          handleUserPermissions={(
+            permission,
+            requiredPermission,
+            requiredCapability
+          ) =>
+            handleUserPermissions(
+              permission,
+              requiredPermission,
+              requiredCapability
+            )
+          }
+          requiredPermission={USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT}
+          requiredCapability={USER_PERMISSION_CAPABILITIES.VIEW}
           showDeleteButton={showDeleteButton}
         />
       </Table.Td>
