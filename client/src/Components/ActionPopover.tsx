@@ -48,7 +48,7 @@ export default function ActionPopover({
           USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.VIEW
         ) ||
-          user.role === UserRole.Staff) && (
+          user.role === UserRole.Admin || user.role === UserRole.Staff) && (
           <Button
             variant="transparent"
             fullWidth
