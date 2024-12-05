@@ -21,6 +21,8 @@ interface ActionPopoverProps {
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  requiredPermission?: USER_PERMISSION_FIELDS;
+  requiredCapability?: USER_PERMISSION_CAPABILITIES;
 }
 
 export default function ActionPopover({
@@ -31,6 +33,8 @@ export default function ActionPopover({
   showDeleteModal,
   showDeleteButton,
   handleUserPermissions,
+  requiredPermission,
+  requiredCapability,
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
   const user = useAppSelector((state) => state.user);
@@ -43,24 +47,31 @@ export default function ActionPopover({
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        {handleUserPermissions && (handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
-          USER_PERMISSION_CAPABILITIES.VIEW
-        ) ||
-          user.role === UserRole.Staff) && (
-          <Button
-            variant="transparent"
-            fullWidth
-            onClick={handleView}
-            className="hover:bg-blue-100 transition-colors text-black"
-          >
-            View
-          </Button>
-        )}
+        {handleUserPermissions &&
+          (handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.VIEW
+          ) ||
+            handleUserPermissions(
+              permission,
+              requiredPermission as USER_PERMISSION_FIELDS,
+              requiredCapability as USER_PERMISSION_CAPABILITIES
+            ) ||
+            user.role === UserRole.Staff) && (
+            <Button
+              variant="transparent"
+              fullWidth
+              onClick={handleView}
+              className="hover:bg-blue-100 transition-colors text-black"
+            >
+              View
+            </Button>
+          )}
         <div className="hidden">
           {showUserModal &&
-           handleUserPermissions && handleUserPermissions(
+            handleUserPermissions &&
+            handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.CREATE

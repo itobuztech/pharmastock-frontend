@@ -51,6 +51,9 @@ export default function WarehouseListTable({
           showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
           showDeleteButton={showDeleteButton}
+          requiredPermission={USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT}
+          requiredCapability={USER_PERMISSION_CAPABILITIES.VIEW}
+
         />
       </Table.Td>
     </Table.Tr>
