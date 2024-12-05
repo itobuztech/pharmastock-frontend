@@ -119,6 +119,7 @@ export default function CategoryCreateUpdateForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
         <TextInput
+          withAsterisk
           label="Name"
           placeholder="Name"
           {...register("name")}

@@ -175,6 +175,7 @@ export default function PharmacyStockSoldForm({
                     render={({ field }) => (
                       <Select
                         {...field}
+                        withAsterisk
                         data={availableProducts}
                         label="Select Product"
                         placeholder="Select Product"
@@ -201,6 +202,7 @@ export default function PharmacyStockSoldForm({
                     control={control}
                     render={({ field }) => (
                       <NumberInput
+                        withAsterisk
                         label="Add Quantity"
                         placeholder="Qty"
                         value={field.value}
