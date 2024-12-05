@@ -42,9 +42,9 @@ const schema = yup
           .string()
           .required(messagesData.warehouseStock.warehouse),
         itemId: yup.string().required(messagesData.warehouseStock.product),
-        batchName: yup.string().required(messagesData.warehouseStock.batchName),
+        batchName: yup.string().required(messagesData.warehouseStock.batchName).trim(messagesData.warehouseStock.batchName),
         qty: yup.number().min(1, messagesData.warehouseStock.qty).required(),
-        sku: yup.string().required(messagesData.warehouseStock.sku),
+        sku: yup.string().required(messagesData.warehouseStock.sku).trim(messagesData.warehouseStock.sku),
         expiry: yup.date().required(messagesData.warehouseStock.expiry),
       })
     ),

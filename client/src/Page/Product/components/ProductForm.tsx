@@ -61,10 +61,10 @@ export default function ProductForm({
         .trim(messagesData.item.name.trim)
         .matches(/^[a-zA-Z0-9 ]*$/, messagesData.item.name.matches),
       baseUnit: yup.string().required(messagesData.item.baseUnit.required),
-      hsnCode: yup.string().required(messagesData.item.hsnCode.required),
+      hsnCode: yup.string().required(messagesData.item.hsnCode.required).trim(messagesData.item.hsnCode.required),
       instructions: yup
         .string()
-        .required(messagesData.item.instructions.required),
+        .required(messagesData.item.instructions.required).trim(messagesData.item.instructions.required),
       wholesalePrice: yup.number(),
       mrpBaseUnit: yup.number(),
       category: yup

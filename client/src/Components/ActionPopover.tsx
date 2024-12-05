@@ -47,27 +47,21 @@ export default function ActionPopover({
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        {handleUserPermissions &&
-          (handleUserPermissions(
-            permission,
-            USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
-            USER_PERMISSION_CAPABILITIES.VIEW
-          ) ||
-            handleUserPermissions(
-              permission,
-              requiredPermission as USER_PERMISSION_FIELDS,
-              requiredCapability as USER_PERMISSION_CAPABILITIES
-            ) ||
-            user.role === UserRole.Staff) && (
-            <Button
-              variant="transparent"
-              fullWidth
-              onClick={handleView}
-              className="hover:bg-blue-100 transition-colors text-black"
-            >
-              View
-            </Button>
-          )}
+        {handleUserPermissions && (handleUserPermissions(
+          permission,
+          USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
+          USER_PERMISSION_CAPABILITIES.VIEW
+        ) ||
+          user.role === UserRole.Admin || user.role === UserRole.Staff) && (
+          <Button
+            variant="transparent"
+            fullWidth
+            onClick={handleView}
+            className="hover:bg-blue-100 transition-colors text-black"
+          >
+            View
+          </Button>
+        )}
         <div className="hidden">
           {showUserModal &&
             handleUserPermissions &&

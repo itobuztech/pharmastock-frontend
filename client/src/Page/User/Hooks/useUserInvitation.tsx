@@ -17,7 +17,7 @@ export default function useUserInvitation({
   refetch: () => void;
 }) {
   const userInvitationSchema = yup.object().shape({
-    email: yup.string().required(),
+    email: yup.string().required().trim(),
     organizationId: yup.string().required(),
     role: yup.string().required(),
     pharmacyId: yup.string().when('$isStaff', {
