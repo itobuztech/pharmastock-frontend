@@ -393,6 +393,7 @@ export default function WarehouseStockForm({
                 !params.id && (
                   <div className="flex-1 mt-4 sm:mt-0">
                     <TextInput
+                      withAsterisk
                       label="Batch Name"
                       placeholder="Batch Name"
                       {...register(`warehouseStock.${index}.batchName`)}
@@ -416,6 +417,7 @@ export default function WarehouseStockForm({
                 {params.id && (
                   <div className="flex-1 mb-4 sm:mb-0">
                     <TextInput
+                      withAsterisk
                       label="Batch Name"
                       placeholder="Batch Name"
                       {...register(`warehouseStock.${index}.batchName`)}
@@ -438,7 +440,7 @@ export default function WarehouseStockForm({
                     control={control}
                     render={({ field }) => (
                       <DatePicker
-                        selected={dateValues[index]}
+                        selected={dateValues[index] || new Date()}
                         onChange={(date) => {
                           setDateValues((prevDate) => {
                             const updatedDate = [...prevDate];
@@ -455,7 +457,7 @@ export default function WarehouseStockForm({
                         minDate={new Date()}
                         dateFormat="MMMM d, yyyy"
                         placeholderText="Select expiry date"
-                        className="form-control text-sm text-gray-600 w-full h-9 rounded border border-gray-300 px-3 placeholder:text-gray-400"
+                        className="form-control text-sm w-full h-9 rounded border border-gray-300 px-3 placeholder:text-gray-400"
                       />
                     )}
                   />
