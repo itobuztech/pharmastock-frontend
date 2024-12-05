@@ -1,18 +1,20 @@
 import { useMutation } from "@apollo/client";
 import { TokenConfirmationInput } from "gql/graphql";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 import { LoginResponseWithToken } from "interfaces/interfaces";
 import { GetConfirmToken } from "query/token";
-import appConfig from "Lib/appConfig";
-import useQueryParams from "Lib/CustomHooks/useQueryParams";
+import useQueryParams from "Lib/customHooks/useQueryParams";
 
 export default function useTokenConfirmation() {
   const query = useQueryParams();
-  const token = localStorage.getItem(appConfig.storage.userData);
+  const hasExecuted = useRef(false);
 
-  const [tokenConfirmation, {loading: loadingStateForTokenConfirmation, data: responseData }] = useMutation<
+  const [
+    tokenConfirmation,
+    { loading: loadingStateForTokenConfirmation, data: responseData },
+  ] = useMutation<
     LoginResponseWithToken,
     {
       tokenConfirmationInput: {
@@ -20,17 +22,9 @@ export default function useTokenConfirmation() {
       };
     }
   >(GetConfirmToken, {
-    variables: {
-      tokenConfirmationInput: {
-        token: query.confirmation_token,
-      },
-    },
     onCompleted: (d) => {
       if (d) {
-        localStorage.setItem(
-          "userData",
-          JSON.stringify(d.tokenConfirmation)
-        );
+        localStorage.setItem("userData", JSON.stringify(d.tokenConfirmation));
       }
     },
     onError: (e) => {
@@ -39,15 +33,22 @@ export default function useTokenConfirmation() {
   });
 
   useEffect(() => {
-    if (query.confirmation_token && !token) {
-      tokenConfirmation();
+    if (!hasExecuted.current && query.confirmation_token) {
+      hasExecuted.current = true;
+      tokenConfirmation({
+        variables: {
+          tokenConfirmationInput: {
+            token: query.confirmation_token,
+          },
+        },
+      });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query.confirmation_token]);
+  }, [query.confirmation_token, tokenConfirmation]);
 
   return {
     loadingStateForTokenConfirmation,
-    responseData
+    responseData,
   };
 }
