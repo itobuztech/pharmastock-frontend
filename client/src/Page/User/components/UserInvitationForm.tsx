@@ -41,7 +41,7 @@ export default function UserInvitationForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <TextInput label="Email" placeholder="Email" {...register("email")} />
+        <TextInput withAsterisk label="Email" placeholder="Email" {...register("email")} />
         {errors.email && (
           <ErrorMessage message={messagesData.register.email.required} />
         )}

@@ -23,11 +23,11 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { PharmacyStockFormValues } from "../pharmacy.interface";
+import ErrorMessage from "Components/Messeges/ErrorMessage";
+import messagesData from "Lib/messages";
 import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
 import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 import useItemList from "Lib/customHooks/useItemList";
-import ErrorMessage from "Components/Messeges/ErrorMessage";
-import messagesData from "Lib/messages";
 
 const pharmacyStockCreateSchema = yup.object().shape({
   itemArr: yup.array().of(
@@ -186,6 +186,7 @@ export default function PharmacyStockForm({
           render={({ field }) => (
             <Select
               {...field}
+              withAsterisk
               data={selectPharmaList}
               label="Select Pharmacy"
               placeholder="Select Pharmacy"
@@ -208,6 +209,7 @@ export default function PharmacyStockForm({
             render={({ field }) => (
               <Select
                 {...field}
+                withAsterisk
                 data={selectWarehouseItems}
                 label="Select Warehouse"
                 placeholder="Select Warehouse"
@@ -264,6 +266,7 @@ export default function PharmacyStockForm({
                   render={({ field }) => (
                     <Select
                       {...field}
+                      withAsterisk
                       data={id ? selectItem : selectItems}
                       label="Select Product"
                       placeholder="Select Product"
@@ -293,6 +296,7 @@ export default function PharmacyStockForm({
                     control={control}
                     render={({ field }) => (
                       <NumberInput
+                        withAsterisk
                         label="Add Quantity"
                         placeholder="Qty"
                         value={field.value}
