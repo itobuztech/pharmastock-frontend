@@ -70,6 +70,7 @@ export default function ProductForm({
       category: yup
         .array()
         .of(yup.string())
+        .min(1, messagesData.item.category.required) 
         .required(messagesData.item.category.required),
     })
     .required();
@@ -140,7 +141,7 @@ export default function ProductForm({
       itemDetail?.item.Category &&
         setValue(
           "category",
-          itemDetail?.item.Category.map((cat) => cat.id)
+          itemDetail?.item.Category.map((cat) => cat.id) || []
         );
     }
   }, [itemDetail?.item, setValue]);
