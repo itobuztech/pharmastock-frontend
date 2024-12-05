@@ -159,14 +159,17 @@ export default function PharmacyStockSoldForm({
         {fields.map((field, index) => (
           <div key={field.id}>
             <div className="mb-5 relative">
-              <Button
-                onClick={() => remove(index)}
-                variant="transparent"
-                color="red"
-                className="absolute -top-4 -right-4 z-10"
-              >
-                <CiCircleMinus className="w-6 h-6" />
-              </Button>
+              {fields.length > 1 && (
+                <Button
+                  onClick={() => remove(index)}
+                  variant="transparent"
+                  color="red"
+                  className="absolute -top-4 -right-4 z-10"
+                >
+                  <CiCircleMinus className="w-6 h-6" />
+                </Button>
+              )}
+
               <div className="sm:flex gap-3">
                 <div className="flex-1 ">
                   <Controller
@@ -215,9 +218,7 @@ export default function PharmacyStockSoldForm({
                     )}
                   />
                   {errors?.items?.[index]?.qty && (
-                    <ErrorMessage
-                      message={messagesData.pharmacyStock.qty}
-                    />
+                    <ErrorMessage message={messagesData.pharmacyStock.qty} />
                   )}
                 </div>
               </div>
