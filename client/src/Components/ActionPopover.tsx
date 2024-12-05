@@ -21,6 +21,8 @@ interface ActionPopoverProps {
     field: USER_PERMISSION_FIELDS,
     capabilities: USER_PERMISSION_CAPABILITIES
   ) => boolean;
+  requiredPermission?: USER_PERMISSION_FIELDS;
+  requiredCapability?: USER_PERMISSION_CAPABILITIES;
 }
 
 export default function ActionPopover({
@@ -31,6 +33,8 @@ export default function ActionPopover({
   showDeleteModal,
   showDeleteButton,
   handleUserPermissions,
+  requiredPermission,
+  requiredCapability,
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
   const user = useAppSelector((state) => state.user);
@@ -48,7 +52,7 @@ export default function ActionPopover({
           USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
           USER_PERMISSION_CAPABILITIES.VIEW
         ) ||
-          user.role === UserRole.Staff) && (
+          user.role === UserRole.Admin || user.role === UserRole.Staff) && (
           <Button
             variant="transparent"
             fullWidth
@@ -60,7 +64,8 @@ export default function ActionPopover({
         )}
         <div className="hidden">
           {showUserModal &&
-           handleUserPermissions && handleUserPermissions(
+            handleUserPermissions &&
+            handleUserPermissions(
               permission,
               USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT,
               USER_PERMISSION_CAPABILITIES.CREATE

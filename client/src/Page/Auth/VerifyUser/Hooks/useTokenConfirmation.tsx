@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 
 import { LoginResponseWithToken } from "interfaces/interfaces";
 import { GetConfirmToken } from "query/token";
-import useQueryParams from "Lib/CustomHooks/useQueryParams";
+import useQueryParams from "Lib/customHooks/useQueryParams";
 
 export default function useTokenConfirmation() {
   const query = useQueryParams();

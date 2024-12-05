@@ -24,7 +24,7 @@ import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
 import { useAppSelector } from "Lib/Store/hooks";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
-import useItemCatList from "Lib/CustomHooks/useItemCategoryList";
+import useItemCatList from "Lib/customHooks/useItemCategoryList";
 
 export default function ProductForm({
   close,
@@ -61,15 +61,16 @@ export default function ProductForm({
         .trim(messagesData.item.name.trim)
         .matches(/^[a-zA-Z0-9 ]*$/, messagesData.item.name.matches),
       baseUnit: yup.string().required(messagesData.item.baseUnit.required),
-      hsnCode: yup.string().required(messagesData.item.hsnCode.required),
+      hsnCode: yup.string().required(messagesData.item.hsnCode.required).trim(messagesData.item.hsnCode.required),
       instructions: yup
         .string()
-        .required(messagesData.item.instructions.required),
+        .required(messagesData.item.instructions.required).trim(messagesData.item.instructions.required),
       wholesalePrice: yup.number(),
       mrpBaseUnit: yup.number(),
       category: yup
         .array()
         .of(yup.string())
+        .min(1, messagesData.item.category.required) 
         .required(messagesData.item.category.required),
     })
     .required();
@@ -140,7 +141,7 @@ export default function ProductForm({
       itemDetail?.item.Category &&
         setValue(
           "category",
-          itemDetail?.item.Category.map((cat) => cat.id)
+          itemDetail?.item.Category.map((cat) => cat.id) || []
         );
     }
   }, [itemDetail?.item, setValue]);

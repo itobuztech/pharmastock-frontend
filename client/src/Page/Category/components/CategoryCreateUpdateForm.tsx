@@ -41,7 +41,7 @@ export default function CategoryCreateUpdateForm({
   const permission = useAppSelector((state) => state.user.permission);
   const schema = yup
     .object({
-      name: yup.string().required(),
+      name: yup.string().required().trim(),
     })
     .required();
 
@@ -119,6 +119,7 @@ export default function CategoryCreateUpdateForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
         <TextInput
+          withAsterisk
           label="Name"
           placeholder="Name"
           {...register("name")}
