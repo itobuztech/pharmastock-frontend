@@ -16,11 +16,14 @@ import ProductFilter from "./components/ProductFilter";
 import { useAppSelector } from "Lib/Store/hooks";
 import ProductTableSkeleton from "./components/ProductTableSkeleton";
 
-export const formatPriceWithComma = (value: number): string => {
-  return Math.floor(value)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const formatPriceWithComma = (input: number | string): string => {
+  const number = Number(input);
+  if (isNaN(number)) {
+    return "Invalid number";
+  }
+  return number.toLocaleString('en-IN');
 };
+
 
 export default function ProductList({
   handleUserPermissions,

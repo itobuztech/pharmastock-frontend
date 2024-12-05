@@ -12,7 +12,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ButtonComponent from "Components/Button/ButtonComponent";
-import { BaseUnit, CreateItemInput, UpdateItemInput } from "gql/graphql";
+import { BaseUnit } from "gql/graphql";
 import { toast } from "react-toastify";
 import { GetItemUpdate } from "query/item/itemUpdate";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +23,8 @@ import {
 import messagesData from "Lib/messages";
 import { ItemCreate } from "query/item/itemCreate";
 import { useAppSelector } from "Lib/Store/hooks";
-import useItemCatList from "Lib/customHooks/useItemCategoryList";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
+import useItemCatList from "Lib/customHooks/useItemCategoryList";
 
 export default function ProductForm({
   close,
@@ -70,6 +70,7 @@ export default function ProductForm({
       category: yup
         .array()
         .of(yup.string())
+        .min(1, messagesData.item.category.required) 
         .required(messagesData.item.category.required),
     })
     .required();
@@ -140,7 +141,7 @@ export default function ProductForm({
       itemDetail?.item.Category &&
         setValue(
           "category",
-          itemDetail?.item.Category.map((cat) => cat.id)
+          itemDetail?.item.Category.map((cat) => cat.id) || []
         );
     }
   }, [itemDetail?.item, setValue]);
@@ -202,7 +203,7 @@ export default function ProductForm({
                 data={selectItemCatList}
                 maxDropdownHeight={300}
                 onChange={(value) => field.onChange(value)}
-                value={field.value || []}
+                value={field.value as string[] || []}
                 disabled={!editForm}
                 withAsterisk
               />
