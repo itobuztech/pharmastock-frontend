@@ -208,7 +208,7 @@ export default function WarehouseStockForm({
           <TextInput
             label="Organization"
             placeholder="Name"
-            defaultValue={user?.organization?.name}
+            defaultValue={warehouseStockDetails?.warehouseStock.warehouse.organization?.name}
             disabled
           />
         </div>

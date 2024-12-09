@@ -40,10 +40,10 @@ export default function PharmacyTable({
 
   const rows = pharmacyList?.pharmacies.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td className="pl-8">{item.name}</Table.Td>
-      <Table.Td>{item.location}</Table.Td>
-      <Table.Td>{item.contactInfo}</Table.Td>
-      <Table.Td>{item.organization?.name}</Table.Td>
+      <Table.Td className="pl-8">{item?.name ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.location ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.contactInfo ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.organization?.name ?? 'N/A'}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
