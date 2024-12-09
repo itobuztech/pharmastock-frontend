@@ -40,10 +40,10 @@ export default function WarehouseListTable({
 
   const rows = warehouseList?.warehouses.map((item, i) => (
     <Table.Tr key={item.id}>
-      <Table.Td className="pl-8">{item.name}</Table.Td>
-      <Table.Td>{item.location}</Table.Td>
-      <Table.Td>{item.area}</Table.Td>
-      <Table.Td>{item.organization.name}</Table.Td>
+      <Table.Td className="pl-8">{item?.name ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.location ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.area ?? 'N/A'}</Table.Td>
+      <Table.Td>{item?.organization?.name ?? 'N/A'}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
