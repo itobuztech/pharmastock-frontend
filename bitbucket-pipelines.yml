@@ -5,6 +5,7 @@ definitions:
     - step: &s3-pipeline-anchor
         name: "s3 pipeline"
         script:
+          - npm install -g corepack
           - echo 's3 pipeline start'
           - rm -rf  /opt/atlassian/pipelines/agent/build/.bitbucket/pipelines/generated/pipeline/pipes
           - cd client
