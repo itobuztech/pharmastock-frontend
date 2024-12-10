@@ -12,8 +12,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ErrorTracking from './Components/ErrorTracking';
 import ErrorBoundary from 'Components/RouterErrorBoundary';
-import { client } from './apiClient';
 import { ApolloProvider } from '@apollo/client';
+import client from 'aplloClient';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
