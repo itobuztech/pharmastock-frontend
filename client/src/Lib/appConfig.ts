@@ -17,7 +17,7 @@ const appConfig = {
     defaultPage: 10
   },
   api: {
-    graphql: import.meta.env.VITE_PHARMA_STOCK_API_URL
+    graphql: localStorage.getItem('api_url') ? localStorage.getItem('api_url') : import.meta.env.VITE_PHARMA_STOCK_API_URL
   },
  dateFormat: "MM/dd/yyyy"
 };

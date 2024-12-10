@@ -56,7 +56,6 @@ export default function LoginPage() {
         if (d) {
           dispatch(setUser(d.login.user));
           localStorage.setItem(appConfig.storage.userData, JSON.stringify(d.login));
-          localStorage.setItem(appConfig.storage.apiURL, appConfig.api.graphql)
           navigate(`${routes.dashboard.profile.path}`);
           toast.success(messagesData.login.successMessage);
         }

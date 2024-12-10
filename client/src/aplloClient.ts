@@ -7,7 +7,7 @@ const apiURL = localStorage.getItem(appConfig.storage.apiURL);
 const httpLink = createHttpLink({
   uri: apiURL ? apiURL : appConfig.api.graphql, // Replace with your GraphQL endpoint
 });
-
+console.log('httpLink', httpLink);
 const authLink = setContext((_, { headers }) => {
   const userData: any = localStorage.getItem("userData");
   const userDataObj = JSON.parse(userData);
@@ -36,5 +36,5 @@ const client = new ApolloClient({
     },
   },
 });
-
+console.log('cleint.link', client.link);
 export default client;
