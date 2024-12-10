@@ -1,12 +1,19 @@
 image: node:20.10.0-alpine3.19
 
 definitions:
+  caches:
+    client-node-module:
+      key:
+        files: 
+          - yarn.lock
+        path: client/node_modules # the directory you want to be cached.
+
   steps:
     - step: &s3-pipeline-anchor
         name: "s3 pipeline"
         working_directory: client
         caches:
-          - node
+          - client-node-module # Cache is defined above in the definitions section
         script:
           - npm install -g corepack
           - echo 's3 pipeline start'
