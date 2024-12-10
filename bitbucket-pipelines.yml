@@ -4,9 +4,9 @@ definitions:
   steps:
     - step: &s3-pipeline-anchor
         name: "s3 pipeline"
+        working_directory: client
         caches:
-          - node:
-              path: client/node_modules
+          - node
         script:
           - npm install -g corepack
           - echo 's3 pipeline start'
