@@ -4,6 +4,8 @@ definitions:
   steps:
     - step: &s3-pipeline-anchor
         name: "s3 pipeline"
+        caches:
+          - node
         script:
           - npm install -g corepack
           - echo 's3 pipeline start'
@@ -13,8 +15,7 @@ definitions:
             cat <<EOF > ./.env
             VITE_PHARMA_STOCK_API_URL=${VITE_PHARMA_STOCK_API_URL}
             EOF
-          caches:
-            - node
+          
           - yarn
           - yarn build:production
           - pipe: atlassian/aws-s3-deploy:1.6.0
