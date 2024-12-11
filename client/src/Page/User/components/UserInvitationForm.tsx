@@ -83,6 +83,7 @@ export default function UserInvitationForm({
             if (value) {
               setValue("role", value);
               setIsStaff(value === UserRole.Staff ? true : false);
+              setValue('pharmacyId', '');
             }
           }}
         />
@@ -106,6 +107,7 @@ export default function UserInvitationForm({
                 value={field.value}
                 onChange={(value) => {
                   field.onChange(value);
+                  setValue('pharmacyId', String(value))
                 }}
               />
             )}
