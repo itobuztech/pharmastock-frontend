@@ -17,15 +17,15 @@ export default function UserInvitationForm({
   closeModal: () => void;
   refetch: () => void;
 }) {
+  const [isStaff, setIsStaff] = useState(false);
   const { onSubmit, userInvitationSchema, loadingStateForInvite } =
     useUserInvitation({
       closeModal: closeModal,
       refetch: refetch,
+      isStaff: isStaff,
     });
   const selectOrgItem = useOrganizationList();
   const selectPharmacyList = usePharmacyList();
-
-  const [isStaff, setIsStaff] = useState(false);
 
   const {
     register,
@@ -41,7 +41,12 @@ export default function UserInvitationForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
-        <TextInput withAsterisk label="Email" placeholder="Email" {...register("email")} />
+        <TextInput
+          withAsterisk
+          label="Email"
+          placeholder="Email"
+          {...register("email")}
+        />
         {errors.email && (
           <ErrorMessage message={messagesData.register.email.required} />
         )}
@@ -83,7 +88,7 @@ export default function UserInvitationForm({
             if (value) {
               setValue("role", value);
               setIsStaff(value === UserRole.Staff ? true : false);
-              setValue('pharmacyId', '');
+              setValue("pharmacyId", "");
             }
           }}
         />
@@ -107,7 +112,7 @@ export default function UserInvitationForm({
                 value={field.value}
                 onChange={(value) => {
                   field.onChange(value);
-                  setValue('pharmacyId', String(value))
+                  setValue("pharmacyId", String(value));
                 }}
               />
             )}
