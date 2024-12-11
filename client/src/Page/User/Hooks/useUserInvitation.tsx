@@ -7,25 +7,25 @@ interface UserInvitationPayload {
   email: string;
   organizationId: string;
   role: string;
+  pharmacyId?: string;
 }
 
 export default function useUserInvitation({
   closeModal,
   refetch,
+  isStaff,
 }: {
   closeModal: () => void;
   refetch: () => void;
+  isStaff: boolean;
 }) {
   const userInvitationSchema = yup.object().shape({
     email: yup.string().required().trim(),
     organizationId: yup.string().required(),
     role: yup.string().required(),
-    pharmacyId: yup.string().when('$isStaff', {
+    pharmacyId: yup.string().when("$isStaff", {
       is: (isStaff: string | undefined) => isStaff,
-      then: (schema) =>
-        schema
-          .required()
-          .trim(),
+      then: (schema) => schema.required().trim(),
       otherwise: (schema) => schema.notRequired(),
     }),
   });
@@ -40,13 +40,20 @@ export default function useUserInvitation({
   );
 
   const onSubmit = (data: UserInvitationPayload) => {
+    const variables = {
+      email: data.email,
+      organizationId: data.organizationId,
+      role: data.role,
+    };
+    const userInvitationPayload = isStaff
+      ? { ...variables, pharmacyId: data.pharmacyId }
+      : variables;
+
     inviteUser({
-      variables: {
-        inviteUsersInput: data,
-      },
+      variables: { inviteUsersInput: userInvitationPayload },
       onCompleted: (d) => {
         if (d) {
-          toast.success('Invitation sent successfully');
+          toast.success("Invitation sent successfully");
           closeModal();
           refetch();
         }
