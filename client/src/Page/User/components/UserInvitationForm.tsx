@@ -2,13 +2,19 @@ import { Controller, useForm } from "react-hook-form";
 import { Button, Select, TextInput } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import { useLazyQuery } from "@apollo/client";
 
 import useUserInvitation from "../Hooks/useUserInvitation";
 import { UserRole } from "interfaces/interfaces";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 import messagesData from "Lib/messages";
 import useOrganizationList from "Lib/customHooks/useOrganizationList";
-import usePharmacyList from "Lib/customHooks/usePharmacyLists";
+import { PharmaciesByOrganizationQuery } from "query/pharmacy/pharmacyByOrganizationId";
+
+interface SelectBox {
+  value: string;
+  label: string;
+}
 
 export default function UserInvitationForm({
   closeModal,
@@ -18,6 +24,11 @@ export default function UserInvitationForm({
   refetch: () => void;
 }) {
   const [isStaff, setIsStaff] = useState(false);
+  const [getPharmacyByOrganizationId] = useLazyQuery(
+    PharmaciesByOrganizationQuery
+  );
+  const [pharmacyList, setPharmacyList] = useState<SelectBox[]>();
+
   const { onSubmit, userInvitationSchema, loadingStateForInvite } =
     useUserInvitation({
       closeModal: closeModal,
@@ -25,7 +36,6 @@ export default function UserInvitationForm({
       isStaff: isStaff,
     });
   const selectOrgItem = useOrganizationList();
-  const selectPharmacyList = usePharmacyList();
 
   const {
     register,
@@ -53,18 +63,43 @@ export default function UserInvitationForm({
       </div>
 
       <div className="mb-4">
-        <Select
-          label="Organization"
-          {...register("organizationId")}
-          placeholder="Select Organization"
-          data={selectOrgItem}
-          maxDropdownHeight={250}
-          withAsterisk
-          onChange={(value) => {
-            if (value) {
-              setValue("organizationId", value);
-            }
-          }}
+        <Controller
+          name="organizationId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Organization"
+              {...field}
+              value={field.value}
+              placeholder="Select Organization"
+              data={selectOrgItem}
+              maxDropdownHeight={250}
+              withAsterisk
+              onChange={(value) => {
+                field.onChange(value);
+                if (value) {
+                  setIsStaff(false);
+                  setValue("pharmacyId", "");
+                  setValue("organizationId", value);
+                  getPharmacyByOrganizationId({
+                    variables: {
+                      organizationId: value,
+                    },
+                    onCompleted: (d) => {
+                      if (d) {
+                        const pharmacyListData =
+                          d?.pharmaciesByOrganization?.map((item) => ({
+                            value: item.id,
+                            label: item.name,
+                          }));
+                        setPharmacyList(pharmacyListData);
+                      }
+                    },
+                  });
+                }
+              }}
+            />
+          )}
         />
         {errors.organizationId && (
           <ErrorMessage
@@ -73,24 +108,36 @@ export default function UserInvitationForm({
         )}
       </div>
       <div className="mb-4">
-        <Select
-          label="Role"
-          {...register("role")}
-          placeholder="Select Role"
-          className="capitalize"
-          data={[
-            { value: UserRole.Admin, label: "Admin" },
-            { value: UserRole.Staff, label: "Staff" },
-          ]}
-          maxDropdownHeight={250}
-          withAsterisk
-          onChange={(value) => {
-            if (value) {
-              setValue("role", value);
-              setIsStaff(value === UserRole.Staff ? true : false);
-              setValue("pharmacyId", "");
-            }
-          }}
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Role"
+              {...field}
+              value={field.value}
+              placeholder="Select Role"
+              className="capitalize"
+              data={[
+                { value: UserRole.Admin, label: "Admin" },
+                {
+                  value: UserRole.Staff,
+                  label: "Staff",
+                  disabled: !pharmacyList || pharmacyList.length === 0,
+                },
+              ]}
+              maxDropdownHeight={250}
+              withAsterisk
+              onChange={(value) => {
+                field.onChange(value);
+                if (value) {
+                  setValue("role", value);
+                  setIsStaff(value === UserRole.Staff ? true : false);
+                  setValue("pharmacyId", "");
+                }
+              }}
+            />
+          )}
         />
         {errors.role && (
           <ErrorMessage message={messagesData.register.role.required} />
@@ -106,7 +153,7 @@ export default function UserInvitationForm({
               <Select
                 {...field}
                 withAsterisk
-                data={selectPharmacyList}
+                data={pharmacyList}
                 label="Select Pharmacy"
                 placeholder="Select Pharmacy"
                 value={field.value}
