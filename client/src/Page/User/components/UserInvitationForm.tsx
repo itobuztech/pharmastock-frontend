@@ -125,7 +125,6 @@ export default function UserInvitationForm({
           render={({ field }) => (
             <Select
               label="Role"
-              defaultValue={getValues("organizationId") && ""}
               {...field}
               value={field.value}
               placeholder="Select Role"
