@@ -1,7 +1,7 @@
 import { Controller, useForm } from "react-hook-form";
 import { Button, Select, TextInput } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 
 import useUserInvitation from "../Hooks/useUserInvitation";
@@ -42,11 +42,23 @@ export default function UserInvitationForm({
     handleSubmit,
     setValue,
     control,
+    reset,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(userInvitationSchema),
     context: { isStaff },
   });
+
+  useEffect(() => {
+    if (!isStaff && getValues("pharmacyId")) {
+      reset({
+        role: UserRole.Admin,
+      });
+      setValue("pharmacyId", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStaff]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,9 +90,8 @@ export default function UserInvitationForm({
               onChange={(value) => {
                 field.onChange(value);
                 if (value) {
-                  setIsStaff(false);
-                  setValue("pharmacyId", "");
                   setValue("organizationId", value);
+                  setIsStaff(false);
                   getPharmacyByOrganizationId({
                     variables: {
                       organizationId: value,
