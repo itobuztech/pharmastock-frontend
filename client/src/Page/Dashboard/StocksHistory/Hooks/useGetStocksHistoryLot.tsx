@@ -82,6 +82,13 @@ export default function useGetStocksHistorytLot({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage, searchKeyword, endDate, warehouseId, transactionType]);
 
+  useEffect(() => {
+    if (searchKeyword) {
+      setActivePage(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKeyword]);
+
   return {
     getStocksMovementList,
     loadingStateStockMovement,
