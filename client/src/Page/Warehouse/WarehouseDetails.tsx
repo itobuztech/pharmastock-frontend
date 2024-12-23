@@ -8,7 +8,6 @@ import WarehouseForm from "./components/WarehouseForm";
 import { LoadingOverlay, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
-import useOrganizationList from "Lib/customHooks/useOrganizationList";
 import {
   ChildComponentProps,
   CreateWarehouseStocksByWarehouse,
@@ -23,6 +22,7 @@ import {
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
 import { useAppSelector } from "Lib/Store/hooks";
+import useOrganizationList from "Lib/customHooks/useOrganizationList";
 
 export default function WarehouseDetails({
   handleUserPermissions,
@@ -38,6 +38,7 @@ export default function WarehouseDetails({
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
   const permission = useAppSelector((state) => state.user.permission);
+
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
   }>(GetWarehouseDetails, {
