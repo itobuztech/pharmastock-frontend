@@ -90,7 +90,7 @@ export const messagesData = {
     warehouse: "Warehouse is a required field",
     product: "Product is a required field",
     batchName: "Batch name is a required field",
-    qty: "Qty must be at least 1",
+    qty: "Quantity must be at least 1",
     sku: "SKU is a required field",
     expiry: "Expiry date is a required field",
   },
@@ -117,7 +117,7 @@ export const messagesData = {
     pharmacy: "Pharmacy is a required field",
     warehouse: "Warehouse is a required field",
     product: "Product is a required field",
-    qty: "Qty must be at least 1",
+    qty: "Quantity must be at least 1",
   },
   item: {
     name: {
