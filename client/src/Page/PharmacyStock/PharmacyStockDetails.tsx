@@ -6,8 +6,11 @@ import PageHeader from "Components/PageHeader";
 import PharmacyStockForm from "./components/PharmacyStockForm";
 import { GetPharmacyStockDetails } from "query/pharmacyStock/pharmacyStockDetails";
 import { ChildComponentProps } from "interfaces/interfaces";
+import { toast } from "react-toastify";
 
-export default function PharmacyStockDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function PharmacyStockDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const { id } = useParams();
 
   const { data: pharmacyStockDetails, refetch } = useQuery<{
@@ -15,7 +18,9 @@ export default function PharmacyStockDetails({ handleUserPermissions }:Readonly<
   }>(GetPharmacyStockDetails, {
     variables: {
       pharmacyStockId: id,
-
+    },
+    onError: (e) => {
+      toast.error(e.message);
     },
   });
 
