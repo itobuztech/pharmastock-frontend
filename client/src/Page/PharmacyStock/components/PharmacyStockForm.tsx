@@ -25,8 +25,8 @@ import ButtonComponent from "Components/Button/ButtonComponent";
 import { PharmacyStockFormValues } from "../pharmacy.interface";
 import ErrorMessage from "Components/Messeges/ErrorMessage";
 import messagesData from "Lib/messages";
-import useWarehouseItems from "Lib/CustomHooks/useWarehouseItems";
-import usePharmacyList from "Lib/CustomHooks/usePharmacyLists";
+import useWarehouseItems from "Lib/customHooks/useWarehouseItems";
+import usePharmacyList from "Lib/customHooks/usePharmacyLists";
 import useItemList from "Lib/customHooks/useItemList";
 
 const pharmacyStockCreateSchema = yup.object().shape({
