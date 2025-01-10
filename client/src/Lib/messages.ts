@@ -18,7 +18,7 @@ export const messagesData = {
       required: "Role is a required field",
     },
     pharmacy: {
-      required: "Pharmacy is a required field"
+      required: "Pharmacy is a required field",
     },
     email: {
       required: "Email is a required field",
@@ -90,7 +90,7 @@ export const messagesData = {
     warehouse: "Warehouse is a required field",
     product: "Product is a required field",
     batchName: "Batch name is a required field",
-    qty: "Qty must be at least 1",
+    qty: "Quantity must be at least 1",
     sku: "SKU is a required field",
     expiry: "Expiry date is a required field",
   },
@@ -117,7 +117,7 @@ export const messagesData = {
     pharmacy: "Pharmacy is a required field",
     warehouse: "Warehouse is a required field",
     product: "Product is a required field",
-    qty: "Qty must be at least 1",
+    qty: "Quantity must be at least 1",
   },
   item: {
     name: {
@@ -177,6 +177,7 @@ export const messagesData = {
       newPassword: "New Password is a required field",
       confirmPassword: "Confirm Password is a required field",
       setNewPassword: "Not same as old password",
+      passwordMatch: "New and Confirm password does not match",
     },
     success: "Profile Updated Successfully",
     passwordChangeSuccess: "Password Changed Successfully",

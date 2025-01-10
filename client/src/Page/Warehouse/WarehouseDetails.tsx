@@ -45,6 +45,9 @@ export default function WarehouseDetails({
     variables: {
       warehouseId: id,
     },
+    onError: (e) => {
+      toast.error(e.message);
+    }
   });
 
   const [
