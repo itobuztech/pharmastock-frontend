@@ -296,23 +296,27 @@ export default function WarehouseStockForm({
                       placeholder="Select Product"
                       withAsterisk
                       onChange={(value) => {
-                        fetchSku({
-                          variables: {
-                            generateSkuNameInput: {
-                              organizationId:
-                                warehouseDetails?.warehouse.organization?.id ??
-                                user?.organization.id,
-                              warehouseId: id || getValues(`warehouseId`),
-                              itemId: value,
+                        setValue(`warehouseStock.${index}.sku`, "");
+                        if (value) {
+                          fetchSku({
+                            variables: {
+                              generateSkuNameInput: {
+                                organizationId:
+                                  warehouseDetails?.warehouse.organization
+                                    ?.id || user?.organization.id,
+                                warehouseId: id ? id : getValues(`warehouseId`),
+                                itemId: value,
+                              },
                             },
-                          },
-                          onCompleted: (data) => {
-                            setValue(
-                              `warehouseStock.${index}.sku`,
-                              data?.generateSKU.sku as string
-                            );
-                          },
-                        });
+                            onCompleted: (data) => {
+                              setValue(
+                                `warehouseStock.${index}.sku`,
+                                data?.generateSKU.sku as string
+                              );
+                            },
+                          });
+                        }
+
                         setValue(
                           `warehouseStock.${index}.itemId`,
                           String(value)
