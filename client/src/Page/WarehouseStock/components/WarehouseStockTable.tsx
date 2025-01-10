@@ -75,7 +75,7 @@ export default function WarehouseStockTable({
               <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
               <Table.Th>Warehouse</Table.Th>
-              <Table.Th>Qty</Table.Th>
+              <Table.Th>Quantity</Table.Th>
               <Table.Th>Total Wholesale Price</Table.Th>
               <Table.Th>Total MRP BaseUnit</Table.Th>
               <Table.Th>SKU</Table.Th>

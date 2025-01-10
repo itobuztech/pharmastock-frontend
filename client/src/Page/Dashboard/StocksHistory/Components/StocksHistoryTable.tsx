@@ -80,7 +80,7 @@ export default function StocksHistoryTable({
               <Table.Th>Warehouse</Table.Th>
               <Table.Th>Organisation</Table.Th>
               <Table.Th>Transaction Type</Table.Th>
-              <Table.Th>Total Lot Item Qty</Table.Th>
+              <Table.Th>Total Lot Item Quantity</Table.Th>
 
               <Table.Th className="text-right pr-8">Action</Table.Th>
             </Table.Tr>

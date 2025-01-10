@@ -352,7 +352,7 @@ export default function WarehouseStockForm({
                 <div className="flex-1 mb-4">
                   <NumberInput
                     label="Total Quantity"
-                    placeholder="Qty"
+                    placeholder="Quantity"
                     value={qtyValue}
                     onChange={setQtyValue}
                     min={0}
@@ -369,7 +369,7 @@ export default function WarehouseStockForm({
                 <div className="flex-1">
                   <NumberInput
                     label="Add Quantity"
-                    placeholder="Qty"
+                    placeholder="Quantity"
                     {...register(`warehouseStock.${index}.qty`)}
                     value={qtyValues[index] as any}
                     onChange={(value) => handleQtyChange(index, Number(value))}

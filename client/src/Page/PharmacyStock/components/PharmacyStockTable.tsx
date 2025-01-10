@@ -72,7 +72,7 @@ export default function PharmacyStockTable({
               <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
               <Table.Th>Pharmacy</Table.Th>
-              <Table.Th>Qty</Table.Th>
+              <Table.Th>Quantity</Table.Th>
               {user.role !== UserRole.Staff && (
                 <Table.Th className="text-right pr-8">Action</Table.Th>
               )}
