@@ -10,7 +10,6 @@ import {
 } from "enums/enums";
 import { Permissions, PharmacyStocks } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
-import { SelectedPharmacyStock } from "../pharmacyStock.interface";
 import { useAppSelector } from "Lib/Store/hooks";
 import { UserRole } from "gql/graphql";
 import { formatPriceWithComma } from "Page/Product/ProductList";
@@ -19,10 +18,6 @@ interface PharmacyStockTableProps {
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
   pharmaciesStockList?: PharmacyStocks;
   totalCount: number;
-  selectedPharmacyStock: SelectedPharmacyStock[];
-  setSelectedPharmacyStock: React.Dispatch<
-    React.SetStateAction<SelectedPharmacyStock[]>
-  >;
   handleUserPermissions: (
     permission: Permissions,
     field: USER_PERMISSION_FIELDS,
