@@ -194,7 +194,7 @@ export default function PharmacyStockSoldForm({
                   />
                   {errors?.items?.[index]?.itemId && (
                     <ErrorMessage
-                      message={errors?.items?.[index]?.itemId.message}
+                      message={errors?.items?.[index]?.itemId?.message}
                     />
                   )}
                 </div>
@@ -207,7 +207,7 @@ export default function PharmacyStockSoldForm({
                       <NumberInput
                         withAsterisk
                         label="Add Quantity"
-                        placeholder="Qty"
+                        placeholder="Quantity"
                         value={field.value}
                         onChange={(value) => {
                           field.onChange(value);
