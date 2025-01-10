@@ -6,7 +6,7 @@ import {
   rem,
   Text,
 } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -66,12 +66,14 @@ export default function PasswordStrength({
   errors,
   disabled,
   label,
+  onValidPassword,
 }: {
   name: string;
   control: Control<any>;
   errors?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
   disabled?: boolean;
   label: string;
+  onValidPassword?: (valid: boolean) => void;
 }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const {
@@ -91,6 +93,16 @@ export default function PasswordStrength({
 
   const strength = getStrength(value);
   const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";
+  const allRequirementsMet =
+    requirements.every((requirement) => requirement.re.test(value)) &&
+    value?.length > 5;
+
+  // Notify parent about password validity
+  useEffect(() => {
+    if (onValidPassword) {
+      onValidPassword(allRequirementsMet);
+    }
+  }, [value, allRequirementsMet, onValidPassword]);
 
   return (
     <Popover
