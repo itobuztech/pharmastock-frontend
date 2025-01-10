@@ -42,7 +42,7 @@ export default function PharmacyDetails({
     {
       variables: {
         pharmacyId: id,
-      },
+      }
     }
   );
 
@@ -99,11 +99,13 @@ export default function PharmacyDetails({
       <PageHeader
         title="Pharmacy Details"
         showBackButton={true}
-        showCreateButton={handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) && !id}
+        showCreateButton={
+          handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.STOCK_MANAGEMENT_STAFF,
+            USER_PERMISSION_CAPABILITIES.CREATE
+          ) && !id
+        }
         onClick={open}
         buttonText="Add Pharmacy Stock"
       />
@@ -153,7 +155,6 @@ export default function PharmacyDetails({
         size={"sm"}
       >
         <PharmacyStockForm
-          pharmacyName={pharmacyDetails?.pharmacy.name}
           pharmacyId={pharmacyDetails?.pharmacy.id}
           close={close}
           refetchItem={pharmacyRefetch}
