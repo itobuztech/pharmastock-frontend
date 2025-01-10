@@ -5,6 +5,7 @@ import { GetWarehouseStockDetails } from "query/warehouse/warehouseStockDetails"
 import { useParams } from "react-router-dom";
 import { WarehouseStock } from "gql/graphql";
 import { ChildComponentProps } from "interfaces/interfaces";
+import { toast } from "react-toastify";
 
 export default function WarehouseStockDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
   const { id } = useParams();
@@ -15,6 +16,9 @@ export default function WarehouseStockDetails({ handleUserPermissions }:Readonly
     variables: {
       warehouseStockId: id,
     },
+    onError: (e) => {
+      toast.error(e.message);
+    }
   });
 
   return (

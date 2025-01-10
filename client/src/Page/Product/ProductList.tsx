@@ -15,15 +15,15 @@ import Search from "Components/Search";
 import ProductFilter from "./components/ProductFilter";
 import { useAppSelector } from "Lib/Store/hooks";
 import ProductTableSkeleton from "./components/ProductTableSkeleton";
+import appConfig from "Lib/appConfig";
 
 export const formatPriceWithComma = (input: number | string): string => {
   const number = Number(input);
   if (isNaN(number)) {
     return "Invalid number";
   }
-  return number.toLocaleString('en-IN');
+  return number.toLocaleString("en-IN");
 };
-
 
 export default function ProductList({
   handleUserPermissions,
@@ -74,12 +74,19 @@ export default function ProductList({
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
-          take: 10,
+          take: appConfig.pagination.defaultPage,
         },
         searchText: searchKeyword,
       },
     });
   }, [activePage, fetchItemList, refetch, searchKeyword]);
+
+  useEffect(() => {
+    if (searchKeyword) {
+      setActivePage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKeyword]);
 
   useEffect(() => {
     if (newItemList) {
@@ -158,9 +165,7 @@ export default function ProductList({
         />
       </Flex>
 
-      {loading && (
-       <ProductTableSkeleton numOfRows={6} />
-      )}
+      {loading && <ProductTableSkeleton numOfRows={6} />}
 
       {!loading && itemList?.items.length === 0 && <EmptyList />}
 

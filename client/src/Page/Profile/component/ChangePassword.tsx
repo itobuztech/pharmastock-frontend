@@ -20,6 +20,7 @@ export default function ChangePassword() {
   const [editPassForm, setEditPassForm] = useState(
     isSetPasswordPage ? true : false
   );
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const passwordSchema = yup
     .object({
@@ -41,6 +42,13 @@ export default function ChangePassword() {
       confirmPassword: yup
         .string()
         .required(messagesData.profile.password.confirmPassword)
+        .test(
+          "passwords-match",
+          messagesData.profile.password.passwordMatch,
+          function (value) {
+            return value === this.parent.newPassword;
+          }
+        )
         .trim(messagesData.profile.password.confirmPassword),
     })
     .required();
@@ -85,6 +93,10 @@ export default function ChangePassword() {
     });
   };
 
+  const handlePasswordValidityChange = (valid: boolean) => {
+    setIsPasswordValid(valid);
+  };
+
   return (
     <form onSubmit={handleSubmit(handleChangePassword)}>
       <Space h="md" />
@@ -110,6 +122,7 @@ export default function ChangePassword() {
             name="newPassword"
             disabled={!editPassForm}
             label="New Password"
+            onValidPassword={handlePasswordValidityChange}
           />
         </div>
         <Text size="sm" mt={5} c="red.6">
@@ -145,7 +158,11 @@ export default function ChangePassword() {
               </Button>
             )}
 
-            <ButtonComponent type="submit" loading={resetPassLoader}>
+            <ButtonComponent
+              type="submit"
+              loading={resetPassLoader}
+              disabled={!isPasswordValid}
+            >
               {isSetPasswordPage ? "Save" : "Update"}
             </ButtonComponent>
           </div>

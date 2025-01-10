@@ -18,7 +18,7 @@ export const messagesData = {
       required: "Role is a required field",
     },
     pharmacy: {
-      required: "Pharmacy is a required field"
+      required: "Pharmacy is a required field",
     },
     email: {
       required: "Email is a required field",
@@ -177,6 +177,7 @@ export const messagesData = {
       newPassword: "New Password is a required field",
       confirmPassword: "Confirm Password is a required field",
       setNewPassword: "Not same as old password",
+      passwordMatch: "New and Confirm password does not match",
     },
     success: "Profile Updated Successfully",
     passwordChangeSuccess: "Password Changed Successfully",
