@@ -18,6 +18,7 @@ import {
 import { DeleteUserBySuperAdmin } from "query/user/userDelete";
 import UserInvitationForm from "./components/UserInvitationForm";
 import UserTableSkeleton from "./components/UserTableSkeleton";
+import appConfig from "Lib/appConfig";
 
 export default function UserList({
   handleUserPermissions,
@@ -63,18 +64,25 @@ export default function UserList({
         pagination: true,
         paginationArgs: {
           skip: activePage * 10 - 10,
-          take: 10,
+          take: appConfig.pagination.defaultPage,
         },
         searchText: searchKeyword,
       },
     });
-  }
+  };
 
   /* ====== User Pagination Variable ====== */
   useEffect(() => {
     getUserList();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchUserList, activePage, refetch, searchKeyword]);
+
+  useEffect(() => {
+    if (searchKeyword) {
+      setActivePage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKeyword]);
 
   /* ====== User Delete Query ====== */
   const [deleteUser] = useMutation(DeleteUserBySuperAdmin, {

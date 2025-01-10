@@ -229,7 +229,7 @@ export default function PharmacyStockForm({
         <div className="mb-4">
           <NumberInput
             label="Total Quantity"
-            placeholder="Qty"
+            placeholder="Quantity"
             value={qtyValue}
             onChange={setQtyValue}
             min={0}
@@ -298,7 +298,7 @@ export default function PharmacyStockForm({
                       <NumberInput
                         withAsterisk
                         label="Add Quantity"
-                        placeholder="Qty"
+                        placeholder="Quantity"
                         value={field.value}
                         onChange={(value) => {
                           field.onChange(value);

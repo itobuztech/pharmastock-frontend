@@ -300,9 +300,9 @@ export default function WarehouseStockForm({
                           variables: {
                             generateSkuNameInput: {
                               organizationId:
-                                warehouseDetails?.warehouse.organization?.id ||
+                                warehouseDetails?.warehouse.organization?.id ??
                                 user?.organization.id,
-                              warehouseId: id ? id : getValues(`warehouseId`),
+                              warehouseId: id || getValues(`warehouseId`),
                               itemId: value,
                             },
                           },
@@ -320,7 +320,6 @@ export default function WarehouseStockForm({
 
                         field.onChange(value);
                       }}
-                      value={field.value}
                       data={selectItem}
                       maxDropdownHeight={300}
                       searchable
@@ -355,7 +354,7 @@ export default function WarehouseStockForm({
                 <div className="flex-1 mb-4">
                   <NumberInput
                     label="Total Quantity"
-                    placeholder="Qty"
+                    placeholder="Quantity"
                     value={qtyValue}
                     onChange={setQtyValue}
                     min={0}

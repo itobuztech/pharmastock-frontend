@@ -73,7 +73,7 @@ export default function StocksHistoryDetailsCards({
               <Table.Th>Pharmacy</Table.Th>
               <Table.Th>Pharmacy Clearance</Table.Th>
               <Table.Th>Batch Name</Table.Th>
-              <Table.Th>Qty</Table.Th>
+              <Table.Th>Quantity</Table.Th>
               <Table.Th>Expiry Date</Table.Th>
 
               <Table.Th>Transaction Type</Table.Th>

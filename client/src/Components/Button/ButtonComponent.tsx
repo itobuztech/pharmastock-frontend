@@ -20,6 +20,7 @@ export default function ButtonComponent({
   type,
   fullWidth,
   size,
+  disabled,
 }: {
   onClick?: () => void;
   loading?: boolean;
@@ -31,9 +32,11 @@ export default function ButtonComponent({
   variant?: ButtonVariant;
   fullWidth?: boolean;
   size?: MantineSize;
+  disabled?: boolean;
 }) {
   return (
     <Button
+      disabled={disabled}
       loading={loading}
       data-test-id={testId}
       className={className}
