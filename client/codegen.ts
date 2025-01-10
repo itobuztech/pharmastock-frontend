@@ -2,7 +2,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "https://pharma-stock-api.x-studio.io/graphql",
+  schema: import.meta.env.VITE_PHARMA_STOCK_API_URL,
   documents: ["src/**/*.tsx", "src/**/*.ts"],
   generates: {
     "src/gql/": {
