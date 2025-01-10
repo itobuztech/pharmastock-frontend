@@ -38,6 +38,7 @@ export default function WarehouseDetails({
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
   const permission = useAppSelector((state) => state.user.permission);
+
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
   }>(GetWarehouseDetails, {
