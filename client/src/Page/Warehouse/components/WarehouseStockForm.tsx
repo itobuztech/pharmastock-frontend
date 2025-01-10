@@ -42,9 +42,15 @@ const schema = yup
           .string()
           .required(messagesData.warehouseStock.warehouse),
         itemId: yup.string().required(messagesData.warehouseStock.product),
-        batchName: yup.string().required(messagesData.warehouseStock.batchName).trim(messagesData.warehouseStock.batchName),
+        batchName: yup
+          .string()
+          .required(messagesData.warehouseStock.batchName)
+          .trim(messagesData.warehouseStock.batchName),
         qty: yup.number().min(1, messagesData.warehouseStock.qty).required(),
-        sku: yup.string().required(messagesData.warehouseStock.sku).trim(messagesData.warehouseStock.sku),
+        sku: yup
+          .string()
+          .required(messagesData.warehouseStock.sku)
+          .trim(messagesData.warehouseStock.sku),
         expiry: yup.date().required(messagesData.warehouseStock.expiry),
       })
     ),
@@ -208,7 +214,9 @@ export default function WarehouseStockForm({
           <TextInput
             label="Organization"
             placeholder="Name"
-            defaultValue={warehouseStockDetails?.warehouseStock.warehouse.organization?.name}
+            defaultValue={
+              warehouseStockDetails?.warehouseStock.warehouse.organization?.name
+            }
             disabled
           />
         </div>
@@ -292,9 +300,9 @@ export default function WarehouseStockForm({
                           variables: {
                             generateSkuNameInput: {
                               organizationId:
-                                warehouseDetails?.warehouse.organization?.id ||
+                                warehouseDetails?.warehouse.organization?.id ??
                                 user?.organization.id,
-                              warehouseId: id ? id : getValues(`warehouseId`),
+                              warehouseId: id || getValues(`warehouseId`),
                               itemId: value,
                             },
                           },
@@ -312,7 +320,6 @@ export default function WarehouseStockForm({
 
                         field.onChange(value);
                       }}
-                      value={field.value}
                       data={selectItem}
                       maxDropdownHeight={300}
                       searchable
@@ -332,14 +339,9 @@ export default function WarehouseStockForm({
                   label="SKU"
                   withAsterisk
                   placeholder="SKU"
-                  {...register(`warehouseStock.${index}.sku`)}
+                  value={getValues(`warehouseStock.${index}.sku`)}
                   disabled={warehouseStockId ? true : false}
                 />
-                {errors?.warehouseStock?.[index]?.sku && (
-                  <ErrorMessage
-                    message={errors?.warehouseStock?.[index]?.sku?.message}
-                  />
-                )}
               </div>
             </div>
 
@@ -367,15 +369,28 @@ export default function WarehouseStockForm({
                 USER_PERMISSION_CAPABILITIES.EDIT
               ) && (
                 <div className="flex-1">
-                  <NumberInput
-                    label="Add Quantity"
-                    placeholder="Quantity"
-                    {...register(`warehouseStock.${index}.qty`)}
-                    value={qtyValues[index] as any}
-                    onChange={(value) => handleQtyChange(index, Number(value))}
-                    min={0}
-                    max={10000}
-                    withAsterisk
+                  <Controller
+                    name={`warehouseStock.${index}.qty`}
+                    control={control}
+                    render={({ field }) => (
+                      <NumberInput
+                        label="Add Quantity"
+                        placeholder="Qty"
+                        {...field}
+                        value={qtyValues[index] as any}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleQtyChange(index, Number(value));
+                          setValue(
+                            `warehouseStock.${index}.qty`,
+                            Number(value)
+                          );
+                        }}
+                        min={0}
+                        max={10000}
+                        withAsterisk
+                      />
+                    )}
                   />
                   {errors?.warehouseStock?.[index]?.qty && (
                     <ErrorMessage
