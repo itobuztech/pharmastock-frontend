@@ -82,11 +82,9 @@ export default function LoginPage() {
       style={{ height: `${height}px` }}
       className="flex flex-col justify-center items-center gap-7 bg-gray-50"
     >
-      <Container size={420} my={40} className="max-w-md w-full">
+      <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>
-          <Title ta="center">
-            Welcome back!
-          </Title>
+          <Title ta="center">Welcome back!</Title>
 
           <Text c="dimmed" size="sm" ta="center" mt={5}>
             Do not have an account yet?{" "}
@@ -120,9 +118,11 @@ export default function LoginPage() {
               </Text>
               <Group justify="space-between" mt="lg">
                 <Checkbox label="Remember me" />
-                <Anchor component="button" size="sm">
-                  Forgot password?
-                </Anchor>
+                <Link to={routes.forgetPassword.path} className="no-underline">
+                  <Anchor component="button" size="sm">
+                    Forgot password?
+                  </Anchor>
+                </Link>
               </Group>
 
               <ButtonComponent
