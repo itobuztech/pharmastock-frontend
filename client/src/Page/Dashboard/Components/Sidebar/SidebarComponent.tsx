@@ -19,7 +19,7 @@ export default function SidebarComponent() {
 
   return (
     <div className="flex flex-col" data-test-id="dashboard-sidebar">
-      <div className="lg:w-72">
+      <div>
         <Link
           className="flex items-center justify-start mx-6 mt-5 lg:mt-10 no-underline"
           to={routes.dashboard.profile.path}
