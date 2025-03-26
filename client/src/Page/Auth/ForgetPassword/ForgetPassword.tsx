@@ -75,7 +75,7 @@ export default function ForgetPassWord() {
         <Title ta="center" className="title">
           Forgot your password?
         </Title>
-        <Text c="dimmed" fz="sm" ta="center">
+        <Text c="dimmed" fz="sm" ta="center" mt="xs">
           Enter your email to get a reset link
         </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,6 +85,7 @@ export default function ForgetPassWord() {
               placeholder="Email"
               {...register("email")}
               withAsterisk
+              size="md"
             />
             <Text size="sm" mt={5} c="red.6">
               {errors.email?.message}
