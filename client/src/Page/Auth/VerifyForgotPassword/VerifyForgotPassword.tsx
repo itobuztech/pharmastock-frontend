@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { ForgotPasswordVerify } from "query/forgotPassword/forgotPasswordVerify";
 import routes from "Lib/Routes/Routes";
+import './_validateForgetPassword.scoped.scss';
 interface ForgetPasswordPayload {
   newPassword: string;
 }
@@ -85,7 +86,7 @@ export default function VerifyForgotPassword() {
       className="flex justify-center items-center bg-gray-50"
     >
       <Container size={460} my={30} className="max-w-lg w-full">
-        <Title ta="center">Create New Password</Title>
+        <Title ta="center" className="title">Create New Password</Title>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
             <PasswordInput
@@ -99,7 +100,7 @@ export default function VerifyForgotPassword() {
             <PasswordInput
               label="Confirm Password"
               placeholder="Confirm Password"
-              mt="md"
+              mt="lg"
               {...register("confirmPassword")}
               size="md"
               error={errors.confirmPassword?.message}
@@ -110,7 +111,7 @@ export default function VerifyForgotPassword() {
               fullWidth
               size="md"
               loading={loading}
-              mt="lg"
+              mt="xl"
             >
               Submit
             </ButtonComponent>
