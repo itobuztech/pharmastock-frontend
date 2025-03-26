@@ -9,11 +9,13 @@ import { UserRole } from "gql/graphql";
 export default function SidebarComponent() {
   const permission = useAppSelector((state) => state.user.permission);
 
-  const handleSliderOptionsVisible = (
-    field: USER_PERMISSION_FIELDS
-  ): boolean => {
+  const handleSliderOptionsVisible = (field: USER_PERMISSION_FIELDS): boolean => {
+    if (!permission || !permission[field]) {
+      return false;
+    }
     return permission[field]?.CAPABILITIES?.VIEW !== null;
   };
+  
 
   const user = useAppSelector((state) => state.user);
 
