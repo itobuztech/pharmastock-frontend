@@ -82,7 +82,7 @@ export default function LoginPage() {
       style={{ height: `${height}px` }}
       className="flex flex-col justify-center items-center gap-7 bg-gray-50"
     >
-      <Container size={420} my={40} className="max-w-md w-full">
+      <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>
           <Title ta="center">
             Welcome back!
