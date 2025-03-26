@@ -25,6 +25,7 @@ import { setUser } from "Lib/Store/User/User.Slice";
 import messagesData from "Lib/messages";
 import { LoginUserInput } from "gql/graphql";
 import appConfig from "Lib/appConfig";
+import './_login.scoped.scss';
 
 export default function LoginPage() {
   const { height } = useViewportSize();
@@ -84,7 +85,7 @@ export default function LoginPage() {
     >
       <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>
-          <Title ta="center">Welcome back!</Title>
+          <Title ta="center" className="title">Welcome back!</Title>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
@@ -93,6 +94,7 @@ export default function LoginPage() {
                 placeholder="Email"
                 {...register("email")}
                 withAsterisk
+                size="md"
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.email?.message}
@@ -102,7 +104,8 @@ export default function LoginPage() {
                 placeholder="Password"
                 {...register("password")}
                 withAsterisk
-                mt="md"
+                mt="lg"
+                size="md"
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.password?.message}
