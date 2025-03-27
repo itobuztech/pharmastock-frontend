@@ -1,14 +1,14 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
-import { OrganizationList, Permissions } from "interfaces/interfaces";
 import React from "react";
-import ActionPopover from "Components/ActionPopover";
+import { Flex, Pagination, Space, Table } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+
+import { OrganizationList, Permissions } from "interfaces/interfaces";
+import ActionPopover from "Components/ActionPopover";
 import routes from "Lib/Routes/Routes";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
-
 interface OrganizationTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -62,7 +62,7 @@ export default function OrganizationTable({
 
   return (
     <div>
-      <div className=" bg-white overflow-auto">
+      <div className="rounded-lg overflow-auto custom-shadow">
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"

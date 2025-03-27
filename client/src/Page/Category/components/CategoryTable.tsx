@@ -71,7 +71,7 @@ export default function CategoryTable({
 
   return (
     <div>
-      <div className="bg-white overflow-auto">
+      <div className="overflow-auto custom-shadow rounded-lg">
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"

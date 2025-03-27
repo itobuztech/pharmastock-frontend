@@ -59,7 +59,7 @@ export default function StocksHistoryDetailsCards({
 
   return (
     <div>
-      <div className="bg-white overflow-auto">
+      <div className=" custom-shadow rounded-lg overflow-auto">
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"

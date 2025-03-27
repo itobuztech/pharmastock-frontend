@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PageHeader from "Components/PageHeader";
 import { useParams } from "react-router-dom";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GetPharmacyDetails } from "query/pharmacy/pharmacyDetails";
 import { CreatePharmacyStockInput, Pharmacy } from "gql/graphql";
 import PharmacyForm from "./components/PharmacyForm";
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { LoadingOverlay, Modal, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import PharmacyStockForm from "Page/PharmacyStock/components/PharmacyStockForm";
 import PharmacyStockTable from "Page/PharmacyStock/components/PharmacyStockTable";
@@ -36,6 +36,9 @@ export default function PharmacyDetails({
   const [newPharmacyStockList, setNewPharmacyStockList] =
     useState<CreatePharmacyStockInput>();
   const permission = useAppSelector((state) => state.user.permission);
+  const { colorScheme } = useMantineColorScheme();
+    const theme = useMantineTheme();
+    const isDark = colorScheme === "dark";
 
   const { data: pharmacyDetails, refetch } = useQuery<{ pharmacy: Pharmacy }>(
     GetPharmacyDetails,
@@ -95,7 +98,7 @@ export default function PharmacyDetails({
   }, [newPharmacyStockList, pharmacyRefetch, refetch]);
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Pharmacy Details"
         showBackButton={true}
@@ -110,7 +113,7 @@ export default function PharmacyDetails({
         buttonText="Add Pharmacy Stock"
       />
 
-      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-1/2 custom-shadow rounded-md py-6 px-6">
         <PharmacyForm
           id={id}
           close={() => console.log()}
@@ -131,7 +134,12 @@ export default function PharmacyDetails({
       )}
 
       <div className="mt-8">
-        <h2 className="text-blue-900 text-2xl font-bold m-0 mb-8">
+        <h2 className=" text-2xl font-bold m-0 mb-8" style={{
+            color:
+              isDark
+                ? theme.colors.blue[4]
+                : theme.colors.blue[9],
+          }}>
           Pharmacy Stocks
         </h2>
         {!pharmacyStocksList?.pharmacyStocks.length ? (

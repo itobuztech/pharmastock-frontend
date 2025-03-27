@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { Modal } from "@mantine/core";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import { toast } from "react-toastify";
+
 import {
   ChildComponentProps,
   createOrganizationInput,
   OrganizationList,
   SelectOrgItem,
 } from "interfaces/interfaces";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { Modal } from "@mantine/core";
-import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { toast } from "react-toastify";
 import { ORGANIZATIONS_LIST_QUERY } from "query/organization/organizationList";
 import { DeleteOrganization } from "query/organization/organizationDelete";
 import PageHeader from "Components/PageHeader";
@@ -139,7 +140,7 @@ export default function OrganizationsPage({
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
         showCreateButton={handleUserPermissions(
