@@ -61,7 +61,7 @@ export default function ForgetPassWord() {
       style={{ height: `${height}px` }}
       className="flex justify-center items-center"
     >
-      <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
+      <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8  rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
         <div className="self-center mb-6 text-xl font-light text-black sm:text-2xl ">
           Forgot your password?
         </div>
