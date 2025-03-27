@@ -15,9 +15,6 @@ export const routes = {
   forgetPassword: {
     path: "/forgotPassword",
   },
-  // register: {
-  //   path: "/register",
-  // },
   token: {
     path: "/token",
   },
