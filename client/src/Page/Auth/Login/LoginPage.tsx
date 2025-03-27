@@ -1,7 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
-import { PasswordInput, TextInput, Text } from "@mantine/core";
+import {
+  PasswordInput,
+  TextInput,
+  Text,
+  Container,
+  Title,
+  Anchor,
+  Paper,
+  Group,
+  Checkbox,
+} from "@mantine/core";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,6 +25,7 @@ import { setUser } from "Lib/Store/User/User.Slice";
 import messagesData from "Lib/messages";
 import { LoginUserInput } from "gql/graphql";
 import appConfig from "Lib/appConfig";
+import './_login.scoped.scss';
 
 export default function LoginPage() {
   const { height } = useViewportSize();
@@ -55,7 +66,10 @@ export default function LoginPage() {
       onCompleted: (d) => {
         if (d) {
           dispatch(setUser(d.login.user));
-          localStorage.setItem(appConfig.storage.userData, JSON.stringify(d.login));
+          localStorage.setItem(
+            appConfig.storage.userData,
+            JSON.stringify(d.login)
+          );
           localStorage.setItem(appConfig.storage.apiURL, appConfig.api.graphql);
           navigate(`${routes.dashboard.profile.path}`);
           toast.success(messagesData.login.successMessage);
@@ -67,77 +81,52 @@ export default function LoginPage() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex flex-col justify-center items-center gap-7"
+      className="flex flex-col justify-center items-center gap-7 bg-gray-50"
     >
-      <div className="flex items-center justify-start mx-6 mt-10 no-underline">
-        <span className="text-black  ml-4 text-2xl font-bold">
-          Pharma Stock
-        </span>
-      </div>
-      <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
-        <h1 className="self-center font-light text-black m-0">Welcome</h1>
-        <h3 className="self-center font-light text-black m-0">
-          Login to your account
-        </h3>
-        <div className="mt-8">
+      <Container size={420} my={40} className="max-w-lg w-full">
+        <div style={{ width: "100%" }}>
+          <Title ta="center" className="title">Welcome back!</Title>
+
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-4">
+            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
               <TextInput
                 label="Email"
                 placeholder="Email"
                 {...register("email")}
                 withAsterisk
+                size="md"
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.email?.message}
               </Text>
-            </div>
-            <div className="mb-4">
               <PasswordInput
                 label="Password"
                 placeholder="Password"
                 {...register("password")}
                 withAsterisk
+                mt="lg"
+                size="md"
               />
               <Text size="sm" mt={5} c="red.6">
                 {errors.password?.message}
               </Text>
-            </div>
+              <Group justify="space-between" mt="lg">
+                <Checkbox label="Remember me" />
+                <Anchor size="sm">Forgot password?</Anchor>
+              </Group>
 
-            <div className="flex items-center mb-6 mt-4">
-              <div className="flex ml-auto">
-                <Link
-                  to={routes.forgetPassword.path}
-                  className="inline-flex text-xs  text-gray-500 sm:text-sm  hover:text-gray-700"
-                >
-                  Forgot Your Password?
-                </Link>
-              </div>
-            </div>
-
-            <div className="text-right w-full">
               <ButtonComponent
                 type="submit"
+                mt="xl"
                 loading={loginLoader}
                 fullWidth={true}
               >
-                Login
+                Sign in
               </ButtonComponent>
-            </div>
+            </Paper>
           </form>
         </div>
-        {/* <div className="flex items-center justify-center mt-6">
-          <span className="inline-flex items-center text-xs text-center text-gray-500">
-            You don&#x27;t have an account yet?&nbsp;
-            <Link
-              to={routes.register.path}
-              className="text-blue-900 hover:text-blue-600 transition-colors"
-            >
-              Sign Up
-            </Link>
-          </span>
-        </div> */}
-      </div>
+      </Container>
     </div>
   );
 }

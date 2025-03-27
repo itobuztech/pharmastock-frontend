@@ -15,11 +15,13 @@ export default function SidebarComponent() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const isDark = colorScheme === "dark";
 
-  const handleSliderOptionsVisible = (
-    field: USER_PERMISSION_FIELDS
-  ): boolean => {
+  const handleSliderOptionsVisible = (field: USER_PERMISSION_FIELDS): boolean => {
+    if (!permission || !permission[field]) {
+      return false;
+    }
     return permission[field]?.CAPABILITIES?.VIEW !== null;
   };
+  
 
   return (
     <div className="flex flex-col h-full w-full" data-test-id="dashboard-sidebar">
