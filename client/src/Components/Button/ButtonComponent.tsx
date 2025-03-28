@@ -3,6 +3,7 @@ import {
   ButtonVariant,
   DefaultMantineColor,
   MantineSize,
+  MantineSpacing,
 } from "@mantine/core";
 
 export const defaultButtonConfig = {
@@ -21,6 +22,7 @@ export default function ButtonComponent({
   fullWidth,
   size,
   disabled,
+  mt,
 }: {
   onClick?: () => void;
   loading?: boolean;
@@ -33,6 +35,7 @@ export default function ButtonComponent({
   fullWidth?: boolean;
   size?: MantineSize;
   disabled?: boolean;
+  mt?: MantineSpacing;
 }) {
   return (
     <Button
@@ -46,6 +49,7 @@ export default function ButtonComponent({
       fullWidth={fullWidth}
       onClick={onClick && onClick}
       size={size}
+      mt={mt}
     >
       {children}
     </Button>
