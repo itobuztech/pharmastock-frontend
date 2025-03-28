@@ -1,17 +1,27 @@
-import React from "react";
-import ButtonComponent from "../../../Components/Button/ButtonComponent";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import routes from "../../../Lib/Routes/Routes";
-import { TextInput, Text } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { BiSolidEnvelope } from "react-icons/bi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { ForgotPasswordInput } from "gql/graphql";
 import { useMutation } from "@apollo/client";
-import { ForgotPassword } from "query/forgotPassword/forgotPassword";
 import { toast } from "react-toastify";
+import { BsArrowLeftShort } from "react-icons/bs";
+import {
+  TextInput,
+  Text,
+  Container,
+  Title,
+  Paper,
+  Group,
+  Anchor,
+  Center,
+  Box,
+} from "@mantine/core";
+
+import ButtonComponent from "../../../Components/Button/ButtonComponent";
+import routes from "../../../Lib/Routes/Routes";
+import { ForgotPasswordInput } from "gql/graphql";
+import { ForgotPassword } from "query/forgotPassword/forgotPassword";
 import messagesData from "Lib/messages";
 
 export default function ForgetPassWord() {
@@ -59,55 +69,49 @@ export default function ForgetPassWord() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex justify-center items-center"
+      className="flex justify-center items-center bg-gray-50"
     >
-      <div className="mx-auto flex flex-col w-full max-w-md px-4 py-8 bg-white rounded-lg shadow  sm:px-6 md:px-8 lg:px-10">
-        <div className="self-center mb-6 text-xl font-light text-black sm:text-2xl ">
+      <Container size={460} my={30} className="max-w-lg w-full">
+        <Title ta="center" className="title">
           Forgot your password?
-        </div>
-        <Text size="sm" className="text-center text-gray-600">
-          Enter the email you used to create your account so we can send you a
-          link for resetting your password.
+        </Title>
+        <Text c="dimmed" fz="sm" ta="center" mt="xs">
+          Enter your email to get a reset link
         </Text>
-        <div className="mt-8">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
             <TextInput
               label="Email"
               placeholder="Email"
-              rightSection={<BiSolidEnvelope />}
               {...register("email")}
               withAsterisk
+              size="md"
             />
             <Text size="sm" mt={5} c="red.6">
               {errors.email?.message}
             </Text>
+            <Group justify="space-between" mt="lg" className="controls">
+              <Anchor c="dimmed" size="sm" className="control">
+                <Link to={routes.login.path} className="text-gray-500">
+                  <Center inline>
+                    <BsArrowLeftShort size={20} />
+                    <Box ml={5}>Back to the login page</Box>
+                  </Center>
+                </Link>
+              </Anchor>
 
-            <div className="flex items-center mb-6 mt-4">
-              <div className="flex ml-auto">
-                <div className="inline-flex text-sm text-gray-500">
-                  Already have password?&nbsp;
-                  <Link
-                    to={routes.login.path}
-                    className="text-blue-900 hover:text-blue-600 transition-colors"
-                  >
-                    Login
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="flex w-full">
               <ButtonComponent
+                className="control"
                 testId="login"
                 type="submit"
-                fullWidth
                 loading={loading}
               >
-                Request Password Change
+                Reset password
               </ButtonComponent>
-            </div>
-          </form>
-        </div>
-      </div>
+            </Group>
+          </Paper>
+        </form>
+      </Container>
     </div>
   );
 }
