@@ -3,14 +3,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { GetResetPassword } from "query/profile/resetPassword";
 import { toast } from "react-toastify";
-import { ResetPasswordInput } from "gql/graphql";
 import { Button, PasswordInput, Space, Text } from "@mantine/core";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { GetResetPassword } from "query/profile/resetPassword";
+import { ResetPasswordInput } from "gql/graphql";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import messagesData from "Lib/messages";
 import PasswordStrength from "Page/Auth/Register/components/PasswordStrength";
-import { useLocation, useNavigate } from "react-router-dom";
 import routes from "Lib/Routes/Routes";
 
 export default function ChangePassword() {
@@ -160,7 +161,6 @@ export default function ChangePassword() {
 
             <ButtonComponent
               type="submit"
-              variant="default"
               loading={resetPassLoader}
               disabled={!isPasswordValid}
             >

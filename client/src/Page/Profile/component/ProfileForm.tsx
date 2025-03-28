@@ -15,7 +15,7 @@ import messagesData from "Lib/messages";
 export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
   const [editForm, setEditForm] = useState(false);
 
-  const schema = yup
+  const profileSchema = yup
     .object({
       name: yup
         .string()
@@ -39,7 +39,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(profileSchema),
   });
 
   const [updateProfile, { loading: updateProfileLoader }] = useMutation(

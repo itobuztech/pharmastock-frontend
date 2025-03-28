@@ -32,7 +32,10 @@ export default function PageHeader({
             onClick={() => navigate(-1)}
             className="p-0 mr-4"
           >
-            <BiArrowBack size={24} color={isDark ? theme.colors.gray[3] : theme.colors.dark[9]} />
+            <BiArrowBack
+              size={24}
+              color={isDark ? theme.colors.gray[3] : theme.colors.dark[9]}
+            />
           </Button>
         )}
         <h1
@@ -51,7 +54,9 @@ export default function PageHeader({
           size={width > 768 ? "md" : "sm"}
           onClick={onClick}
           style={{
-            backgroundColor: isDark ? theme.colors.blue[6] : theme.colors.blue[7],
+            backgroundColor: isDark
+              ? theme.colors.blue[6]
+              : theme.colors.blue[7],
             color: theme.white,
             transition: "background-color 0.3s ease",
           }}
