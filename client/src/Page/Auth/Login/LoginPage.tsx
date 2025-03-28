@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useViewportSize } from "@mantine/hooks";
 import { useMutation } from "@apollo/client";
 import {
@@ -85,7 +85,7 @@ export default function LoginPage() {
     >
       <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>
-          <Title ta="center" className="title">Welcome back!</Title>
+        <Title ta="center" className="title">Welcome to <span className='text-blue-500'>PharmaStock!</span></Title>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
@@ -112,7 +112,11 @@ export default function LoginPage() {
               </Text>
               <Group justify="space-between" mt="lg">
                 <Checkbox label="Remember me" />
-                <Anchor size="sm">Forgot password?</Anchor>
+                <Link to={routes.forgetPassword.path} className="no-underline">
+                  <Anchor component="button" size="sm">
+                    Forgot password?
+                  </Anchor>
+                </Link>
               </Group>
 
               <ButtonComponent
