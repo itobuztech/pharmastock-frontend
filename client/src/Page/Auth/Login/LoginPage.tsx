@@ -85,7 +85,7 @@ export default function LoginPage() {
     >
       <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>
-          <Title ta="center" className="title">Welcome back!</Title>
+          <Title ta="center" className="title">Welcome to <span className='text-blue-500'>PharmaStock!</span></Title>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
