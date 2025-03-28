@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
-import { Drawer, Skeleton } from "@mantine/core";
+import { AppShell, Drawer, Skeleton } from "@mantine/core";
 
 import HeaderComponent from "../../Components/Header/HeaderComponent";
 import SidebarComponent from "./Components/Sidebar/SidebarComponent";
@@ -16,22 +16,33 @@ export default function DashboardPage() {
   const { width } = useViewportSize();
 
   return (
-    <div className="flex" data-test-id="dashboard-container">
-      {width > 1024 && <SidebarComponent />}
+    <AppShell
+      navbar={{
+        width: 320,
+        breakpoint: "sm",
+        collapsed: { mobile: true, desktop: false },
+      }}
+      header={width > 768 ? undefined : { height: 60 }}
+    >
+      {width <= 768 && (
+        <AppShell.Header>
+          <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
+        </AppShell.Header>
+      )}
+
+      <AppShell.Navbar hidden={width <= 768} className="max-h-screen overflow-y-auto">
+        <SidebarComponent />
+      </AppShell.Navbar>
 
       <Drawer opened={opened} onClose={close}>
         <SidebarComponent />
       </Drawer>
 
-      <div
-        className="w-full dashboard-content"
-        data-test-id="dashboard-content"
-      >
-        <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
+      <AppShell.Main>
         <Suspense fallback={<DashboardLoadingUi />}>
           <Outlet />
         </Suspense>
-      </div>
-    </div>
+      </AppShell.Main>
+    </AppShell>
   );
 }

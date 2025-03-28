@@ -51,9 +51,9 @@ const initialState: UserState = {
     loading: false,
     token: null,
   },
-  currentUser: store.user.currentUser,
-  permission: store.user.permission,
-  role: store.user.role,
+  currentUser: store.user?.currentUser,
+  permission: store.user?.permission,
+  role: store.user?.role,
 };
 
 export const userSlice = createSlice({

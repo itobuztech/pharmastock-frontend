@@ -9,17 +9,19 @@ import { UserRole } from "gql/graphql";
 export default function SidebarComponent() {
   const permission = useAppSelector((state) => state.user.permission);
 
-  const handleSliderOptionsVisible = (
-    field: USER_PERMISSION_FIELDS
-  ): boolean => {
+  const handleSliderOptionsVisible = (field: USER_PERMISSION_FIELDS): boolean => {
+    if (!permission || !permission[field]) {
+      return false;
+    }
     return permission[field]?.CAPABILITIES?.VIEW !== null;
   };
+  
 
   const user = useAppSelector((state) => state.user);
 
   return (
     <div className="flex flex-col" data-test-id="dashboard-sidebar">
-      <div className="lg:w-72">
+      <div>
         <Link
           className="flex items-center justify-start mx-6 mt-5 lg:mt-10 no-underline"
           to={routes.dashboard.profile.path}
