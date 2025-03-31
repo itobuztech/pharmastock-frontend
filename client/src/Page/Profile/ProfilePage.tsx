@@ -5,8 +5,8 @@ import {
   LoadingOverlay,
   Space,
   TextInput,
-  useMantineColorScheme,
-  useMantineTheme,
+  Title,
+  Paper,
 } from "@mantine/core";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -22,9 +22,6 @@ import { setPermission, setRole } from "Lib/Store/User/User.Slice";
 export default function ProfilePage() {
   const [admin, setAdmin] = useState<AdminProfile>();
   const dispatch = useDispatch();
-  const { colorScheme } = useMantineColorScheme();
-  const theme = useMantineTheme();
-  const isDark = colorScheme === "dark";
 
   const [fetchPermissions] = useLazyQuery<{ getpermissions: Permissions }>(
     GetPermission,
@@ -73,7 +70,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <Box className="min-h-screen py-4 md:py-8 px-4 md:px-8">
+    <Box className="py-4 md:py-8 px-4 md:px-8">
       <PageHeader title="Profile" showCreateButton={false} />
 
       {loading && (
@@ -84,43 +81,33 @@ export default function ProfilePage() {
         />
       )}
 
-      <h1
-        style={{ color: isDark ? theme.colors.gray[3] : theme.colors.dark[9] }}
-      >
-        {admin?.account.role}
-      </h1>
+      <Box pt={15} className="text-left max-w-2xl ">
+        <Title className="text-left"> {admin?.account.role}</Title>
 
-      <Box
-        style={{
-          backgroundColor: isDark ? theme.colors.dark[6] : theme.colors.gray[0],
-          color: isDark ? theme.colors.gray[3] : theme.colors.dark[9],
-        }}
-        className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 custom-shadow rounded-md py-6 px-6 shadow-md"
-      >
-        <h2 className="m-0 mb-4">Account</h2>
-        <div className="mb-4">
-          <TextInput
-            label="Email"
-            disabled
-            defaultValue={admin?.account.user.email}
-            classNames={{ label: isDark ? "text-gray-400" : "text-black" }}
-          />
-        </div>
-        {admin?.account.user.organization?.name && (
-          <div>
+        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <h2 className="m-0 mb-4 text-left">Account</h2>
+          <div className="mb-4">
             <TextInput
-              label="Organization"
+              label="Email"
               disabled
-              defaultValue={admin?.account.user.organization?.name}
-              classNames={{ label: isDark ? "text-gray-400" : "text-black" }}
+              defaultValue={admin?.account.user.email}
+              
             />
-            <Space h="md" />
           </div>
-        )}
-
-        <ProfileForm admin={admin} />
-
-        <ChangePassword />
+          {admin?.account.user.organization?.name && (
+            <div>
+              <TextInput
+                label="Organization"
+                disabled
+                defaultValue={admin?.account.user.organization?.name}
+               
+              />
+              <Space h="md" />
+            </div>
+          )}
+          <ProfileForm admin={admin} />
+          <ChangePassword />
+        </Paper>
       </Box>
     </Box>
   );
