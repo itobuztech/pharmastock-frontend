@@ -61,7 +61,7 @@ export default function PharmacyStockTable({
 
   return (
     <div>
-      <div className="bg-white overflow-auto">
+      <div className="shadow-xl rounded-lg overflow-auto">
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"

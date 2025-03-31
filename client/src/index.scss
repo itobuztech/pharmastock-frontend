@@ -23,3 +23,8 @@ body {
 .datePicker .react-datepicker {
   font-family: "Nunito", sans-serif;
 }
+
+.custom-shadow {
+  box-shadow: 2px 0px 18px rgba(142, 141, 141, 0.2),
+    0 4px 6px rgba(0, 0, 0, 0.1);
+}

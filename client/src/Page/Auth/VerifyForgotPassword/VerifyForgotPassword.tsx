@@ -83,7 +83,7 @@ export default function VerifyForgotPassword() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex justify-center items-center bg-gray-50"
+      className="flex justify-center items-center"
     >
       <Container size={460} my={30} className="max-w-lg w-full">
         <Title ta="center" className="title">Create New Password</Title>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PageHeader from "Components/PageHeader";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -20,14 +20,14 @@ export default function CategoryDetails({ handleUserPermissions }:Readonly<Child
   });
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Category Details"
         showBackButton={true}
         showCreateButton={false}
       />
 
-      <div className="w-full lg:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-1/2 custom-shadow rounded-md py-6 px-6">
         <CategoryCreateUpdateForm
           editForm={editForm}
           setEditForm={setEditForm}
