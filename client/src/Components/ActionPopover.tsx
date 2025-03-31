@@ -57,7 +57,7 @@ export default function ActionPopover({
             variant="transparent"
             fullWidth
             onClick={handleView}
-            className="hover:bg-blue-100 transition-colors text-black"
+            className="hover:bg-blue-100 transition-colors"
           >
             View
           </Button>
@@ -74,7 +74,7 @@ export default function ActionPopover({
                 variant="transparent"
                 fullWidth
                 onClick={handleUserModal}
-                className="hover:bg-blue-100 transition-colors text-black"
+                className="hover:bg-blue-100 transition-colors "
               >
                 Add User
               </Button>
@@ -86,7 +86,7 @@ export default function ActionPopover({
             variant="transparent"
             fullWidth
             onClick={handleDelete}
-            className="hover:bg-red-100 transition-colors text-black hover:text-red-700"
+            className="hover:bg-red-100 transition-colors  hover:text-red-700"
           >
             Delete
           </Button>

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Space, TextInput, Text } from "@mantine/core";
-import ButtonComponent from "Components/Button/ButtonComponent";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { GetProfileUpdate } from "query/profile/profileUpdate";
 import { toast } from "react-toastify";
+
+import ButtonComponent from "Components/Button/ButtonComponent";
+import { GetProfileUpdate } from "query/profile/profileUpdate";
 import { UpdateProfileInput } from "gql/graphql";
 import { AdminProfile } from "interfaces/interfaces";
 import messagesData from "Lib/messages";
@@ -29,9 +30,7 @@ export default function ProfileForm({ admin }: { admin?: AdminProfile }) {
         .min(3, messagesData.profile.userName.min)
         .max(100, messagesData.profile.userName.max)
         .trim(messagesData.profile.userName.trim),
-    })
-
-    .required();
+    });
 
   const {
     register,

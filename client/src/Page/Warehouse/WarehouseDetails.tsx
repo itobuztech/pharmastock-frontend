@@ -1,11 +1,16 @@
 import PageHeader from "Components/PageHeader";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GetWarehouseDetails } from "query/warehouse/warehouseDetails";
 import { CreateWarehouseStockInput, Warehouse } from "gql/graphql";
 import WarehouseForm from "./components/WarehouseForm";
-import { LoadingOverlay, Modal } from "@mantine/core";
+import {
+  LoadingOverlay,
+  Modal,
+  useMantineColorScheme,
+  useMantineTheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import WarehouseStockForm from "./components/WarehouseStockForm";
 import {
@@ -38,6 +43,9 @@ export default function WarehouseDetails({
     useState<CreateWarehouseStockInput>();
   const selectOrganizationItem = useOrganizationList();
   const permission = useAppSelector((state) => state.user.permission);
+  const { colorScheme } = useMantineColorScheme();
+  const theme = useMantineTheme();
+  const isDark = colorScheme === "dark";
 
   const { data: warehouseDetails, refetch } = useQuery<{
     warehouse: Warehouse;
@@ -47,7 +55,7 @@ export default function WarehouseDetails({
     },
     onError: (e) => {
       toast.error(e.message);
-    }
+    },
   });
 
   const [
@@ -81,7 +89,7 @@ export default function WarehouseDetails({
         },
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activePage, id]);
 
   useEffect(() => {
@@ -96,24 +104,26 @@ export default function WarehouseDetails({
         }
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newWarehouseStockList, refetch]);
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Warehouse Details"
         showBackButton={true}
-        showCreateButton={handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) && !id}
+        showCreateButton={
+          handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.WAREHOUSE_MANAGEMENT,
+            USER_PERMISSION_CAPABILITIES.CREATE
+          ) && !id
+        }
         onClick={open}
         buttonText="Add Warehouse Stock"
       />
 
-      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 bg-white rounded-md py-6 px-6">
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 custom-shadow rounded-md py-6 px-6">
         <WarehouseForm
           editForm={editForm}
           setEditForm={setEditForm}
@@ -133,7 +143,15 @@ export default function WarehouseDetails({
       )}
 
       <div className="mt-8">
-        <h2 className="text-blue-900 text-2xl font-bold m-0 mb-8">
+        <h2
+          style={{
+            color:
+              isDark
+                ? theme.colors.blue[4]
+                : theme.colors.blue[9],
+          }}
+          className="text-2xl font-bold m-0 mb-8"
+        >
           Warehouse Stocks
         </h2>
         {!warehouseStocksList?.warehouseStocks.length ? (

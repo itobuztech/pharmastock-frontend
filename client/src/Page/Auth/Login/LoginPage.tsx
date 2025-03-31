@@ -81,7 +81,7 @@ export default function LoginPage() {
   return (
     <div
       style={{ height: `${height}px` }}
-      className="flex flex-col justify-center items-center gap-7 bg-gray-50"
+      className="flex flex-col justify-center items-center gap-7 "
     >
       <Container size={420} my={40} className="max-w-lg w-full">
         <div style={{ width: "100%" }}>

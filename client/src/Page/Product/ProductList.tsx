@@ -136,7 +136,7 @@ export default function ProductList({
   }
 
   return (
-    <section className="min-h-screen bg-blue-50 bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
       <PageHeader
         title="Products"
         showCreateButton={
