@@ -5,13 +5,12 @@ import {
   AppShell,
   Drawer,
   Skeleton,
-  useMantineColorScheme,
-  useMantineTheme,
 } from "@mantine/core";
 
 import HeaderComponent from "../../Components/Header/HeaderComponent";
 import SidebarComponent from "./Components/Sidebar/SidebarComponent";
 import "./_dashboardPage.scoped.scss";
+import { dashboardStyles } from "./dashboardStyles";
 
 function DashboardLoadingUi() {
   const { height } = useViewportSize();
@@ -21,9 +20,7 @@ function DashboardLoadingUi() {
 export default function DashboardPage() {
   const [opened, { open, close }] = useDisclosure(false);
   const { width } = useViewportSize();
-  const { colorScheme } = useMantineColorScheme();
-  const theme = useMantineTheme();
-  const isDark = colorScheme === "dark";
+  const { classes } = dashboardStyles();
 
   return (
     <AppShell
@@ -33,11 +30,7 @@ export default function DashboardPage() {
         collapsed: { mobile: true, desktop: false },
       }}
       header={width > 768 ? undefined : { height: 60 }}
-      className="transition-all duration-300"
-      style={{
-        backgroundColor: theme.colors.gray[isDark ? 9 : 0],
-        color: theme.colors.gray[isDark ? 0 : 9],
-      }}
+      className={`${classes.appShell} transition-all duration-300`}
     >
       {width <= 768 && (
         <AppShell.Header>
@@ -47,25 +40,12 @@ export default function DashboardPage() {
 
       <AppShell.Navbar
         hidden={width <= 768}
-        className="max-h-screen overflow-y-auto"
-        style={{
-          backgroundColor: theme.colors.gray[isDark ? 8 : 1],
-          color: theme.colors.gray[isDark ? 1 : 8],
-        }}
+        className={`${classes.sidebar} max-h-screen overflow-y-auto"`}
       >
         <SidebarComponent />
       </AppShell.Navbar>
 
-      <Drawer
-        opened={opened}
-        onClose={close}
-        styles={{
-          body: {
-            backgroundColor: theme.colors.gray[isDark ? 9 : 0],
-            color: theme.colors.gray[isDark ? 0 : 9],
-          },
-        }}
-      >
+      <Drawer opened={opened} onClose={close} className={classes.drawerBody}>
         <SidebarComponent />
       </Drawer>
 
