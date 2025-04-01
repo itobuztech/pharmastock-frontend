@@ -27,7 +27,8 @@ export default function MenuLink({
     <Box
       component={Link}
       to={link}
-      className={cx(classes.menuLink, { [classes.active]: isActive }, "flex items-center no-underline transition-colors duration-200 bg-tranparent")}
+      className={cx(classes.menuLink, { [classes.active]: isActive }, 
+        "flex items-center no-underline transition-colors duration-200 bg-tranparent")}
     >
       <span className="mx-4 text-lg font-normal">{text}</span>
     </Box>
