@@ -2974,6 +2974,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/colors-generator@npm:^7.17.3":
+  version: 7.17.3
+  resolution: "@mantine/colors-generator@npm:7.17.3"
+  peerDependencies:
+    chroma-js: ">=2.4.2"
+  checksum: 10c0/afee479015ab3716c5c66e913aa0070697fb7cd9c6fd81c87ce6348227252d6bdf225653372ed7d4b6e33ddc48af571469277a44d6015198848b0366b44ac45a
+  languageName: node
+  linkType: hard
+
 "@mantine/core@npm:^7.11.2":
   version: 7.14.2
   resolution: "@mantine/core@npm:7.14.2"
@@ -3007,9 +3016,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/emotion@npm:^7.17.2":
-  version: 7.17.2
-  resolution: "@mantine/emotion@npm:7.17.2"
+"@mantine/emotion@npm:^7.17.3":
+  version: 7.17.3
+  resolution: "@mantine/emotion@npm:7.17.3"
   dependencies:
     html-react-parser: "npm:^5.1.18"
   peerDependencies:
@@ -3017,11 +3026,11 @@ __metadata:
     "@emotion/react": ^11.11.4
     "@emotion/serialize": ^1.1.4
     "@emotion/utils": ^1.2.1
-    "@mantine/core": 7.17.2
-    "@mantine/hooks": 7.17.2
+    "@mantine/core": 7.17.3
+    "@mantine/hooks": 7.17.3
     react: ^18.x || ^19.x
     react-dom: ^18.x || ^19.x
-  checksum: 10c0/8a0b20535e1d69b0c65cfa558ff0198cace70afa401089ba17847b28338c1f7c8d3f77490e525558ceb4bd79a46fb8e5a889f05103614af7336725a59b3c4263
+  checksum: 10c0/8f49c1b00a2821a4ff83b90df76282943db62f7f153efc058908ebbd09187e7dbd1f441ec89d78a78fafa6658f59d4d7c689ee749fd9a0d18d984b49b4e9a33a
   languageName: node
   linkType: hard
 
@@ -10481,9 +10490,10 @@ __metadata:
     "@graphql-codegen/client-preset": "npm:4.3.0"
     "@graphql-codegen/introspection": "npm:4.0.3"
     "@hookform/resolvers": "npm:^3.9.0"
+    "@mantine/colors-generator": "npm:^7.17.3"
     "@mantine/core": "npm:^7.11.2"
     "@mantine/dates": "npm:^7.12.0"
-    "@mantine/emotion": "npm:^7.17.2"
+    "@mantine/emotion": "npm:^7.17.3"
     "@mantine/hooks": "npm:^7.11.2"
     "@reduxjs/toolkit": "npm:^1.9.7"
     "@sentry/react": "npm:^7.5.0"

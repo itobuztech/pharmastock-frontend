@@ -1,6 +1,8 @@
-import { Box, useMantineColorScheme, useMantineTheme } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+import { menuStyles } from "./MenuStyles";
 
 export default function MenuLink({
   text,
@@ -13,9 +15,7 @@ export default function MenuLink({
 }) {
   const [isActive, setIsActive] = useState(false);
   const location = useLocation();
-  const { colorScheme } = useMantineColorScheme();
-  const theme = useMantineTheme();
-  const isDark = colorScheme === "dark";
+  const { classes, cx } = menuStyles();
 
   useEffect(() => {
     if (activeMenuPaths && location.pathname) {
@@ -27,27 +27,8 @@ export default function MenuLink({
     <Box
       component={Link}
       to={link}
-      style={{
-        backgroundColor: isActive
-          ? isDark
-            ? theme.colors.blue[5]
-            : theme.colors.blue[3]
-          : "transparent",
-        color: isDark ? theme.white : theme.colors.gray[9],
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.backgroundColor = isDark
-          ? theme.colors.blue[7]
-          : theme.colors.blue[2])
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.backgroundColor = isActive
-          ? isDark
-            ? theme.colors.blue[8]
-            : theme.colors.blue[1]
-          : "transparent")
-      }
-      className={` flex items-center p-2 py-3 mb-1 transition-colors  duration-200  rounded-lg no-underline `}
+      className={cx(classes.menuLink, { [classes.active]: isActive }, 
+        "flex items-center no-underline transition-colors duration-200 bg-tranparent")}
     >
       <span className="mx-4 text-lg font-normal">{text}</span>
     </Box>

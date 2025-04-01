@@ -2,6 +2,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MantineProvider } from "@mantine/core";
 import "react-datepicker/dist/react-datepicker.css";
+import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion';
 
 import ScrollToTop from "./Components/ScrollToTop";
 import TrackRedirectLinks from "./Components/TrackRedirectLinks";
@@ -16,10 +17,12 @@ function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <ToastContainer />
-        <MantineProvider theme={{}}>
-          <ScrollToTop />
-          <TrackRedirectLinks />
-          <AppRoutes />
+        <MantineProvider stylesTransform={emotionTransform}>
+          <MantineEmotionProvider>
+            <ScrollToTop />
+            <TrackRedirectLinks />
+            <AppRoutes />
+          </MantineEmotionProvider>
         </MantineProvider>
       </div>
     </ApolloProvider>
