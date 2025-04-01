@@ -1,11 +1,7 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
-import {
-  AppShell,
-  Drawer,
-  Skeleton,
-} from "@mantine/core";
+import { AppShell, Drawer, Skeleton } from "@mantine/core";
 
 import HeaderComponent from "../../Components/Header/HeaderComponent";
 import SidebarComponent from "./Components/Sidebar/SidebarComponent";
@@ -40,7 +36,7 @@ export default function DashboardPage() {
 
       <AppShell.Navbar
         hidden={width <= 768}
-        className={`${classes.sidebar} max-h-screen overflow-y-auto"`}
+        className={`${classes.sidebar} shadow-md max-h-screen overflow-y-auto"`}
       >
         <SidebarComponent />
       </AppShell.Navbar>
