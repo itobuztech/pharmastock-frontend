@@ -103,12 +103,6 @@ export default function OrganizationTable({
               </Table.Th>
               <Table.Th
                 className="py-3 text-left border-b font-semibold uppercase"
-                style={{
-                  borderColor: theme.colors.gray[4],
-                  color: isDarkMode
-                    ? theme.colors.gray[2]
-                    : theme.colors.dark[9],
-                }}
               >
                 Address
               </Table.Th>

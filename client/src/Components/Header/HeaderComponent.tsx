@@ -7,6 +7,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { FiSun, FiMoon } from "react-icons/fi";
+import { sidebarStyles } from "Page/Dashboard/Components/Sidebar/styles/sidebarStyles";
 
 export default function HeaderComponent({
   handleMobileDrawer,
@@ -21,22 +22,15 @@ export default function HeaderComponent({
   const theme = useMantineTheme();
   const isDark = computedColorScheme === "dark";
   const { toggleColorScheme } = useMantineColorScheme();
+  const { classes } = sidebarStyles();
 
   return (
-    <nav
-      className="lg:hidden"
-      style={{ backgroundColor: theme.colors.gray[isDark ? 9 : 0] }}
-    >
+    <nav className={`${classes.nav} lg:hidden shadow-md`}>
       <div className="mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link className="no-underline" to={"/dashboard"}>
-              <span
-                style={{
-                  color: theme.colors.gray[isDark ? 0 : 9],
-                }}
-                className="text-2xl font-bold"
-              >
+              <span className={`${classes.brandText} text-2xl font-bold`}>
                 Pharma Stock
               </span>
             </Link>
@@ -50,9 +44,15 @@ export default function HeaderComponent({
                 />
               </div>
             )}
-            <ActionIcon onClick={toggleColorScheme} size="lg" variant="default">
-              {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-            </ActionIcon>
+            {!sidebarOpened && (
+              <ActionIcon
+                onClick={toggleColorScheme}
+                size="lg"
+                variant="default"
+              >
+                {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
+              </ActionIcon>
+            )}
           </div>
         </div>
       </div>
