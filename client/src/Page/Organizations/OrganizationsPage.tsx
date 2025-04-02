@@ -140,7 +140,7 @@ export default function OrganizationsPage({
   }
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Organizations List"
         showCreateButton={handleUserPermissions(
@@ -153,7 +153,7 @@ export default function OrganizationsPage({
       />
 
       {/* ==== Search ==== */}
-      <Search onChange={(e: string) => setSearchKeyword(e)} />
+      <Search size='sm' className="lg:pt-3" onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
       {loading && <OrganizationTableSkeleton numOfRows={6} />}

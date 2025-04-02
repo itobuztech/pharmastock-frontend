@@ -36,7 +36,7 @@ export default function Search({
   };
 
   return (
-    <div className={`${className && className} w-7/12 lg:w-1/2 xl:w-1/4 rounded-md mb-8`}>
+    <div className={`${className && className} w-7/12 lg:w-1/2 xl:w-1/3 rounded-md mb-8`}>
       <TextInput
         value={searchValue}
         radius={radius}

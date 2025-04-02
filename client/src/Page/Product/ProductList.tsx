@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Flex, Modal, Space } from "@mantine/core";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
+
 import PageHeader from "Components/PageHeader";
 import { ChildComponentProps, ItemLists, Items } from "interfaces/interfaces";
-import { useLazyQuery, useMutation } from "@apollo/client";
 import { GetItemLists } from "query/item/itemList";
 import ConfirmationModal from "Components/ConfirmationModal";
 import { ItemDelete } from "query/item/itemDelete";
-import { toast } from "react-toastify";
 import ProductForm from "./components/ProductForm";
 import ProductTable from "./components/ProductTable";
 import EmptyList from "Components/EmptyList";
@@ -136,7 +137,7 @@ export default function ProductList({
   }
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Products"
         showCreateButton={
@@ -145,25 +146,26 @@ export default function ProductList({
         onClick={open}
         buttonText="Add Product"
       />
-
-      <Flex wrap="wrap">
-        {/* ==== Search ==== */}
-        <Search onChange={(e: string) => setSearchKeyword(e)} />
-        <Space w="md" />
-        {/* ==== Filter ==== */}
-        <ProductFilter
-          selectedUnit={selectedUnit}
-          sliderValue={sliderValue}
-          sliderValueMrp={sliderValueMrp}
-          setSelectedUnit={setSelectedUnit}
-          setSliderValue={setSliderValue}
-          setSliderValueMrp={setSliderValueMrp}
-          searchInput={searchKeyword}
-          setSearchInput={setSearchKeyword}
-          fetchItemList={fetchItemList}
-          activePage={activePage}
-        />
-      </Flex>
+      <div className="lg:pt-3">
+        <Flex wrap="wrap">
+          {/* ==== Search ==== */}
+          <Search onChange={(e: string) => setSearchKeyword(e)} />
+          <Space w="md" />
+          {/* ==== Filter ==== */}
+          <ProductFilter
+            selectedUnit={selectedUnit}
+            sliderValue={sliderValue}
+            sliderValueMrp={sliderValueMrp}
+            setSelectedUnit={setSelectedUnit}
+            setSliderValue={setSliderValue}
+            setSliderValueMrp={setSliderValueMrp}
+            searchInput={searchKeyword}
+            setSearchInput={setSearchKeyword}
+            fetchItemList={fetchItemList}
+            activePage={activePage}
+          />
+        </Flex>
+      </div>
 
       {loading && <ProductTableSkeleton numOfRows={6} />}
 

@@ -1,4 +1,4 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -12,6 +12,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPriceWithComma } from "../ProductList";
+import { productStyles } from "./productStyles";
 
 interface ItemTableProps {
   activePage: number;
@@ -36,6 +37,7 @@ export default function ProductTable({
   handleUserPermissions,
   showDeleteButton,
 }: Readonly<ItemTableProps>) {
+  const { classes } = productStyles();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.role);
 
@@ -43,8 +45,8 @@ export default function ProductTable({
     navigate(`${routes.dashboard.productList.path}/${itemId}`);
   }
 
-  const rows = itemList?.items.map((item, i) => (
-    <Table.Tr key={item.id}>
+  const rows = itemList?.items.map((item) => (
+    <Table.Tr key={item.id} className={classes.rowHover}>
       <Table.Td className="pl-8">{item.name}</Table.Td>
       <Table.Td>{item.baseUnit}</Table.Td>
       <Table.Td>{item.hsnCode}</Table.Td>
@@ -63,7 +65,7 @@ export default function ProductTable({
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
-          showDeleteModal={user === UserRole.Superadmin ? true : false}
+          showDeleteModal={user === UserRole.Superadmin}
           handleUserPermissions={handleUserPermissions}
           showDeleteButton={showDeleteButton}
         />
@@ -73,27 +75,29 @@ export default function ProductTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        className={`${classes.container} overflow-auto custom-shadow rounded-lg`}
+      >
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[900px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Base Unit</Table.Th>
               <Table.Th>HSN Code</Table.Th>
               <Table.Th>Instructions</Table.Th>
               <Table.Th>Wholesale Price</Table.Th>
-              <Table.Th>MRP Base unit</Table.Th>
+              <Table.Th>MRP Base Unit</Table.Th>
               <Table.Th className="text-right pr-8">Action</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
         <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"
@@ -107,6 +111,7 @@ export default function ProductTable({
           value={activePage}
           onChange={setActivePage}
           mt="lg"
+          className={classes.pagination}
         />
       </Flex>
       <Space h="md" />

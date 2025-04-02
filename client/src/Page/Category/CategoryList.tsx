@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Modal } from "@mantine/core";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import PageHeader from "Components/PageHeader";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { CreateItemCategoryInput } from "gql/graphql";
 import { toast } from "react-toastify";
+
+import PageHeader from "Components/PageHeader";
+import { CreateItemCategoryInput } from "gql/graphql";
 import { GetItemCategoryList } from "query/category/categoryList";
 import {
   ChildComponentProps,
@@ -124,7 +125,7 @@ export default function CategoryList({
   }
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Categories"
         showCreateButton={
@@ -137,7 +138,7 @@ export default function CategoryList({
       />
 
       {/* ==== Search ==== */}
-      <Search onChange={(e: string) => setSearchKeyword(e)} />
+      <Search className="lg:pt-3" onChange={(e: string) => setSearchKeyword(e)} />
 
       {/* ==== Loading State ==== */}
       {loading && <CategoriesTableSkeleton numOfRows={6} />}
