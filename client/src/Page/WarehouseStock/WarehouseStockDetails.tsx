@@ -6,8 +6,11 @@ import { useParams } from "react-router-dom";
 import { WarehouseStock } from "gql/graphql";
 import { ChildComponentProps } from "interfaces/interfaces";
 import { toast } from "react-toastify";
+import { Paper } from "@mantine/core";
 
-export default function WarehouseStockDetails({ handleUserPermissions }:Readonly<ChildComponentProps>) {
+export default function WarehouseStockDetails({
+  handleUserPermissions,
+}: Readonly<ChildComponentProps>) {
   const { id } = useParams();
 
   const { data: warehouseStockDetails, refetch } = useQuery<{
@@ -18,24 +21,26 @@ export default function WarehouseStockDetails({ handleUserPermissions }:Readonly
     },
     onError: (e) => {
       toast.error(e.message);
-    }
+    },
   });
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-6 px-4 md:px-8">
       <PageHeader
-        title={id ? 'Warehouse Stock Details': 'Create Warehouse Stocks'}
+        title={id ? "Warehouse Stock Details" : "Create Warehouse Stocks"}
         showBackButton={true}
         showCreateButton={false}
       />
 
-      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 custom-shadow rounded-md py-6 px-6">
-        <WarehouseStockForm
-          warehouseStockDetails={warehouseStockDetails}
-          refetchItem={refetch}
-          warehouseStockId={id}
-          handleUserPermissions={handleUserPermissions}
-        />
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 mt-5 lg:mt-10 ">
+        <Paper withBorder shadow="md" px={30} pt={30} mt={20} radius="md">
+          <WarehouseStockForm
+            warehouseStockDetails={warehouseStockDetails}
+            refetchItem={refetch}
+            warehouseStockId={id}
+            handleUserPermissions={handleUserPermissions}
+          />
+        </Paper>
       </div>
     </section>
   );
