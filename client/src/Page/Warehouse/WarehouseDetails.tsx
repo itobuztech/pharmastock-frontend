@@ -8,6 +8,7 @@ import WarehouseForm from "./components/WarehouseForm";
 import {
   LoadingOverlay,
   Modal,
+  Paper,
   useMantineColorScheme,
   useMantineTheme,
 } from "@mantine/core";
@@ -108,7 +109,7 @@ export default function WarehouseDetails({
   }, [newWarehouseStockList, refetch]);
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-6 px-4 md:px-8">
       <PageHeader
         title="Warehouse Details"
         showBackButton={true}
@@ -123,15 +124,17 @@ export default function WarehouseDetails({
         buttonText="Add Warehouse Stock"
       />
 
-      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 custom-shadow rounded-md py-6 px-6">
-        <WarehouseForm
-          editForm={editForm}
-          setEditForm={setEditForm}
-          id={id}
-          refetchWarehouse={refetch}
-          warehouseDetails={warehouseDetails}
-          handleUserPermissions={handleUserPermissions}
-        />
+      <div className="w-full lg:w-5/6 xl:w-2/3 2xl:w-1/2 mt-5 lg:mt-10">
+        <Paper withBorder shadow="md" px={30} pt={30} mt={20} radius="md">
+          <WarehouseForm
+            editForm={editForm}
+            setEditForm={setEditForm}
+            id={id}
+            refetchWarehouse={refetch}
+            warehouseDetails={warehouseDetails}
+            handleUserPermissions={handleUserPermissions}
+          />
+        </Paper>
       </div>
 
       {loading && (
@@ -145,10 +148,7 @@ export default function WarehouseDetails({
       <div className="mt-8">
         <h2
           style={{
-            color:
-              isDark
-                ? theme.colors.blue[4]
-                : theme.colors.blue[9],
+            color: isDark ? theme.colors.blue[4] : theme.colors.blue[9],
           }}
           className="text-2xl font-bold m-0 mb-8"
         >
