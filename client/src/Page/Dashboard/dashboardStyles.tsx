@@ -12,7 +12,7 @@ export const dashboardStyles = createStyles((theme, _, u) => ({
     },
   },
   sidebar: {
-    backgroundColor: theme.colors.gray[1],
+    backgroundColor: theme.colors.gray[2],
     color: theme.colors.gray[8],
 
     [u.dark]: {

@@ -46,7 +46,6 @@ export default function ProductFilter({
 
   const handleMrpSliderChange = (value: number) => {
     setSliderValueMrp(value);
-    console.log(value);
   };
 
   const handleUnitChange = (unit: string[]) => {

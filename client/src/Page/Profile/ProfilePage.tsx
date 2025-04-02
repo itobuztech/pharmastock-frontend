@@ -70,7 +70,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <Box className="py-4 md:py-8 px-4 md:px-8">
+    <Box className="py-4 md:py-6 px-4 md:px-8">
       <PageHeader title="Profile" showCreateButton={false} />
 
       {loading && (
@@ -91,7 +91,6 @@ export default function ProfilePage() {
               label="Email"
               disabled
               defaultValue={admin?.account.user.email}
-              
             />
           </div>
           {admin?.account.user.organization?.name && (
@@ -100,7 +99,6 @@ export default function ProfilePage() {
                 label="Organization"
                 disabled
                 defaultValue={admin?.account.user.organization?.name}
-               
               />
               <Space h="md" />
             </div>
