@@ -12,7 +12,7 @@ const VerifyForgotPassword = React.lazy(
   () => import("./VerifyForgotPassword/VerifyForgotPassword")
 );
 const SetPassword = React.lazy(
-  () => import("Page/Profile/component/SetPassword")
+  () => import("Page/Profile/Components/SetPassword")
 );
 
 export const AuthRoutes = [
