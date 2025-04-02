@@ -1,17 +1,24 @@
-import { Skeleton, Table } from "@mantine/core";
+import { Paper, Skeleton, Table } from "@mantine/core";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 export default function WarehouseTableSkeleton({
   numOfRows,
 }: {
   numOfRows: number;
 }) {
+  const { classes } = tableStyles();
   return (
-    <div className=" bg-white overflow-auto">
+    <Paper
+      withBorder
+      radius="md"
+      className={`${classes.container} custom-shadow`}
+    >
       {Array.from({ length: numOfRows }).map((_, index) => (
         <Table
           key={index}
           horizontalSpacing="md"
           verticalSpacing="md"
+          withRowBorders
           className="w-[900px] md:w-[1000px] lg:w-full"
         >
           <Table.Tr key={index}>
@@ -40,6 +47,6 @@ export default function WarehouseTableSkeleton({
           </Table.Tr>
         </Table>
       ))}
-    </div>
+    </Paper>
   );
 }

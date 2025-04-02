@@ -1,13 +1,12 @@
 import { Skeleton, Table } from "@mantine/core";
-
-import { organizationStyles } from "../organizationStyles";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 export default function OrganizationTableSkeleton({
   numOfRows,
 }: {
   numOfRows: number;
 }) {
-  const { classes } = organizationStyles();
+  const { classes } = tableStyles();
 
   return (
     <div className={`${classes.container} custom-shadow rounded-md`}>

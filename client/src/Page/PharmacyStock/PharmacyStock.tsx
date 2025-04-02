@@ -97,7 +97,7 @@ export default function PharmacyStock({
   }, [newPharmacyStockList, refetch]);
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Pharmacy Stocks"
         showBackButton={false}
@@ -110,7 +110,7 @@ export default function PharmacyStock({
         onClick={open}
       />
 
-      <div className="sm:flex">
+      <div className="sm:flex lg:pt-3">
         {/* ==== Search ==== */}
         <div className="flex w-full gap-3">
         <Search

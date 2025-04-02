@@ -12,7 +12,7 @@ import { useAppSelector } from "Lib/Store/hooks";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatPriceWithComma } from "../ProductList";
-import { productStyles } from "./productStyles";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 interface ItemTableProps {
   activePage: number;
@@ -37,7 +37,7 @@ export default function ProductTable({
   handleUserPermissions,
   showDeleteButton,
 }: Readonly<ItemTableProps>) {
-  const { classes } = productStyles();
+  const { classes } = tableStyles();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.role);
 
@@ -76,9 +76,13 @@ export default function ProductTable({
   return (
     <div>
       <Paper
-        className={`${classes.container} overflow-auto custom-shadow rounded-lg`}
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-auto custom-shadow`}
       >
         <Table
+          stickyHeader
+          withRowBorders
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[900px] md:w-[1000px] lg:w-full"
@@ -96,7 +100,7 @@ export default function ProductTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
+      
       </Paper>
       <Flex
         mih={50}

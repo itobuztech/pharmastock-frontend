@@ -1,4 +1,4 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -6,6 +6,7 @@ import {
 } from "enums/enums";
 import { Permissions, Pharmacies } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
+import { tableStyles } from "Lib/Styles/tableStyles";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -33,17 +34,18 @@ export default function PharmacyTable({
   showDeleteButton,
 }: Readonly<PharmacyTableProps>) {
   const navigate = useNavigate();
+  const { classes } = tableStyles();
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.pharmacies.path}/${id}`);
   }
 
   const rows = pharmacyList?.pharmacies.map((item, i) => (
-    <Table.Tr key={item.id}>
-      <Table.Td className="pl-8">{item?.name ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.location ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.contactInfo ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.organization?.name ?? 'N/A'}</Table.Td>
+    <Table.Tr key={item.id} className={classes.rowHover}>
+      <Table.Td className="pl-8">{item?.name ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.location ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.contactInfo ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.organization?.name ?? "N/A"}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -58,13 +60,18 @@ export default function PharmacyTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+          stickyHeader
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[800px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Location</Table.Th>
@@ -75,8 +82,7 @@ export default function PharmacyTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"

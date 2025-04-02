@@ -120,22 +120,24 @@ export default function UserList({
   }
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-6 px-4 md:px-8">
       <PageHeader title="Users" showCreateButton={false} />
 
       {/* ==== Search ==== */}
-      <Flex>
-        <Search onChange={(e: string) => setSearchKeyword(e)} />
-        {handleUserPermissions(
-          permission,
-          USER_PERMISSION_FIELDS.USER_PERMISSION,
-          USER_PERMISSION_CAPABILITIES.CREATE
-        ) && (
-          <Button ml="auto" onClick={() => invitationModalOpen()}>
-            Invite User
-          </Button>
-        )}
-      </Flex>
+      <div className="lg:pt-4">
+        <Flex>
+          <Search onChange={(e: string) => setSearchKeyword(e)} />
+          {handleUserPermissions(
+            permission,
+            USER_PERMISSION_FIELDS.USER_PERMISSION,
+            USER_PERMISSION_CAPABILITIES.CREATE
+          ) && (
+            <Button ml="auto" onClick={() => invitationModalOpen()}>
+              Invite User
+            </Button>
+          )}
+        </Flex>
+      </div>
 
       {/* ==== Loading State ==== */}
       {loading && <UserTableSkeleton numOfRows={6} />}

@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/emotion";
 
-export const categoryStyles = createStyles((theme, _, u) => ({
+export const tableStyles = createStyles((theme, _, u) => ({
   container: {
     backgroundColor: theme.white,
 

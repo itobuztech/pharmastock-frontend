@@ -1,5 +1,6 @@
 import {
   Box,
+  MantineSize,
   PasswordInput,
   Popover,
   Progress,
@@ -67,6 +68,7 @@ export default function PasswordStrength({
   disabled,
   label,
   onValidPassword,
+  size,
 }: {
   name: string;
   control: Control<any>;
@@ -74,6 +76,7 @@ export default function PasswordStrength({
   disabled?: boolean;
   label: string;
   onValidPassword?: (valid: boolean) => void;
+  size?: MantineSize;
 }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const {
@@ -128,6 +131,7 @@ export default function PasswordStrength({
                 onChange={(event) => onChange(event.currentTarget.value)}
                 error={errors && "This field is required"}
                 disabled={disabled}
+                size={size}
               />
             )}
           />

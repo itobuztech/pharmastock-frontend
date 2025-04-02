@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
 import ActionPopover from "Components/ActionPopover";
@@ -13,6 +13,7 @@ import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
 import { UserRole } from "gql/graphql";
 import { formatPriceWithComma } from "Page/Product/ProductList";
+import { tableStyles } from "Lib/Styles/tableStyles";
 interface PharmacyStockTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -33,6 +34,7 @@ export default function PharmacyStockTable({
   handleUserPermissions,
 }: Readonly<PharmacyStockTableProps>) {
   const navigate = useNavigate();
+  const { classes } = tableStyles();
   const user = useAppSelector((state) => state.user);
 
   function screenSwitch(id: string) {
@@ -41,8 +43,10 @@ export default function PharmacyStockTable({
 
   const rows = pharmaciesStockList?.pharmacyStocks?.map((item, i) => {
     return (
-      <Table.Tr key={item.id}>
-        <Table.Td className="pl-8">{format(parseISO(item.updatedAt), "MM/dd/yyyy")}</Table.Td>
+      <Table.Tr key={item.id} className={classes.rowHover}>
+        <Table.Td className="pl-8">
+          {format(parseISO(item.updatedAt), "MM/dd/yyyy")}
+        </Table.Td>
         <Table.Td>{item.item.name}</Table.Td>
         <Table.Td>{item.pharmacy.name}</Table.Td>
         <Table.Td>{formatPriceWithComma(item.finalQty)}</Table.Td>
@@ -61,13 +65,18 @@ export default function PharmacyStockTable({
 
   return (
     <div>
-      <div className="shadow-xl rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+          stickyHeader
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[800px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
@@ -80,8 +89,7 @@ export default function PharmacyStockTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"

@@ -17,7 +17,7 @@ import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
 } from "enums/enums";
-import { organizationStyles } from "../organizationStyles";
+import { tableStyles } from "Lib/Styles/tableStyles";
 interface OrganizationTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -44,7 +44,7 @@ export default function OrganizationTable({
   showDeleteButton,
 }: Readonly<OrganizationTableProps>) {
   const navigate = useNavigate();
-  const { classes } = organizationStyles();
+  const { classes } = tableStyles();
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.organizations.path}/${id}`);
@@ -78,7 +78,13 @@ export default function OrganizationTable({
         className={`${classes.container} overflow-hidden custom-shadow`}
       >
         <ScrollArea>
-          <Table className="min-w-[700px] w-full" withRowBorders>
+          <Table
+            stickyHeader
+            withRowBorders
+            horizontalSpacing="md"
+            verticalSpacing="md"
+            className="min-w-[700px] w-full"
+          >
             <Table.Thead
               className={`sticky top-0 z-10 shadow-sm ${classes.tableHeader}`}
             >

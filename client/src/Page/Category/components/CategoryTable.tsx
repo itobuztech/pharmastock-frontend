@@ -11,7 +11,7 @@ import { UserRole } from "gql/graphql";
 import { ItemCategories, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
-import { categoryStyles } from "./categoryStyles";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 interface ItemCategoryTableProps {
   activePage: number;
@@ -36,7 +36,7 @@ export default function CategoryTable({
   handleUserPermissions,
   showDeleteButton,
 }: Readonly<ItemCategoryTableProps>) {
-  const { classes } = categoryStyles();
+  const { classes } = tableStyles();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.role);
 
@@ -70,6 +70,7 @@ export default function CategoryTable({
         className={`${classes.container} overflow-hidden custom-shadow`}
       >
         <Table
+        stickyHeader
           withRowBorders
           horizontalSpacing="md"
           verticalSpacing="md"

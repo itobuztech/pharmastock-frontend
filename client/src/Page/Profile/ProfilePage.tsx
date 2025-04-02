@@ -14,8 +14,8 @@ import { useDispatch } from "react-redux";
 import PageHeader from "Components/PageHeader";
 import { AdminProfile, Permissions } from "interfaces/interfaces";
 import { GetUser } from "query/profile/getUserAccount";
-import ChangePassword from "./component/ChangePassword";
-import ProfileForm from "./component/ProfileForm";
+import ChangePassword from "./Components/ChangePassword";
+import ProfileForm from "./Components/ProfileForm";
 import { GetPermission } from "query/getPermission";
 import { setPermission, setRole } from "Lib/Store/User/User.Slice";
 
