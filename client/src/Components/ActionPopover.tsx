@@ -8,6 +8,7 @@ import {
 import { useAppSelector } from "Lib/Store/hooks";
 import { Permissions } from "interfaces/interfaces";
 import { UserRole } from "gql/graphql";
+import { createStyles } from "@mantine/emotion";
 interface ActionPopoverProps {
   handleView: () => void;
   handleDelete?: () => void;
@@ -23,6 +24,28 @@ interface ActionPopoverProps {
   ) => boolean;
 }
 
+const popoverStyles = createStyles((theme, _, u) => ({
+  button: {
+    "&:hover": {
+      backgroundColor: theme.colors.blue[1],
+      [u.dark]: {
+        backgroundColor: theme.colors.blue[5],
+        color: theme.white,
+      },
+    },
+  },
+  deleteButton: {
+    "&:hover": {
+      backgroundColor: theme.colors.red[1],
+      color: theme.colors.red[7],
+      [u.dark]: {
+        backgroundColor: theme.colors.red[9],
+        color: theme.colors.gray[0],
+      },
+    },
+  },
+}));
+
 export default function ActionPopover({
   handleView,
   handleDelete,
@@ -34,6 +57,7 @@ export default function ActionPopover({
 }: Readonly<ActionPopoverProps>) {
   const permission = useAppSelector((state) => state.user.permission);
   const user = useAppSelector((state) => state.user);
+  const { classes } = popoverStyles();
 
   return (
     <Popover width={200} position="bottom-end" withArrow shadow="md">
@@ -55,7 +79,7 @@ export default function ActionPopover({
               variant="transparent"
               fullWidth
               onClick={handleView}
-              className="hover:bg-blue-100 transition-colors"
+              className={classes.button}
             >
               View
             </Button>
@@ -72,7 +96,7 @@ export default function ActionPopover({
                 variant="transparent"
                 fullWidth
                 onClick={handleUserModal}
-                className="hover:bg-blue-100 transition-colors "
+                className={classes.button}
               >
                 Add User
               </Button>
@@ -84,7 +108,7 @@ export default function ActionPopover({
             variant="transparent"
             fullWidth
             onClick={handleDelete}
-            className="hover:bg-red-100 transition-colors  hover:text-red-700"
+            className={classes.deleteButton}
           >
             Delete
           </Button>
