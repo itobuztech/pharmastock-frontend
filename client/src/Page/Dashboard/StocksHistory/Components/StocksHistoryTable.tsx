@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
 import routes from "Lib/Routes/Routes";
@@ -13,6 +13,7 @@ import {
 import { Permissions } from "interfaces/interfaces";
 import appConfig from "Lib/appConfig";
 import { formatPriceWithComma } from "Page/Product/ProductList";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 interface StocksMovementTableProps {
   activePage: number;
@@ -34,6 +35,7 @@ export default function StocksHistoryTable({
   handleUserPermissions,
 }: Readonly<StocksMovementTableProps>) {
   const navigate = useNavigate();
+  const { classes } = tableStyles();
 
   function screenSwitch(lotName: string) {
     navigate(`${routes.dashboard.stocksHistory.path}/${lotName}`);
@@ -43,7 +45,7 @@ export default function StocksHistoryTable({
     stocksMovementList &&
     stocksMovementList?.stockMovementsLot?.map((item, i) => {
       return (
-        <Table.Tr key={item.id}>
+        <Table.Tr key={item.id} className={classes.rowHover}>
           <Table.Td className="pl-8">
             {format(parseISO(item.updatedAt), appConfig.dateFormat)}
           </Table.Td>
@@ -66,13 +68,18 @@ export default function StocksHistoryTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+          stickyHeader
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[800px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Lot Name</Table.Th>
@@ -87,8 +94,7 @@ export default function StocksHistoryTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"

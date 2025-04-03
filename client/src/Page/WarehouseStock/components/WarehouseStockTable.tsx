@@ -1,6 +1,9 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
-import ActionPopover from "Components/ActionPopover";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { format, parseISO } from "date-fns";
+
+import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
   USER_PERMISSION_FIELDS,
@@ -8,10 +11,8 @@ import {
 import { Permissions, WarehouseStocks } from "interfaces/interfaces";
 import { CurrencyType, getCurrencySymbol } from "Lib/getCurrencySymbol";
 import routes from "Lib/Routes/Routes";
+import { tableStyles } from "Lib/Styles/tableStyles";
 import { formatPriceWithComma } from "Page/Product/ProductList";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
 interface WarehouseStockTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -32,14 +33,17 @@ export default function WarehouseStockTable({
   handleUserPermissions,
 }: Readonly<WarehouseStockTableProps>) {
   const navigate = useNavigate();
+  const { classes } = tableStyles();
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.warehouseStock.path}/${id}`);
   }
 
   const rows = warehouseStocksList?.warehouseStocks.map((item, i) => (
-    <Table.Tr key={item.id}>
-      <Table.Td className="pl-8">{format(parseISO(item.createdAt), "MM/dd/yyyy")}</Table.Td>
+    <Table.Tr key={item.id} className={classes.rowHover}>
+      <Table.Td className="pl-8">
+        {format(parseISO(item.createdAt), "MM/dd/yyyy")}
+      </Table.Td>
       <Table.Td>{item?.item?.name}</Table.Td>
       <Table.Td>{item.warehouse.name}</Table.Td>
       <Table.Td>{formatPriceWithComma(item.finalQty)}</Table.Td>
@@ -64,13 +68,18 @@ export default function WarehouseStockTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+          withRowBorders
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[700px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Date</Table.Th>
               <Table.Th>Product</Table.Th>
@@ -84,8 +93,7 @@ export default function WarehouseStockTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"

@@ -1,4 +1,7 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import React from "react";
+
 import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -6,9 +9,7 @@ import {
 } from "enums/enums";
 import { Permissions, Warehouses } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import { tableStyles } from "Lib/Styles/tableStyles";
 interface WarehouseListTableProps {
   activePage: number;
   setActivePage: React.Dispatch<React.SetStateAction<number>>;
@@ -33,17 +34,18 @@ export default function WarehouseListTable({
   showDeleteButton,
 }: Readonly<WarehouseListTableProps>) {
   const navigate = useNavigate();
+  const { classes } = tableStyles();
 
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.warehouseList.path}/${id}`);
   }
 
-  const rows = warehouseList?.warehouses.map((item, i) => (
-    <Table.Tr key={item.id}>
-      <Table.Td className="pl-8">{item?.name ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.location ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.area ?? 'N/A'}</Table.Td>
-      <Table.Td>{item?.organization?.name ?? 'N/A'}</Table.Td>
+  const rows = warehouseList?.warehouses.map((item) => (
+    <Table.Tr key={item.id} className={classes.rowHover}>
+      <Table.Td className="pl-8">{item?.name ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.location ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.area ?? "N/A"}</Table.Td>
+      <Table.Td>{item?.organization?.name ?? "N/A"}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
@@ -51,9 +53,6 @@ export default function WarehouseListTable({
           showDeleteModal={true}
           handleUserPermissions={handleUserPermissions}
           showDeleteButton={showDeleteButton}
-          requiredPermission={USER_PERMISSION_FIELDS.ORGANIZATION_MANAGEMENT}
-          requiredCapability={USER_PERMISSION_CAPABILITIES.VIEW}
-
         />
       </Table.Td>
     </Table.Tr>
@@ -61,13 +60,18 @@ export default function WarehouseListTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+          withRowBorders
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[700px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Location</Table.Th>
@@ -78,8 +82,7 @@ export default function WarehouseListTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <Flex
         mih={50}
         gap="md"
@@ -92,7 +95,7 @@ export default function WarehouseListTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="lg"
+          className={classes.pagination}
         />
       </Flex>
       <Space h="md" />

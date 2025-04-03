@@ -7,7 +7,9 @@ import PageHeader from "Components/PageHeader";
 import Search from "Components/Search";
 import EmptyList from "Components/EmptyList";
 import StocksHistoryTable from "./Components/StocksHistoryTable";
-import StocksHistoryFilter, { FilterData } from "./Components/StocksHistoryFilter";
+import StocksHistoryFilter, {
+  FilterData,
+} from "./Components/StocksHistoryFilter";
 import { ChildComponentProps } from "interfaces/interfaces";
 import StockHistoryTableSkeleton from "./Components/StockHistoryTableSkeleton";
 // StocksHistoryFilter is already imported in the provided context
@@ -29,28 +31,29 @@ export default function StocksHistoryList({
     warehouseId: filters?.warehouseId as string,
     transactionType: filters?.transactionType,
     startDate: filters?.startDate,
-    endDate: filters?.endDate
+    endDate: filters?.endDate,
   });
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-6 px-4 md:px-8">
       <PageHeader
         title="Stocks History"
         showBackButton={false}
         showCreateButton={false}
       />
+      <div className="lg:pt-4">
+        <Flex wrap="wrap">
+          {/* ==== Search ==== */}
+          <Search onChange={(e: string) => setSearchKeyword(e)} />
+          <Space w="md" />
 
-      <Flex wrap="wrap">
-        {/* ==== Search ==== */}
-        <Search onChange={(e: string) => setSearchKeyword(e)} />
-        <Space w="md" />
-
-        {/* ==== Filter ==== */}
-        <StocksHistoryFilter
-          setFilterData={setFilters}
-          setSearchInput={setSearchKeyword}
-        />
-      </Flex>
+          {/* ==== Filter ==== */}
+          <StocksHistoryFilter
+            setFilterData={setFilters}
+            setSearchInput={setSearchKeyword}
+          />
+        </Flex>
+      </div>
 
       {/* ==== Loading State ==== */}
       {loadingStateStockMovement && <StockHistoryTableSkeleton numOfRows={6} />}

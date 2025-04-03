@@ -1,5 +1,5 @@
 import React from "react";
-import { Space, Table } from "@mantine/core";
+import { Paper, Space, Table } from "@mantine/core";
 import { format, parseISO } from "date-fns";
 
 import {
@@ -11,6 +11,7 @@ import { StockMovementsByLotName } from "../Hooks/useGetStocksHistoryDetails";
 import appConfig from "Lib/appConfig";
 import CustomPagination from "Components/CustomPagination/CustomPagination";
 import { formatPriceWithComma } from "Page/Product/ProductList";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 interface StockMovementDetailsProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
@@ -32,11 +33,12 @@ export default function StocksHistoryDetailsCards({
   setNoOfPage,
   currentPage,
 }: Readonly<StockMovementDetailsProps>) {
+  const { classes } = tableStyles();
   const rows =
     stocksMovementList &&
     stocksMovementList?.stockMovementsByLotName?.map((item, i) => {
       return (
-        <Table.Tr key={item.id}>
+        <Table.Tr key={item.id} className={classes.rowHover}>
           <Table.Td className="pl-8">{item.item}</Table.Td>
           <Table.Td>{item.organisation}</Table.Td>
 
@@ -59,13 +61,17 @@ export default function StocksHistoryDetailsCards({
 
   return (
     <div>
-      <div className=" custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[800px] md:w-[1000px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Product</Table.Th>
               <Table.Th>Organisation</Table.Th>
@@ -81,8 +87,7 @@ export default function StocksHistoryDetailsCards({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
       <CustomPagination
         loadingState={loadingState}
         setCurrentPage={setCurrentPage}

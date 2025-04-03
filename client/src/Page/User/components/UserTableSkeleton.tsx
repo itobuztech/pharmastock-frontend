@@ -1,12 +1,18 @@
-import { Skeleton, Table } from "@mantine/core";
+import { Paper, Skeleton, Table } from "@mantine/core";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 export default function UserTableSkeleton({
   numOfRows,
 }: {
   numOfRows: number;
 }) {
+  const { classes } = tableStyles();
   return (
-    <div className=" bg-white overflow-auto">
+    <Paper
+      withBorder
+      radius="md"
+      className={`${classes.container} custom-shadow`}
+    >
       {Array.from({ length: numOfRows }).map((_, index) => (
         <Table
           key={index}
@@ -37,6 +43,6 @@ export default function UserTableSkeleton({
           </Table.Tr>
         </Table>
       ))}
-    </div>
+    </Paper>
   );
 }

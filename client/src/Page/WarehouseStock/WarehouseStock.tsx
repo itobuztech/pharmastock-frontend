@@ -84,7 +84,7 @@ export default function WarehouseStock({
   }
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Warehouse Stocks"
         showCreateButton={handleUserPermissions(
@@ -95,31 +95,29 @@ export default function WarehouseStock({
         onClick={() => screenSwitch()}
         buttonText="Add Warehouse Stock"
       />
+      <div className="lg:pt-3">
+        <Flex wrap="wrap">
+          {/* ==== Search ==== */}
+          <Search onChange={(e: string) => setSearchKeyword(e)} />
+          <Space w="md" />
 
-      <Flex wrap="wrap">
-        {/* ==== Search ==== */}
-        <Search onChange={(e: string) => setSearchKeyword(e)} />
-        <Space w="md" />
-
-        {/* ==== Filter ==== */}
-        <StockFilter
-          sliderValue={sliderValue}
-          setSliderValue={setSliderValue}
-          searchInput={searchKeyword}
-          setSearchInput={setSearchKeyword}
-          fetchStockList={fetchWarehouseStocksList}
-          activePage={activePage}
-          warehouseList={true}
-        />
-      </Flex>
+          {/* ==== Filter ==== */}
+          <StockFilter
+            sliderValue={sliderValue}
+            setSliderValue={setSliderValue}
+            searchInput={searchKeyword}
+            setSearchInput={setSearchKeyword}
+            fetchStockList={fetchWarehouseStocksList}
+            activePage={activePage}
+            warehouseList={true}
+          />
+        </Flex>
+      </div>
 
       {/* ==== Loading State ==== */}
-      {loading && (
-        <WarehouseStockSkeleton numOfRows={6} />
-      )}
+      {loading && <WarehouseStockSkeleton numOfRows={6} />}
 
       {/* ==== WarehouseStocks List Empty List and List ==== */}
-      
 
       {!loading &&
         warehouseStocksList &&
@@ -136,7 +134,6 @@ export default function WarehouseStock({
       {!loading && warehouseStocksList?.warehouseStocks.length === 0 && (
         <EmptyList />
       )}
-
     </section>
   );
 }

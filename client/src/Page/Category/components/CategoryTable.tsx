@@ -1,4 +1,7 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Box, Flex, Pagination, Paper, Space, Table } from "@mantine/core";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -8,8 +11,7 @@ import { UserRole } from "gql/graphql";
 import { ItemCategories, Permissions } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import { tableStyles } from "Lib/Styles/tableStyles";
 
 interface ItemCategoryTableProps {
   activePage: number;
@@ -34,6 +36,7 @@ export default function CategoryTable({
   handleUserPermissions,
   showDeleteButton,
 }: Readonly<ItemCategoryTableProps>) {
+  const { classes } = tableStyles();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.user.role);
 
@@ -41,26 +44,16 @@ export default function CategoryTable({
     navigate(`${routes.dashboard.createCategory.path}/${id}`);
   }
 
-  const rows = itemCategoryList?.itemCategories.map((item, i) => (
-    <Table.Tr key={item.id}>
+  const rows = itemCategoryList?.itemCategories.map((item) => (
+    <Table.Tr key={item.id} className={classes.rowHover}>
       <Table.Td className="pl-8">{item.name}</Table.Td>
       <Table.Td>{item.Item?.length}</Table.Td>
       <Table.Td className="text-right">
         <ActionPopover
           handleView={() => screenSwitch(item.id)}
           handleDelete={() => handleDelete(item.id)}
-          showDeleteModal={user === UserRole.Superadmin ? true : false}
-          handleUserPermissions={(
-            permission,
-            requiredPermission,
-            requiredCapability
-          ) =>
-            handleUserPermissions(
-              permission,
-              requiredPermission,
-              requiredCapability
-            )
-          }
+          showDeleteModal={user === UserRole.Superadmin}
+          handleUserPermissions={handleUserPermissions}
           requiredPermission={USER_PERMISSION_FIELDS.ITEM_CATEGORIES_MANAGEMENT}
           requiredCapability={USER_PERMISSION_CAPABILITIES.VIEW}
           showDeleteButton={showDeleteButton}
@@ -70,14 +63,20 @@ export default function CategoryTable({
   ));
 
   return (
-    <div>
-      <div className="overflow-auto custom-shadow rounded-lg">
+    <Box>
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
+        stickyHeader
+          withRowBorders
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[700px] md:w-[900px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Name</Table.Th>
               <Table.Th>Products</Table.Th>
@@ -86,8 +85,8 @@ export default function CategoryTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-        <Space h="md" />
-      </div>
+      </Paper>
+      <Space h="md" />
       <Flex
         mih={50}
         gap="md"
@@ -100,10 +99,10 @@ export default function CategoryTable({
           total={totalCount}
           value={activePage}
           onChange={setActivePage}
-          mt="lg"
+          className={classes.pagination}
         />
       </Flex>
       <Space h="md" />
-    </div>
+    </Box>
   );
 }

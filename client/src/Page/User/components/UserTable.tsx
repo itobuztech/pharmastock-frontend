@@ -1,4 +1,4 @@
-import { Flex, Pagination, Space, Table } from "@mantine/core";
+import { Flex, Pagination, Paper, Space, Table } from "@mantine/core";
 import ActionPopover from "Components/ActionPopover";
 import {
   USER_PERMISSION_CAPABILITIES,
@@ -7,6 +7,7 @@ import {
 import { Permissions, Users } from "interfaces/interfaces";
 import routes from "Lib/Routes/Routes";
 import { useAppSelector } from "Lib/Store/hooks";
+import { tableStyles } from "Lib/Styles/tableStyles";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -34,7 +35,7 @@ export default function UserTable({
   showDeleteButton,
 }: Readonly<UserTableProps>) {
   const navigate = useNavigate();
-
+  const { classes } = tableStyles();
   function screenSwitch(id: string) {
     navigate(`${routes.dashboard.users.path}/${id}`);
   }
@@ -42,7 +43,7 @@ export default function UserTable({
   const user = useAppSelector((state) => state.user.currentUser);
 
   const rows = userList?.users?.map((item, i) => (
-    <Table.Tr key={item.id}>
+    <Table.Tr key={item.id} className={classes.rowHover}>
       <Table.Td className="pl-8">{item.username ?? "N/A"}</Table.Td>
       <Table.Td>{item.name ?? "N/A"}</Table.Td>
       <Table.Td>{item.email ?? "N/A"}</Table.Td>
@@ -62,13 +63,17 @@ export default function UserTable({
 
   return (
     <div>
-      <div className="custom-shadow rounded-lg overflow-auto">
+      <Paper
+        withBorder
+        radius="md"
+        className={`${classes.container} overflow-hidden custom-shadow`}
+      >
         <Table
           horizontalSpacing="md"
           verticalSpacing="md"
           className="w-[600px] md:w-[800px] lg:w-full"
         >
-          <Table.Thead>
+          <Table.Thead className={classes.tableHeader}>
             <Table.Tr>
               <Table.Th className="pl-8">Username</Table.Th>
               <Table.Th>Name</Table.Th>
@@ -80,29 +85,25 @@ export default function UserTable({
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
-
-        <Space h="md" />
-
-     
-      </div>
+      </Paper>
       <Flex
-          mih={50}
-          gap="md"
-          justify="center"
-          align="center"
-          direction="row"
-          wrap="wrap"
-        >
-          {
-            <Pagination
-              total={totalCount}
-              value={activePage}
-              onChange={setActivePage}
-              mt="lg"
-            />
-          }
-        </Flex>
-        <Space h="md" />
+        mih={50}
+        gap="md"
+        justify="center"
+        align="center"
+        direction="row"
+        wrap="wrap"
+      >
+        {
+          <Pagination
+            total={totalCount}
+            value={activePage}
+            onChange={setActivePage}
+            mt="lg"
+          />
+        }
+      </Flex>
+      <Space h="md" />
     </div>
   );
 }

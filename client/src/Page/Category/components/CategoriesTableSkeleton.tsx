@@ -1,12 +1,15 @@
 import { Skeleton, Table } from "@mantine/core";
 
+import { tableStyles } from "Lib/Styles/tableStyles";
+
 export default function CategoriesTableSkeleton({
   numOfRows,
 }: {
   numOfRows: number;
 }) {
+  const { classes } = tableStyles();
   return (
-    <div className="bg-white overflow-auto">
+    <div className={`${classes.container} custom-shadow rounded-md`}>
       {Array.from({ length: numOfRows }).map((_, index) => (
         <Table
           horizontalSpacing="md"

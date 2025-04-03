@@ -8,14 +8,12 @@ import { Organization, UserRole } from "gql/graphql";
 import PageHeader from "Components/PageHeader";
 import OrganizationForm from "./components/OrganizationForm";
 import { ChildComponentProps } from "interfaces/interfaces";
-import { organizationStyles } from "./organizationStyles";
 
 export default function OrganizationDetails({
   handleUserPermissions,
 }: Readonly<ChildComponentProps>) {
   const { orgId } = useParams();
   const [editForm, setEditForm] = useState(false);
-  const { classes } = organizationStyles();
 
   const {
     data: orgDetails,
@@ -72,7 +70,7 @@ export default function OrganizationDetails({
                     {orgDetails?.organization.User?.filter(
                       (user) => user.role?.userType === UserRole.Admin
                     ).map((user, index) => (
-                      <li key={index} className={`${classes.list} truncate`}>
+                      <li key={index} className="truncate">
                         {user.email}
                       </li>
                     ))}
@@ -97,7 +95,7 @@ export default function OrganizationDetails({
                       {orgDetails?.organization.User?.filter(
                         (user) => user.role?.userType === UserRole.Staff
                       ).map((user, index) => (
-                        <li key={index} className={`${classes.list} truncate`}>
+                        <li key={index} className="truncate">
                           {user.email}
                         </li>
                       ))}

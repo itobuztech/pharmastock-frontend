@@ -17,23 +17,24 @@ export default function StocksHistoryDetails({
   const { loadingStateStockMovement, stocksMovementList, setNoOfPage } =
     useGetStocksHistoryDetails({
       currentPage: currentPage,
-      searchKeyword: searchKeyword
+      searchKeyword: searchKeyword,
     });
 
   return (
-    <section className="min-h-screen bg-opacity-50 py-4 md:py-8 px-4 md:px-8">
+    <section className="min-h-screen bg-opacity-50 py-4 md:py-5 px-4 md:px-8">
       <PageHeader
         title="Stocks History Details"
         showBackButton={true}
         showCreateButton={false}
       />
 
-      <Search onChange={(e: string) => setSearchKeyword(e)} />
+      <Search
+        className="lg:pt-3"
+        onChange={(e: string) => setSearchKeyword(e)}
+      />
 
       {/* ==== Loading State ==== */}
-      {loadingStateStockMovement && (
-        <WarehouseStockSkeleton numOfRows={3} />
-      )}
+      {loadingStateStockMovement && <WarehouseStockSkeleton numOfRows={3} />}
 
       {/* ==== PharmacyStocks List Empty List and List ==== */}
 
