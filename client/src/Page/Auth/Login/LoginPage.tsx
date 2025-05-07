@@ -25,7 +25,7 @@ import { setUser } from "Lib/Store/User/User.Slice";
 import messagesData from "Lib/messages";
 import { LoginUserInput } from "gql/graphql";
 import appConfig from "Lib/appConfig";
-import "./_login.scoped.scss";
+import './Login.module.scss'
 
 export default function LoginPage() {
   const { height } = useViewportSize();

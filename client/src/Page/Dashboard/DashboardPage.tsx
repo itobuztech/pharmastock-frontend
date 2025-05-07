@@ -5,7 +5,7 @@ import { AppShell, Drawer, Skeleton } from "@mantine/core";
 
 import HeaderComponent from "../../Components/Header/HeaderComponent";
 import SidebarComponent from "./Components/Sidebar/SidebarComponent";
-import "./_dashboardPage.scoped.scss";
+import './DashboardPage.module.scss'
 import { dashboardStyles } from "./dashboardStyles";
 
 function DashboardLoadingUi() {

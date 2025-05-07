@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import { ForgotPasswordVerify } from "query/forgotPassword/forgotPasswordVerify";
 import routes from "Lib/Routes/Routes";
-import './_validateForgetPassword.scoped.scss';
+import './ValidateForgetPassword.module.scss'
 interface ForgetPasswordPayload {
   newPassword: string;
 }
