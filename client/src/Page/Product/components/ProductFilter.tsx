@@ -10,7 +10,7 @@ import {
 
 import { ItemLists, MaxPriceData } from "interfaces/interfaces";
 import { GetItemMaxPrice } from "query/item/itemMaxPrice";
-import CustomPopover from "CustomPopover.tsx/CustomPopover";
+import CustomPopover from "Components/CustomPopover.tsx/CustomPopover";
 
 const baseUnitArray = Object.values(BaseUnit);
 

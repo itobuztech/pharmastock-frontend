@@ -7,6 +7,7 @@ import HeaderComponent from "../../Components/Header/HeaderComponent";
 import SidebarComponent from "./Components/Sidebar/SidebarComponent";
 import "./_dashboardPage.scoped.scss";
 import { dashboardStyles } from "./dashboardStyles";
+import NetworkOverlay from "Components/NetworkOverlay/NetworkOverlay";
 
 function DashboardLoadingUi() {
   const { height } = useViewportSize();
@@ -19,37 +20,40 @@ export default function DashboardPage() {
   const { classes } = dashboardStyles();
 
   return (
-    <AppShell
-      navbar={{
-        width: 320,
-        breakpoint: "sm",
-        collapsed: { mobile: true, desktop: false },
-      }}
-      header={width > 768 ? undefined : { height: 60 }}
-      className={`${classes.appShell} transition-all duration-300`}
-    >
-      {width <= 768 && (
-        <AppShell.Header>
-          <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
-        </AppShell.Header>
-      )}
-
-      <AppShell.Navbar
-        hidden={width <= 768}
-        className={`${classes.sidebar} shadow-md max-h-screen overflow-y-auto"`}
+    <>
+      <NetworkOverlay />
+      <AppShell
+        navbar={{
+          width: 320,
+          breakpoint: "sm",
+          collapsed: { mobile: true, desktop: false },
+        }}
+        header={width > 768 ? undefined : { height: 60 }}
+        className={`${classes.appShell} transition-all duration-300`}
       >
-        <SidebarComponent />
-      </AppShell.Navbar>
+        {width <= 768 && (
+          <AppShell.Header>
+            <HeaderComponent handleMobileDrawer={open} sidebarOpened={opened} />
+          </AppShell.Header>
+        )}
 
-      <Drawer opened={opened} onClose={close} className={classes.drawerBody}>
-        <SidebarComponent />
-      </Drawer>
+        <AppShell.Navbar
+          hidden={width <= 768}
+          className={`${classes.sidebar} shadow-md max-h-screen overflow-y-auto"`}
+        >
+          <SidebarComponent />
+        </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Suspense fallback={<DashboardLoadingUi />}>
-          <Outlet />
-        </Suspense>
-      </AppShell.Main>
-    </AppShell>
+        <Drawer opened={opened} onClose={close} className={classes.drawerBody}>
+          <SidebarComponent />
+        </Drawer>
+
+        <AppShell.Main>
+          <Suspense fallback={<DashboardLoadingUi />}>
+            <Outlet />
+          </Suspense>
+        </AppShell.Main>
+      </AppShell>
+    </>
   );
 }

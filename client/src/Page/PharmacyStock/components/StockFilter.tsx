@@ -16,7 +16,7 @@ import {
 } from "interfaces/interfaces";
 import { GetPharmacyStockQty } from "query/pharmacyStock/pharmacyStockQty";
 import { GetWarehouseStockQty } from "query/warehouse/warehouseStockQty";
-import CustomPopover from "CustomPopover.tsx/CustomPopover";
+import CustomPopover from "Components/CustomPopover.tsx/CustomPopover";
 
 export default function StockFilter({
   sliderValue,

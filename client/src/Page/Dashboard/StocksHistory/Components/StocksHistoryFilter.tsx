@@ -8,7 +8,7 @@ import { CreateWarehouses, Warehouses } from "interfaces/interfaces";
 import { GetWarehouseList } from "query/warehouse/warehouseList";
 import { StockMovementsType, UserRole } from "gql/graphql";
 import { useAppSelector } from "Lib/Store/hooks";
-import CustomPopover from "CustomPopover.tsx/CustomPopover";
+import CustomPopover from "Components/CustomPopover.tsx/CustomPopover";
 
 export interface FilterData {
   warehouseId: string | null;
