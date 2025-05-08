@@ -1,9 +1,24 @@
-import { useNetworkStatus } from "Lib/Hooks/useNetworkStatus";
+import { useApolloClient } from "@apollo/client";
+import { useNetwork } from "@mantine/hooks";
+import { useEffect, useRef } from "react";
 
 export default function NetworkOverlay() {
-  const { isOffline } = useNetworkStatus();
+  const networkStatus = useNetwork();
+  const client = useApolloClient();
+  const wasOffline = useRef(false);
 
-  if (!isOffline) return null;
+  useEffect(() => {
+    if (networkStatus.online && wasOffline.current) {
+      client.reFetchObservableQueries();
+      wasOffline.current = false;
+    }
+
+    if (!networkStatus.online) {
+      wasOffline.current = true;
+    }
+  }, [networkStatus.online, client]);
+
+  if (networkStatus.online) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-90 text-white">
