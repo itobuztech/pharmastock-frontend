@@ -5,7 +5,7 @@ import { Container, Paper, PasswordInput, Title, Text } from "@mantine/core";
 import PasswordStrength from "Page/Auth/Register/components/PasswordStrength";
 import ButtonComponent from "Components/Button/ButtonComponent";
 import useChangePassword from "../Hooks/useChangePassword";
-import '../Styles/_setPassword.scoped.scss'
+import '../Styles/SetPassword.scoped.scss';
 
 export default function SetPassword() {
   const { height } = useViewportSize();

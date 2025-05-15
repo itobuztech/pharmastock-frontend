@@ -12,11 +12,13 @@ export default defineConfig({
     react(),
     viteTsconfigPaths(),
     eslint(),
-    reactScopedCssPlugin(),
     VitePWA({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{tsx,ts,js,css,html,ico,png,svg}"],
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
       },
       devOptions: {
         enabled: false,
